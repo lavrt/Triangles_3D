@@ -18,11 +18,24 @@ private:
     std::vector<Triangle> triangles_;
 
 public:
-    BVHNode(std::unique_ptr<BVHNode> left, std::unique_ptr<BVHNode> right)
-        : isLeaf(false), left_(std::move(left)), right_(std::move(right)) {} // NOTE
+    void SetAABB(const AABB& aabb) {
+        aabb_ = aabb;
+    }
 
-    BVHNode(std::vector<Triangle> triangles)
-        : isLeaf(true), left_(nullptr), right_(nullptr), triangles_(triangles) {} // NOTE
+    void SetTriangles(std::span<Triangle> triangles) {
+        isLeaf = true;
+        triangles_.assign(triangles.begin(), triangles.end());
+    }
+
+    void SetLeft(std::unique_ptr<BVHNode> left) {
+        isLeaf = false;
+        left_ = std::move(left);
+    }
+
+    void SetRight(std::unique_ptr<BVHNode> right) {
+        isLeaf = false;
+        right_ = std::move(right);
+    }
 };
 
 #endif // BVH_NODE_HPP

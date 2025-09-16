@@ -3,6 +3,7 @@
 
 #include "point_3d.hpp"
 #include "triangle.hpp"
+#include "bvh.hpp"
 
 int main() {
     size_t n = 0;
@@ -19,6 +20,9 @@ int main() {
                 
         triangles.push_back({i, p0, p1, p2});
     }
+
+    BVH tree{std::move(triangles)};
+    tree.Build();
 
     return 0;
 }

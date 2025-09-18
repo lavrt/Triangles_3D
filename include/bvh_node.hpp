@@ -1,6 +1,7 @@
 #ifndef BVH_NODE_HPP
 #define BVH_NODE_HPP
 
+#include <span>
 #include <vector>
 #include <memory>
 
@@ -15,7 +16,7 @@ private:
     std::unique_ptr<BVHNode> right_;
 
     bool is_leaf_;
-    std::vector<Triangle> triangles_;
+    std::span<Triangle> triangles_;
 
 public:
     void SetAABB(const AABB& aabb) {
@@ -24,7 +25,7 @@ public:
 
     void SetTriangles(std::span<Triangle> triangles) {
         is_leaf_ = true;
-        triangles_.assign(triangles.begin(), triangles.end());
+        triangles_ = triangles;
     }
 
     void SetLeft(std::unique_ptr<BVHNode> left) {
@@ -39,10 +40,6 @@ public:
 
     AABB GetAABB() const {
         return aabb_;
-    }
-
-    std::vector<Triangle> GetTriangles() const {
-        return triangles_;
     }
 
     size_t GetNumberOfTriangles() const {

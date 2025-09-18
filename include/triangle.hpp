@@ -34,7 +34,7 @@ public:
           }
     {}
 
-    void printaabb() {
+    void printaabb() { // NOTE debug
         std::cout << "aabb.min:" << aabb_.min_.x_ << ", " << aabb_.min_.y_ << ", " << aabb_.min_.z_ << "; "
                   << "aabb.max=" << aabb_.max_.x_ << ", " << aabb_.max_.y_ << ", " << aabb_.max_.z_ << "\n";
     }

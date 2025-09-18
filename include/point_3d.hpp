@@ -2,6 +2,7 @@
 #define POINT_3D_HPP
 
 #include <stdexcept>
+#include <iostream>
 
 struct Point3D {
     double x_;
@@ -19,5 +20,10 @@ struct Point3D {
         }
     }
 };
+
+inline std::ostream& operator<<(std::ostream& os, const Point3D& point) {
+    os << "(" << point.x_ << ", " << point.y_ << ", " << point.z_ << ")";
+    return os; 
+}
 
 #endif // POINT_3D_HPP

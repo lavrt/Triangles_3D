@@ -14,7 +14,7 @@ private:
     std::unique_ptr<BVHNode> left_;
     std::unique_ptr<BVHNode> right_;
 
-    bool isLeaf;
+    bool is_leaf_;
     std::vector<Triangle> triangles_;
 
 public:
@@ -23,18 +23,42 @@ public:
     }
 
     void SetTriangles(std::span<Triangle> triangles) {
-        isLeaf = true;
+        is_leaf_ = true;
         triangles_.assign(triangles.begin(), triangles.end());
     }
 
     void SetLeft(std::unique_ptr<BVHNode> left) {
-        isLeaf = false;
+        is_leaf_ = false;
         left_ = std::move(left);
     }
 
     void SetRight(std::unique_ptr<BVHNode> right) {
-        isLeaf = false;
+        is_leaf_ = false;
         right_ = std::move(right);
+    }
+
+    AABB GetAABB() const {
+        return aabb_;
+    }
+
+    std::vector<Triangle> GetTriangles() const {
+        return triangles_;
+    }
+
+    size_t GetNumberOfTriangles() const {
+        return triangles_.size();
+    }
+
+    BVHNode* GetLeft() const {
+        return left_.get();
+    }
+
+    BVHNode* GetRight() const {
+        return right_.get();
+    }
+
+    bool IsLeaf() const {
+        return is_leaf_;
     }
 };
 

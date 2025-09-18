@@ -23,6 +23,7 @@ int main() {
 
     BVH tree{std::move(triangles)};
     tree.Build();
+    tree.Dump("dump");
 
     return 0;
 }

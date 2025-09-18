@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <memory>
 #include <vector>
+#include <fstream>
 
 #include "bvh_node.hpp"
 
@@ -12,7 +13,7 @@ private:
     std::unique_ptr<BVHNode> root_;
     std::vector<Triangle> triangles_;
 
-    static constexpr int kMaxTrianglesPerLeaf = 4;
+    static constexpr int kMaxTrianglesPerLeaf = 2;
 
     size_t GetSplitAxis(const AABB& aabb) const {
         double len_of_x = aabb.max_.x_ - aabb.min_.x_;
@@ -61,6 +62,9 @@ private:
         return node;
     }
 
+    void DefiningGraphNodes(std::ofstream& file, BVHNode* node) const;
+    void DefiningGraphDependencies(std::ofstream& file, BVHNode* node) const;
+
 public:
     BVH(std::vector<Triangle>&& triangles)
         : triangles_(std::move(triangles)) {}
@@ -69,9 +73,7 @@ public:
         root_ = RecursiveBuild(0, triangles_.size());
     }
 
-    void Dump() const {
-
-    }
+    void Dump(const std::string& file_name) const;
 };
 
 #endif // BVH_HPP

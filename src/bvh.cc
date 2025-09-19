@@ -66,6 +66,7 @@ void BVH::Dump(const std::string& file_name) const {
          << "bgcolor = \"#FDFBE4\";\n\n";
 
     DefiningGraphNodes(file, root_.get());
+    file << "\n";
     DefiningGraphDependencies(file, root_.get());
 
     file << "}\n";

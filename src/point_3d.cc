@@ -11,6 +11,18 @@ double Point3D::operator[](size_t axis) const {
     }
 }
 
+Vector3D Point3D::operator-(const Point3D& other) const {
+    return Vector3D{
+        x_ - other.x_,
+        y_ - other.y_,
+        z_ - other.z_
+    };
+}
+
+Vector3D Point3D::AsVector() const {
+    return Vector3D{x_, y_, z_};
+}
+
 std::ostream& operator<<(std::ostream& os, const Point3D& point) {
     os << "(" << point.x_ << ", " << point.y_ << ", " << point.z_ << ")";
     return os; 

@@ -34,10 +34,9 @@ public:
           }
     {}
 
-    void printaabb() { // NOTE debug
-        std::cout << "aabb.min:" << aabb_.min_.x_ << ", " << aabb_.min_.y_ << ", " << aabb_.min_.z_ << "; "
-                  << "aabb.max=" << aabb_.max_.x_ << ", " << aabb_.max_.y_ << ", " << aabb_.max_.z_ << "\n";
-    }
+    std::pair<double, double> Project(const Vector3D& axis) const;
+
+    static bool Intersect(const Triangle& tr1, const Triangle& tr2);
 
     AABB GetAABB() const {
         return aabb_;

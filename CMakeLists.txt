@@ -9,6 +9,7 @@ set(SOURCES
     src/aabb.cc
     src/bvh.cc
     src/point_3d.cc
+    src/vector_3d.cc
 )
 
 add_executable(triangles_3d ${SOURCES})

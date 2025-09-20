@@ -3,6 +3,7 @@
 #include <cmath>
 #include <stdexcept>
 #include <limits>
+#include <iostream>
 
 Vector3D Vector3D::Normalized() const {
     double len = this->Length();

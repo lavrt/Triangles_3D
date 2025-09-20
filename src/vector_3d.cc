@@ -33,3 +33,7 @@ Vector3D Vector3D::Cross(const Vector3D& a, const Vector3D& b) {
 double Vector3D::Dot(const Vector3D& a, const Vector3D& b) {
     return a.x_ * b.x_ + a.y_ * b.y_ + a.z_ * b.z_;
 }
+
+bool Vector3D::Collinear(const Vector3D& other) const {
+    return Vector3D::Cross(*this, other).Length() < std::numeric_limits<double>::epsilon();
+}

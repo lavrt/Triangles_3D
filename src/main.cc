@@ -25,6 +25,32 @@ int main() {
     // tree.Build();
     // tree.Dump("dump");
 
+    // Triangle t1 {1,
+    //     {10, 10, 0},
+    //     {0, 10, 0},
+    //     {0, 0, 0},
+    // };
+
+    // Triangle t2 {2,
+    //     {8, 9, 0},
+    //     {1, 9, 0},
+    //     {1, 2, 0},
+    // };
+
+    Triangle t1 {1,
+        {0, -2, 0},
+        {2, 0, 0},
+        {-0.92, 0.8, 3.13},
+    };
+
+    Triangle t2 {2,
+        {0, 3, 0},
+        {-3, 0, 0},
+        {0, 0, 2},
+    };
+
+    // std::cout << (Triangle::RelativePlanesPosition(t1, t2) == PlanesPosition::Coincide); 
+    std::cout << Triangle::Intersect(t1, t2);
 
     return 0;
 }

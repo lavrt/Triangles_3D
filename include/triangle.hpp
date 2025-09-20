@@ -7,6 +7,10 @@
 #include "point_3d.hpp"
 #include "aabb.hpp"
 
+enum class PlanesPosition {
+    Parallel, Coincide, Intersect
+};
+
 class Triangle {
 private:
     size_t id_;
@@ -35,11 +39,24 @@ public:
     {}
 
     std::pair<double, double> Project(const Vector3D& axis) const;
+    bool Contains(const Triangle& other) const;
 
     static bool Intersect(const Triangle& tr1, const Triangle& tr2);
+    static bool SAT(const Triangle& t1, const Triangle& t2);
+    static PlanesPosition RelativePlanesPosition(const Triangle& t1, const Triangle& t2);
 
     AABB GetAABB() const {
         return aabb_;
+    }
+
+    Point3D operator[](size_t i) const {
+        switch (i) {
+            case 0: return p0_;
+            case 1: return p1_;
+            case 2: return p2_;
+            
+            default: throw std::runtime_error("");
+        }
     }
 };
 

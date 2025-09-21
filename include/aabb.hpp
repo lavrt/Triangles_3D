@@ -8,11 +8,24 @@
 class Triangle;
 
 struct AABB {
-    Point3D min_;
-    Point3D max_;
+    Point3D min;
+    Point3D max;
 
-    AABB();
-    AABB(Point3D min, Point3D max) : min_(min), max_(max) {}
+    AABB() {
+        min = {
+            std::numeric_limits<double>::max(),
+            std::numeric_limits<double>::max(),
+            std::numeric_limits<double>::max()
+        };
+
+        max = {
+            std::numeric_limits<double>::lowest(),
+            std::numeric_limits<double>::lowest(),
+            std::numeric_limits<double>::lowest()
+        };
+    }
+
+    AABB(Point3D min, Point3D max) : min(min), max(max) {}
     
     void Expand(const AABB& other);
     Point3D GetCenter() const;

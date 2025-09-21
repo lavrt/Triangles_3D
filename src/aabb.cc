@@ -2,20 +2,6 @@
 
 #include <triangle.hpp>
 
-AABB::AABB() {
-    min_ = {
-        std::numeric_limits<double>::max(),
-        std::numeric_limits<double>::max(),
-        std::numeric_limits<double>::max()
-    };
-    
-    max_ = {
-        std::numeric_limits<double>::lowest(),
-        std::numeric_limits<double>::lowest(),
-        std::numeric_limits<double>::lowest()
-    };
-}
-
 AABB AABB::UniteAABB(std::span<Triangle> triangles) {
     AABB aabb;
 
@@ -27,28 +13,29 @@ AABB AABB::UniteAABB(std::span<Triangle> triangles) {
 }
 
 void AABB::Expand(const AABB& other) {
-    min_ = {
-        std::min(min_.x_, other.min_.x_),
-        std::min(min_.y_, other.min_.y_),
-        std::min(min_.z_, other.min_.z_)
+    min = {
+        std::min(min.x, other.min.x),
+        std::min(min.y, other.min.y),
+        std::min(min.z, other.min.z)
     };
-    max_ = {
-        std::max(max_.x_, other.max_.x_),
-        std::max(max_.y_, other.max_.y_),
-        std::max(max_.z_, other.max_.z_)
+
+    max = {
+        std::max(max.x, other.max.x),
+        std::max(max.y, other.max.y),
+        std::max(max.z, other.max.z)
     };
 }
 
 Point3D AABB::GetCenter() const {
     return Point3D{
-        (max_.x_ + min_.x_) / 2,
-        (max_.y_ + min_.y_) / 2,
-        (max_.z_ + min_.z_) / 2
+        (max.x + min.x) / 2,
+        (max.y + min.y) / 2,
+        (max.z + min.z) / 2
     };
 }
 
 bool AABB::Intersects(const AABB& a, const AABB& b) {
-    return (a.min_.x_ <= b.max_.x_ && a.max_.x_ >= b.min_.x_)
-        && (a.min_.y_ <= b.max_.y_ && a.max_.y_ >= b.min_.y_)
-        && (a.min_.z_ <= b.max_.z_ && a.max_.z_ >= b.min_.z_);
+    return (a.min.x <= b.max.x && a.max.x >= b.min.x)
+        && (a.min.y <= b.max.y && a.max.y >= b.min.y)
+        && (a.min.z <= b.max.z && a.max.z >= b.min.z);
 }

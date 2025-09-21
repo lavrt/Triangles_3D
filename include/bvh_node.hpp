@@ -22,7 +22,7 @@ public:
         aabb_ = aabb;
     }
 
-    void SetTriangles(std::span<Triangle> triangles) {
+    void SetTriangles(std::span<Triangle> triangles) noexcept {
         is_leaf_ = true;
         triangles_ = triangles;
     }
@@ -37,27 +37,27 @@ public:
         right_ = std::move(right);
     }
 
-    AABB GetAABB() const {
+    AABB GetAABB() const noexcept {
         return aabb_;
     }
 
-    std::span<Triangle> GetTriangles() const {
+    std::span<Triangle> GetTriangles() const noexcept {
         return triangles_;
     }
 
-    size_t GetNumberOfTriangles() const {
+    size_t GetNumberOfTriangles() const noexcept {
         return triangles_.size();
     }
 
-    const std::unique_ptr<BVHNode>& GetLeft() const {
+    const std::unique_ptr<BVHNode>& GetLeft() const noexcept {
         return left_;
     }
 
-    const std::unique_ptr<BVHNode>& GetRight() const {
+    const std::unique_ptr<BVHNode>& GetRight() const noexcept {
         return right_;
     }
 
-    bool IsLeaf() const {
+    bool IsLeaf() const noexcept {
         return is_leaf_;
     }
 };

@@ -36,10 +36,10 @@ bool Segment::Intersect(std::span<Segment> edges1, std::span<Segment> edges2) {
 }
 
 double Segment::Direction(const Point3D& p) const {
-    return (p1.x_ - p0.x_) * (p.y_ - p0.y_) - (p1.y_ - p0.y_) * (p.x_ - p0.x_);
+    return (p1.x - p0.x) * (p.y - p0.y) - (p1.y - p0.y) * (p.x - p0.x);
 }
 
 bool Segment::OnSegment(const Point3D& p) const {
-    return std::min(p0.x_, p1.x_) <= p.x_ && p.x_ <= std::max(p0.x_, p1.x_)
-        && std::min(p0.y_, p1.y_) <= p.y_ && p.y_ <= std::max(p0.y_, p1.y_);
+    return std::min(p0.x, p1.x) <= p.x && p.x <= std::max(p0.x, p1.x)
+        && std::min(p0.y, p1.y) <= p.y && p.y <= std::max(p0.y, p1.y);
 }

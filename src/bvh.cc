@@ -39,15 +39,15 @@ std::unique_ptr<BVHNode> BVH::RecursiveBuild(size_t start, size_t end) {
 }
 
 size_t BVH::GetSplitAxis(const AABB& aabb) const {
-    double len_of_x = aabb.max_.x_ - aabb.min_.x_;
-    double len_of_y = aabb.max_.y_ - aabb.min_.y_;
-    double len_of_z = aabb.max_.z_ - aabb.min_.z_;
+    double len_of_x = aabb.max.x - aabb.min.x;
+    double len_of_y = aabb.max.y - aabb.min.y;
+    double len_of_z = aabb.max.z - aabb.min.z;
 
-    double max_len = std::max({len_of_x, len_of_y, len_of_z});
+    double maxlen = std::max({len_of_x, len_of_y, len_of_z});
 
-    if (max_len == len_of_x) {
+    if (maxlen == len_of_x) {
         return 0;
-    } else if (max_len == len_of_y) {
+    } else if (maxlen == len_of_y) {
         return 1;
     } else {
         return 2;
@@ -135,7 +135,7 @@ void BVH::Dump(const std::string& file_name) const {
 void BVH::DefiningGraphNodes(std::ofstream& file, const std::unique_ptr<BVHNode>& node) const {
     static size_t rank = 0;
     file << "    node_" << node.get() << " [rank=" << rank << ",label=\" { node: " << node.get()
-         << " | aabb: \\{" << node->GetAABB().min_ << ", " << node->GetAABB().max_ << "\\} | ";
+         << " | aabb: \\{" << node->GetAABB().min << ", " << node->GetAABB().max << "\\} | ";
 
 
     if (!node->IsLeaf()) {

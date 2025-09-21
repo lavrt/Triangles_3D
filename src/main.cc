@@ -15,9 +15,9 @@ int main() {
 
     Point3D p0, p1, p2;
     for (size_t i = 0; i != n; ++i) {
-        std::cin >> p0.x_ >> p0.y_ >> p0.z_
-                 >> p1.x_ >> p1.y_ >> p1.z_
-                 >> p2.x_ >> p2.y_ >> p2.z_;
+        std::cin >> p0.x >> p0.y >> p0.z
+                 >> p1.x >> p1.y >> p1.z
+                 >> p2.x >> p2.y >> p2.z;
                 
         triangles.push_back({i, p0, p1, p2});
     }

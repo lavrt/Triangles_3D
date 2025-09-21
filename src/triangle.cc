@@ -5,32 +5,13 @@
 #include "segment.hpp"
 #include "constants.hpp"
 
-Triangle::Triangle(size_t id, Point3D p0, Point3D p1, Point3D p2) 
-    : id_(id), p0_(p0), p1_(p1), p2_(p2)
-{
-    aabb_ = {
-        Point3D{
-            std::min({p0.x_, p1.x_, p2.x_}),
-            std::min({p0.y_, p1.y_, p2.y_}),
-            std::min({p0.z_, p1.z_, p2.z_})
-        },
-        Point3D{
-            std::max({p0.x_, p1.x_, p2.x_}),
-            std::max({p0.y_, p1.y_, p2.y_}),
-            std::max({p0.z_, p1.z_, p2.z_})
-        }
-    };
-
-    normal_ = Vector3D::Cross(p1_ - p0_, p2_ - p1_);
-}
-
 Point3D Triangle::operator[](size_t i) const {
     switch (i) {
         case 0: return p0_;
         case 1: return p1_;
         case 2: return p2_;
         
-        default: throw std::runtime_error("");
+        default: throw std::runtime_error("Incorrect access to fields of the class: Triangle");
     }
 }
 

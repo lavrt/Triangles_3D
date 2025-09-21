@@ -42,6 +42,10 @@ public:
         return aabb_;
     }
 
+    std::span<Triangle> GetTriangles() const {
+        return triangles_;
+    }
+
     size_t GetNumberOfTriangles() const {
         return triangles_.size();
     }

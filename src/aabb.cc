@@ -32,3 +32,9 @@ Point3D AABB::GetCenter() const {
         (max_.z_ + min_.z_) / 2
     };
 }
+
+bool AABB::Intersects(const AABB& a, const AABB& b) {
+    return (a.min_.x_ <= b.max_.x_ && a.max_.x_ >= b.min_.x_)
+        && (a.min_.y_ <= b.max_.y_ && a.max_.y_ >= b.min_.y_)
+        && (a.min_.z_ <= b.max_.z_ && a.max_.z_ >= b.min_.z_);
+}

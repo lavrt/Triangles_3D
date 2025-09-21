@@ -29,6 +29,7 @@ struct AABB {
 
     void Expand(const AABB& other);
     Point3D GetCenter() const;
+    static bool Intersects(const AABB& a, const AABB& b);
 
     static AABB UniteAABB(std::span<Triangle> triangles);
 };

@@ -49,6 +49,10 @@ public:
     static bool SAT(const Triangle& t1, const Triangle& t2);
     static PlanesPosition RelativePlanesPosition(const Triangle& t1, const Triangle& t2);
 
+    size_t GetId() const {
+        return id_;
+    }
+
     AABB GetAABB() const {
         return aabb_;
     }

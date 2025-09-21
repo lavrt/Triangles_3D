@@ -1,6 +1,7 @@
 #include "bvh.hpp"
 
 #include <stdexcept>
+#include <cassert>
 
 void BVH::Build() {
     root_ = RecursiveBuild(0, triangles_.size());
@@ -50,6 +51,57 @@ size_t BVH::GetSplitAxis(const AABB& aabb) const {
         return 1;
     } else {
         return 2;
+    }
+}
+
+std::unordered_set<size_t> BVH::FindIntersectingTriangles() {
+    RecursiveFindIntersections(root_.get(), root_.get());
+    return intersecting_triangles_;
+}
+
+void BVH::RecursiveFindIntersections(const BVHNode* a, const BVHNode* b) {
+    std::cout << a << ", " << b << "\n";
+    static int f = 0;// NOTE debug
+    static int w = 0;// NOTE debug
+    std::cout << "f++="<< f++ << "\n";// NOTE debug
+    // std::cout << "b__________________________________________\n"; // NOTE debug
+    // assert(b);
+    // b->GetAABB();
+    // std::cout << "a__________________________________________\n"; // NOTE debug
+    if (!AABB::Intersects(a->GetAABB(), b->GetAABB())) {
+        return;
+    }
+    std::cout << "w++=" << w++ << "\n";// NOTE debug
+    // std::cout << "__________________________________________\n"; // NOTE debug
+    if (a->IsLeaf() && b->IsLeaf()) {
+        std::span<Triangle> a_triangles = a->GetTriangles();
+        std::span<Triangle> b_triangles = b->GetTriangles();
+
+        for (const Triangle& a_tr : a_triangles) {
+            for (const Triangle& b_tr : b_triangles) {
+                if (a_tr.GetId() >= b_tr.GetId()) {
+                    continue;
+                }
+                if (Triangle::Intersect(a_tr, b_tr)) {
+                    intersecting_triangles_.insert(a_tr.GetId());
+                    intersecting_triangles_.insert(b_tr.GetId());
+                }
+            }
+        }
+    }
+
+    if (!a->IsLeaf() && !b->IsLeaf()) {// std::cout << "__________________________________________\n"; // NOTE debug
+        RecursiveFindIntersections(a->GetLeft(), b->GetLeft());
+        RecursiveFindIntersections(a->GetLeft(), b->GetRight());
+        RecursiveFindIntersections(a->GetRight(), b->GetLeft());
+        RecursiveFindIntersections(a->GetRight(), b->GetRight());
+    } else if (!a->IsLeaf()) {
+        RecursiveFindIntersections(a->GetLeft(), b);
+        RecursiveFindIntersections(a->GetRight(), b);
+    } else {
+        // std::cout << b << "\n";
+        RecursiveFindIntersections(a, b->GetLeft());
+        RecursiveFindIntersections(a, b->GetRight());
     }
 }
 

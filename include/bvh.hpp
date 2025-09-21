@@ -28,7 +28,7 @@ public:
     void Dump(const std::string& file_name) const;
     std::set<size_t> FindIntersectingTriangles();
 
-    const std::unique_ptr<BVHNode>& GetRoot() const {
+    const std::unique_ptr<BVHNode>& GetRoot() const noexcept {
         return root_;
     }
 };

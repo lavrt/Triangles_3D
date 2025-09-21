@@ -61,20 +61,10 @@ std::set<size_t> BVH::FindIntersectingTriangles() {
 }
 
 void BVH::RecursiveFindIntersections(const std::unique_ptr<BVHNode>& a, const std::unique_ptr<BVHNode>& b) {
-    // std::cout << "a.get()="<< a.get() << ", b.get()=" << b.get() << "\n";
-    // std::cout << "a->GetLeft()=" << a->GetLeft().get() << ", a->GetRight()=" << a->GetRight().get() << "; b->GetLeft()=" << b->GetLeft().get() << ", b->GetRight()=" << b->GetRight().get() << "\n";
-    // static int f = 0;// NOTE debug
-    // static int w = 0;// NOTE debug
-    // std::cout << "f++="<< f++ << "\n";// NOTE debug
-    // std::cout << "b__________________________________________\n"; // NOTE debug
-    // assert(b);
-    // b->GetAABB();
-    // std::cout << "a__________________________________________\n"; // NOTE debug
     if (!AABB::Intersects(a->GetAABB(), b->GetAABB())) {
         return;
     }
-    // std::cout << "w++=" << w++ << "\n";// NOTE debug
-    // std::cout << "__________________________________________\n"; // NOTE debug
+
     if (a->IsLeaf() && b->IsLeaf()) {
         std::span<Triangle> a_triangles = a->GetTriangles();
         std::span<Triangle> b_triangles = b->GetTriangles();

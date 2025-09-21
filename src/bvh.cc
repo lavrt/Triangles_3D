@@ -55,12 +55,14 @@ size_t BVH::GetSplitAxis(const AABB& aabb) const {
 }
 
 std::unordered_set<size_t> BVH::FindIntersectingTriangles() {
-    RecursiveFindIntersections(root_.get(), root_.get());
+    // std::cout << GetRoot()->GetRight()->GetRight() << "__________\n";
+    RecursiveFindIntersections(root_, root_);
     return intersecting_triangles_;
 }
 
-void BVH::RecursiveFindIntersections(const BVHNode* a, const BVHNode* b) {
-    std::cout << a << ", " << b << "\n";
+void BVH::RecursiveFindIntersections(const std::unique_ptr<BVHNode>& a, const std::unique_ptr<BVHNode>& b) {
+    std::cout << "a.get()="<< a.get() << ", b.get()=" << b.get() << "\n";
+    std::cout << "a->GetLeft()=" << a->GetLeft().get() << ", a->GetRight()=" << a->GetRight().get() << "; b->GetLeft()=" << b->GetLeft().get() << ", b->GetRight()=" << b->GetRight().get() << "\n";
     static int f = 0;// NOTE debug
     static int w = 0;// NOTE debug
     std::cout << "f++="<< f++ << "\n";// NOTE debug
@@ -88,9 +90,11 @@ void BVH::RecursiveFindIntersections(const BVHNode* a, const BVHNode* b) {
                 }
             }
         }
+
+        return;
     }
 
-    if (!a->IsLeaf() && !b->IsLeaf()) {// std::cout << "__________________________________________\n"; // NOTE debug
+    if (!a->IsLeaf() && !b->IsLeaf()) { std::cout << "__________________________________________\n"; // NOTE debug
         RecursiveFindIntersections(a->GetLeft(), b->GetLeft());
         RecursiveFindIntersections(a->GetLeft(), b->GetRight());
         RecursiveFindIntersections(a->GetRight(), b->GetLeft());
@@ -99,7 +103,9 @@ void BVH::RecursiveFindIntersections(const BVHNode* a, const BVHNode* b) {
         RecursiveFindIntersections(a->GetLeft(), b);
         RecursiveFindIntersections(a->GetRight(), b);
     } else {
-        // std::cout << b << "\n";
+        // std::cout << &b << "\n"; assert(b);
+        // std::cout << b.get() << "\n"; assert(b);
+
         RecursiveFindIntersections(a, b->GetLeft());
         RecursiveFindIntersections(a, b->GetRight());
     }
@@ -117,9 +123,9 @@ void BVH::Dump(const std::string& file_name) const {
          << "node [shape=record,style = filled,penwidth = 2.5];\n    "
          << "bgcolor = \"#FDFBE4\";\n\n";
 
-    DefiningGraphNodes(file, root_.get());
+    DefiningGraphNodes(file, root_);
     file << "\n";
-    DefiningGraphDependencies(file, root_.get());
+    DefiningGraphDependencies(file, root_);
 
     file << "}\n";
 
@@ -129,14 +135,14 @@ void BVH::Dump(const std::string& file_name) const {
     std::system(dotCmd.c_str());
 }
 
-void BVH::DefiningGraphNodes(std::ofstream& file, BVHNode* node) const {
+void BVH::DefiningGraphNodes(std::ofstream& file, const std::unique_ptr<BVHNode>& node) const {
     static size_t rank = 0;
-    file << "    node_" << node << " [rank=" << rank << ",label=\" { node: " << node
+    file << "    node_" << node.get() << " [rank=" << rank << ",label=\" { node: " << node.get()
          << " | aabb: \\{" << node->GetAABB().min_ << ", " << node->GetAABB().max_ << "\\} | ";
 
 
     if (!node->IsLeaf()) {
-        file << "{ left: " << node->GetLeft() << " | right: " << node->GetRight() << " }";
+        file << "{ left: " << node->GetLeft().get() << " | right: " << node->GetRight().get() << " }";
     } else {
         file << "triangles_.size() = " << node->GetNumberOfTriangles();
     }
@@ -153,21 +159,21 @@ void BVH::DefiningGraphNodes(std::ofstream& file, BVHNode* node) const {
     rank--;
 }
 
-void BVH::DefiningGraphDependencies(std::ofstream& file, BVHNode* node) const {
+void BVH::DefiningGraphDependencies(std::ofstream& file, const std::unique_ptr<BVHNode>& node) const {
     static int flag = 0;
     if (node->GetLeft()) {
         if (flag++) {
-            file << "-> node_" << node->GetLeft() << " ";
+            file << "-> node_" << node->GetLeft().get() << " ";
         } else {
-            file << "    node_" << node << " -> node_" << node->GetLeft() << " ";
+            file << "    node_" << node.get() << " -> node_" << node->GetLeft().get() << " ";
         }
         DefiningGraphDependencies(file, node->GetLeft());
     }
     if (node->GetRight()) {
         if (flag++) {
-            file << "-> node_" << node->GetRight() << " ";
+            file << "-> node_" << node->GetRight().get() << " ";
         } else {
-            file << "    node_" << node << " -> node_" << node->GetRight() << " ";
+            file << "    node_" << node.get() << " -> node_" << node->GetRight().get() << " ";
         }
         DefiningGraphDependencies(file, node->GetRight());
     }

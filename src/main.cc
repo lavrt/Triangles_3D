@@ -22,11 +22,19 @@ int main() {
         triangles.push_back({i, p0, p1, p2});
     }
 
+    std::vector<Triangle> triangles_new = triangles;
+
     BVH tree{std::move(triangles)};
     tree.Build();
     tree.Dump("dump");
-    tree.Build();
     std::unordered_set<size_t> s = tree.FindIntersectingTriangles();
+
+    for (auto d : s) {
+        std::cout << d << ", ";
+    }
+    std::cout << "\n";
+
+    // std::cout << Triangle::Intersect(triangles_new[4], triangles_new[3]);
 
     // __________________________________________________
 

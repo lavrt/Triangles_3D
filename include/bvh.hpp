@@ -18,9 +18,9 @@ private:
 
     size_t GetSplitAxis(const AABB& aabb) const;
     std::unique_ptr<BVHNode> RecursiveBuild(size_t start, size_t end);
-    void RecursiveFindIntersections(const BVHNode* a, const BVHNode* b);
-    void DefiningGraphNodes(std::ofstream& file, BVHNode* node) const;
-    void DefiningGraphDependencies(std::ofstream& file, BVHNode* node) const;
+    void RecursiveFindIntersections(const std::unique_ptr<BVHNode>& a, const std::unique_ptr<BVHNode>& b);
+    void DefiningGraphNodes(std::ofstream& file, const std::unique_ptr<BVHNode>& node) const;
+    void DefiningGraphDependencies(std::ofstream& file, const std::unique_ptr<BVHNode>& node) const;
 
 public:
     BVH(std::vector<Triangle>&& triangles) : triangles_(std::move(triangles)) {}
@@ -28,6 +28,10 @@ public:
     void Build();
     void Dump(const std::string& file_name) const;
     std::unordered_set<size_t> FindIntersectingTriangles();
+
+    const std::unique_ptr<BVHNode>& GetRoot() const {
+        return root_;
+    }
 };
 
 #endif // BVH_HPP

@@ -50,12 +50,12 @@ public:
         return triangles_.size();
     }
 
-    BVHNode* GetLeft() const {
-        return left_.get();
+    const std::unique_ptr<BVHNode>& GetLeft() const {
+        return left_;
     }
 
-    BVHNode* GetRight() const {
-        return right_.get();
+    const std::unique_ptr<BVHNode>& GetRight() const {
+        return right_;
     }
 
     bool IsLeaf() const {

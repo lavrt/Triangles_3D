@@ -20,11 +20,13 @@ private:
     Point3D p2_;
 
     AABB aabb_;
+    Vector3D normal_;
 
 public:
     Triangle(size_t id, Point3D p0, Point3D p1, Point3D p2) 
-        : id_(id), p0_(p0), p1_(p1), p2_(p2),
-          aabb_{
+        : id_(id), p0_(p0), p1_(p1), p2_(p2)
+    {
+        aabb_ = {
             Point3D{
                 std::min({p0.x_, p1.x_, p2.x_}),
                 std::min({p0.y_, p1.y_, p2.y_}),
@@ -35,8 +37,10 @@ public:
                 std::max({p0.y_, p1.y_, p2.y_}),
                 std::max({p0.z_, p1.z_, p2.z_})
             }
-          }
-    {}
+        };
+
+        normal_ = Vector3D::Cross(p1_ - p0_, p2_ - p1_);
+    }
 
     std::pair<double, double> Project(const Vector3D& axis) const;
     bool Contains(const Triangle& other) const;
@@ -47,6 +51,10 @@ public:
 
     AABB GetAABB() const {
         return aabb_;
+    }
+
+    Vector3D GetNormal() const {
+        return normal_;
     }
 
     Point3D operator[](size_t i) const {

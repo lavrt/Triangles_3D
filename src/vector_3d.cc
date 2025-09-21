@@ -12,11 +12,7 @@ Vector3D Vector3D::Normalized() const {
         throw std::runtime_error("Division by zero");
     }
 
-    return Vector3D{
-        x_ / len,
-        y_ / len,
-        z_ / len,
-    };
+    return Vector3D{x_ / len, y_ / len, z_ / len};
 }
 
 double Vector3D::Length() const {

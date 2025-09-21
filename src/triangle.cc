@@ -29,8 +29,8 @@ bool Triangle::Contains(const Triangle& other) const {
 }
 
 PlanesPosition Triangle::RelativePlanesPosition(const Triangle& t1, const Triangle& t2) {
-    Vector3D normal1 = Vector3D::Cross(t1.p1_ - t1.p0_, t1.p2_ - t1.p1_);
-    Vector3D normal2 = Vector3D::Cross(t2.p1_ - t2.p0_, t2.p2_ - t2.p1_);
+    Vector3D normal1 = t1.GetNormal();
+    Vector3D normal2 = t2.GetNormal();
 
     if (!normal1.Collinear(normal2)) {
         return PlanesPosition::Intersect;
@@ -85,13 +85,11 @@ bool Triangle::SAT(const Triangle& a, const Triangle& b) {
     Vector3D a_vectors[] {a.p1_ - a.p0_, a.p2_ - a.p1_, a.p0_ - a.p2_};
     Vector3D b_vectors[] {b.p1_ - b.p0_, b.p2_ - b.p1_, b.p0_ - b.p2_};
 
-    Vector3D a_normal = Vector3D::Cross(a_vectors[0], a_vectors[1]);
-    if (!ProjectionsOverlap(a_normal)) {
+    if (!ProjectionsOverlap(a.GetNormal())) {
         return false;
     }
 
-    Vector3D b_normal = Vector3D::Cross(b_vectors[0], b_vectors[1]);
-    if (!ProjectionsOverlap(b_normal)) {
+    if (!ProjectionsOverlap(b.GetNormal())) {
         return false;
     }
 

@@ -54,18 +54,18 @@ size_t BVH::GetSplitAxis(const AABB& aabb) const {
     }
 }
 
-std::unordered_set<size_t> BVH::FindIntersectingTriangles() {
+std::set<size_t> BVH::FindIntersectingTriangles() {
     // std::cout << GetRoot()->GetRight()->GetRight() << "__________\n";
     RecursiveFindIntersections(root_, root_);
     return intersecting_triangles_;
 }
 
 void BVH::RecursiveFindIntersections(const std::unique_ptr<BVHNode>& a, const std::unique_ptr<BVHNode>& b) {
-    std::cout << "a.get()="<< a.get() << ", b.get()=" << b.get() << "\n";
-    std::cout << "a->GetLeft()=" << a->GetLeft().get() << ", a->GetRight()=" << a->GetRight().get() << "; b->GetLeft()=" << b->GetLeft().get() << ", b->GetRight()=" << b->GetRight().get() << "\n";
-    static int f = 0;// NOTE debug
-    static int w = 0;// NOTE debug
-    std::cout << "f++="<< f++ << "\n";// NOTE debug
+    // std::cout << "a.get()="<< a.get() << ", b.get()=" << b.get() << "\n";
+    // std::cout << "a->GetLeft()=" << a->GetLeft().get() << ", a->GetRight()=" << a->GetRight().get() << "; b->GetLeft()=" << b->GetLeft().get() << ", b->GetRight()=" << b->GetRight().get() << "\n";
+    // static int f = 0;// NOTE debug
+    // static int w = 0;// NOTE debug
+    // std::cout << "f++="<< f++ << "\n";// NOTE debug
     // std::cout << "b__________________________________________\n"; // NOTE debug
     // assert(b);
     // b->GetAABB();
@@ -73,7 +73,7 @@ void BVH::RecursiveFindIntersections(const std::unique_ptr<BVHNode>& a, const st
     if (!AABB::Intersects(a->GetAABB(), b->GetAABB())) {
         return;
     }
-    std::cout << "w++=" << w++ << "\n";// NOTE debug
+    // std::cout << "w++=" << w++ << "\n";// NOTE debug
     // std::cout << "__________________________________________\n"; // NOTE debug
     if (a->IsLeaf() && b->IsLeaf()) {
         std::span<Triangle> a_triangles = a->GetTriangles();
@@ -94,7 +94,7 @@ void BVH::RecursiveFindIntersections(const std::unique_ptr<BVHNode>& a, const st
         return;
     }
 
-    if (!a->IsLeaf() && !b->IsLeaf()) { std::cout << "__________________________________________\n"; // NOTE debug
+    if (!a->IsLeaf() && !b->IsLeaf()) { 
         RecursiveFindIntersections(a->GetLeft(), b->GetLeft());
         RecursiveFindIntersections(a->GetLeft(), b->GetRight());
         RecursiveFindIntersections(a->GetRight(), b->GetLeft());
@@ -103,9 +103,6 @@ void BVH::RecursiveFindIntersections(const std::unique_ptr<BVHNode>& a, const st
         RecursiveFindIntersections(a->GetLeft(), b);
         RecursiveFindIntersections(a->GetRight(), b);
     } else {
-        // std::cout << &b << "\n"; assert(b);
-        // std::cout << b.get() << "\n"; assert(b);
-
         RecursiveFindIntersections(a, b->GetLeft());
         RecursiveFindIntersections(a, b->GetRight());
     }

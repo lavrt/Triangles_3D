@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include <unordered_set>
+#include <set>
 
 #include "point_3d.hpp"
 #include "triangle.hpp"
@@ -27,12 +27,11 @@ int main() {
     BVH tree{std::move(triangles)};
     tree.Build();
     tree.Dump("dump");
-    std::unordered_set<size_t> s = tree.FindIntersectingTriangles();
+    std::set<size_t> s = tree.FindIntersectingTriangles();
 
     for (auto d : s) {
-        std::cout << d << ", ";
+        std::cout << d << "\n";
     }
-    std::cout << "\n";
 
     // std::cout << Triangle::Intersect(triangles_new[4], triangles_new[3]);
 

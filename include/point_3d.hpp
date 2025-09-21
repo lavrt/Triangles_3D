@@ -1,5 +1,4 @@
-#ifndef POINT_3D_HPP
-#define POINT_3D_HPP
+#pragma once
 
 #include <iostream>
 
@@ -16,5 +15,3 @@ struct Point3D {
 };
 
 std::ostream& operator<<(std::ostream& os, const Point3D& point);
-
-#endif // POINT_3D_HPP

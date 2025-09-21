@@ -2,6 +2,20 @@
 
 #include <triangle.hpp>
 
+AABB::AABB() {
+    min_ = {
+        std::numeric_limits<double>::max(),
+        std::numeric_limits<double>::max(),
+        std::numeric_limits<double>::max()
+    };
+    
+    max_ = {
+        std::numeric_limits<double>::lowest(),
+        std::numeric_limits<double>::lowest(),
+        std::numeric_limits<double>::lowest()
+    };
+}
+
 AABB AABB::UniteAABB(std::span<Triangle> triangles) {
     AABB aabb;
 

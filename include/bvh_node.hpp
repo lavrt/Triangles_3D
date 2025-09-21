@@ -1,5 +1,4 @@
-#ifndef BVH_NODE_HPP
-#define BVH_NODE_HPP
+#pragma once
 
 #include <span>
 #include <vector>
@@ -62,5 +61,3 @@ public:
         return is_leaf_;
     }
 };
-
-#endif // BVH_NODE_HPP

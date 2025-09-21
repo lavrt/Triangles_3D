@@ -1,5 +1,4 @@
-#ifndef BVH_HPP
-#define BVH_HPP
+#pragma once
 
 #include <set>
 #include <memory>
@@ -33,5 +32,3 @@ public:
         return root_;
     }
 };
-
-#endif // BVH_HPP

@@ -3,6 +3,36 @@
 #include <array>
 
 #include "segment.hpp"
+#include "constants.hpp"
+
+Triangle::Triangle(size_t id, Point3D p0, Point3D p1, Point3D p2) 
+    : id_(id), p0_(p0), p1_(p1), p2_(p2)
+{
+    aabb_ = {
+        Point3D{
+            std::min({p0.x_, p1.x_, p2.x_}),
+            std::min({p0.y_, p1.y_, p2.y_}),
+            std::min({p0.z_, p1.z_, p2.z_})
+        },
+        Point3D{
+            std::max({p0.x_, p1.x_, p2.x_}),
+            std::max({p0.y_, p1.y_, p2.y_}),
+            std::max({p0.z_, p1.z_, p2.z_})
+        }
+    };
+
+    normal_ = Vector3D::Cross(p1_ - p0_, p2_ - p1_);
+}
+
+Point3D Triangle::operator[](size_t i) const {
+    switch (i) {
+        case 0: return p0_;
+        case 1: return p1_;
+        case 2: return p2_;
+        
+        default: throw std::runtime_error("");
+    }
+}
 
 bool Triangle::Contains(const Triangle& other) const {
     Segment edges_of_big_triangle[] {
@@ -45,7 +75,7 @@ PlanesPosition Triangle::RelativePlanesPosition(const Triangle& t1, const Triang
         ? std::abs(d1 - d2)
         : std::abs(d1 + d2);
 
-    return distance_between_planes < std::numeric_limits<double>::epsilon()
+    return distance_between_planes < Constants::kEpsilon
         ? PlanesPosition::Coincide
         : PlanesPosition::Parallel;
 }
@@ -71,15 +101,15 @@ bool Triangle::Intersect(const Triangle& t1, const Triangle& t2) {
 
 bool Triangle::SAT(const Triangle& a, const Triangle& b) {
     auto ProjectionsOverlap = [a, b](const Vector3D& axis) {
-        if (axis.Length() < std::numeric_limits<double>::epsilon()) {
+        if (axis.Length() < Constants::kEpsilon) {
             return true;
         }
 
         auto [a_min, a_max] = a.Project(axis);
         auto [b_min, b_max] = b.Project(axis);
 
-        return !(a_max < b_min - std::numeric_limits<double>::epsilon()
-            || b_max < a_min - std::numeric_limits<double>::epsilon());
+        return !(a_max < b_min - Constants::kEpsilon
+            || b_max < a_min - Constants::kEpsilon);
     };
 
     Vector3D a_vectors[] {a.p1_ - a.p0_, a.p2_ - a.p1_, a.p0_ - a.p2_};

@@ -11,6 +11,7 @@ set(SOURCES
     src/point_3d.cc
     src/vector_3d.cc
     src/triangle.cc
+    src/segment.cc
 )
 
 add_executable(triangles_3d ${SOURCES})

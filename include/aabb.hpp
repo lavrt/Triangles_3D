@@ -1,5 +1,4 @@
-#ifndef AABB_HPP
-#define AABB_HPP
+#pragma once
 
 #include <span>
 #include <limits>
@@ -12,26 +11,12 @@ struct AABB {
     Point3D min_;
     Point3D max_;
 
-    AABB(Point3D min, Point3D max)
-        : min_(min), max_(max) {}
-
-    AABB() :
-        min_({
-            std::numeric_limits<double>::max(),
-            std::numeric_limits<double>::max(),
-            std::numeric_limits<double>::max()
-        }),
-        max_({
-            std::numeric_limits<double>::lowest(),
-            std::numeric_limits<double>::lowest(),
-            std::numeric_limits<double>::lowest()
-        }) {}
-
+    AABB();
+    AABB(Point3D min, Point3D max) : min_(min), max_(max) {}
+    
     void Expand(const AABB& other);
     Point3D GetCenter() const;
-    static bool Intersects(const AABB& a, const AABB& b);
 
+    static bool Intersects(const AABB& a, const AABB& b);
     static AABB UniteAABB(std::span<Triangle> triangles);
 };
-
-#endif // AABB_HPP

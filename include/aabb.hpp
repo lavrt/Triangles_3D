@@ -3,13 +3,13 @@
 #include <span>
 #include <limits>
 
-#include "point_3d.hpp"
+#include "point.hpp"
 
 class Triangle;
 
 struct AABB {
-    Point3D min;
-    Point3D max;
+    Point min;
+    Point max;
 
     AABB() {
         min = {
@@ -25,10 +25,10 @@ struct AABB {
         };
     }
 
-    AABB(Point3D min, Point3D max) : min(min), max(max) {}
+    AABB(Point min, Point max) : min(min), max(max) {}
     
     void Expand(const AABB& other);
-    Point3D GetCenter() const;
+    Point GetCenter() const;
 
     static bool Intersects(const AABB& a, const AABB& b);
     static AABB UniteAABB(std::span<Triangle> triangles);

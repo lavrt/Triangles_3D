@@ -8,8 +8,8 @@ set(SOURCES
     src/main.cc
     src/aabb.cc
     src/bvh.cc
-    src/point_3d.cc
-    src/vector_3d.cc
+    src/point.cc
+    src/vector.cc
     src/triangle.cc
     src/segment.cc
 )

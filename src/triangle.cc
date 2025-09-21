@@ -5,7 +5,7 @@
 #include "segment.hpp"
 #include "constants.hpp"
 
-Point3D Triangle::operator[](size_t i) const {
+Point Triangle::operator[](size_t i) const {
     switch (i) {
         case 0: return p0_;
         case 1: return p1_;
@@ -40,17 +40,17 @@ bool Triangle::Contains(const Triangle& other) const {
 }
 
 PlanesPosition Triangle::RelativePlanesPosition(const Triangle& t1, const Triangle& t2) {
-    Vector3D normal1 = t1.GetNormal();
-    Vector3D normal2 = t2.GetNormal();
+    Vector normal1 = t1.GetNormal();
+    Vector normal2 = t2.GetNormal();
 
     if (!normal1.Collinear(normal2)) {
         return PlanesPosition::Intersect;
     }
 
-    double d1 = -Vector3D::Dot(normal1, t1.p0_.AsVector());
-    double d2 = -Vector3D::Dot(normal2, t2.p0_.AsVector());
+    double d1 = -Vector::Dot(normal1, t1.p0_.AsVector());
+    double d2 = -Vector::Dot(normal2, t2.p0_.AsVector());
 
-    bool normals_same_direction = Vector3D::Dot(normal1, normal2) > 0;
+    bool normals_same_direction = Vector::Dot(normal1, normal2) > 0;
 
     double distance_between_planes = normals_same_direction
         ? std::abs(d1 - d2)
@@ -81,7 +81,7 @@ bool Triangle::Intersect(const Triangle& t1, const Triangle& t2) {
 }
 
 bool Triangle::SAT(const Triangle& a, const Triangle& b) {
-    auto ProjectionsOverlap = [a, b](const Vector3D& axis) {
+    auto ProjectionsOverlap = [a, b](const Vector& axis) {
         if (axis.Length() < Constants::kEpsilon) {
             return true;
         }
@@ -93,8 +93,8 @@ bool Triangle::SAT(const Triangle& a, const Triangle& b) {
             || b_max < a_min - Constants::kEpsilon);
     };
 
-    Vector3D a_vectors[] {a.p1_ - a.p0_, a.p2_ - a.p1_, a.p0_ - a.p2_};
-    Vector3D b_vectors[] {b.p1_ - b.p0_, b.p2_ - b.p1_, b.p0_ - b.p2_};
+    Vector a_vectors[] {a.p1_ - a.p0_, a.p2_ - a.p1_, a.p0_ - a.p2_};
+    Vector b_vectors[] {b.p1_ - b.p0_, b.p2_ - b.p1_, b.p0_ - b.p2_};
 
     if (!ProjectionsOverlap(a.GetNormal())) {
         return false;
@@ -105,7 +105,7 @@ bool Triangle::SAT(const Triangle& a, const Triangle& b) {
     }
 
     for (size_t i = 0; i != 9; ++i) {
-        if (!ProjectionsOverlap(Vector3D::Cross(a_vectors[i / 3], b_vectors[i % 3]))) {
+        if (!ProjectionsOverlap(Vector::Cross(a_vectors[i / 3], b_vectors[i % 3]))) {
             return false;
         }
     }
@@ -113,13 +113,13 @@ bool Triangle::SAT(const Triangle& a, const Triangle& b) {
     return true;
 }
 
-std::pair<double, double> Triangle::Project(const Vector3D& axis) const {
-    Vector3D normalized_axis = axis.Normalized();
+std::pair<double, double> Triangle::Project(const Vector& axis) const {
+    Vector normalized_axis = axis.Normalized();
 
     std::array<double, 3> projections {
-        Vector3D::Dot(p0_.AsVector(), normalized_axis),
-        Vector3D::Dot(p1_.AsVector(), normalized_axis),
-        Vector3D::Dot(p2_.AsVector(), normalized_axis),
+        Vector::Dot(p0_.AsVector(), normalized_axis),
+        Vector::Dot(p1_.AsVector(), normalized_axis),
+        Vector::Dot(p2_.AsVector(), normalized_axis),
     };
 
     return {

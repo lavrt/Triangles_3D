@@ -5,8 +5,6 @@
 
 #include "point.hpp"
 
-class Triangle;
-
 struct AABB {
     Point min;
     Point max;
@@ -31,5 +29,4 @@ struct AABB {
     Point GetCenter() const;
 
     static bool Intersects(const AABB& a, const AABB& b);
-    static AABB UniteAABB(std::span<Triangle> triangles);
 };

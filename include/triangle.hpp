@@ -39,6 +39,7 @@ public:
         };
     }
 
+    static AABB ComputeBoundingBox(std::span<Triangle> triangles);
     static bool Intersect(const Triangle& tr1, const Triangle& tr2);
     static bool SAT(const Triangle& t1, const Triangle& t2);
     static PlanesPosition RelativePlanesPosition(const Triangle& t1, const Triangle& t2);

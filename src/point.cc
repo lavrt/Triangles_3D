@@ -6,7 +6,7 @@ double Point::operator[](size_t axis) const {
         case 1: return y;
         case 2: return z;
 
-        default: throw std::runtime_error("Incorrect access to fields of the class: Point");
+        default: throw std::out_of_range("Incorrect access to fields of the class: Point");
     }
 }
 

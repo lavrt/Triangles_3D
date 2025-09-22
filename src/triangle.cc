@@ -15,6 +15,16 @@ Point Triangle::operator[](size_t i) const {
     }
 }
 
+AABB Triangle::ComputeBoundingBox(std::span<Triangle> triangles) {
+    AABB aabb;
+
+    for (const auto& triangle : triangles) {
+        aabb.Expand(triangle.GetAABB());
+    }
+
+    return aabb;
+}
+
 bool Triangle::Contains(const Triangle& other) const {
     Segment edges_of_big_triangle[] {
         {p0_, p1_},

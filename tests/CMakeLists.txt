@@ -3,6 +3,7 @@ find_package(GTest REQUIRED)
 set(SOURCES
     test_main.cc
     test_vector.cc ../src/vector.cc
+    test_point.cc ../src/point.cc
 )
 
 add_executable(run_tests ${SOURCES})

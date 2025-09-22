@@ -12,7 +12,7 @@ std::unique_ptr<BVHNode> BVH::RecursiveBuild(size_t start, size_t end) {
 
     auto node = std::make_unique<BVHNode>();
 
-    AABB aabb = AABB::UniteAABB(triangles);
+    AABB aabb = Triangle::ComputeBoundingBox(triangles);
     node->SetAABB(aabb);
 
     if (end - start <= kMaxTrianglesPerLeaf) {

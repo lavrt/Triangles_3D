@@ -55,7 +55,6 @@ size_t BVH::GetSplitAxis(const AABB& aabb) const {
 }
 
 std::set<size_t> BVH::FindIntersectingTriangles() {
-    // std::cout << GetRoot()->GetRight()->GetRight() << "__________\n";
     RecursiveFindIntersections(root_, root_);
     return intersecting_triangles_;
 }

@@ -23,7 +23,7 @@ private:
 
 public:
     Triangle(size_t id, Point p0, Point p1, Point p2) 
-        : id_(id), p0_(p0), p1_(p1), p2_(p2)
+        : id_(id), p0_(p0), p1_(p1), p2_(p2), normal_(Vector::Cross(p1_ - p0_, p2_ - p1_)) // NOTE
     {
         aabb_ = {
             Point{
@@ -37,8 +37,6 @@ public:
                 std::max({p0.z, p1.z, p2.z})
             }
         };
-
-        normal_ = Vector::Cross(p1_ - p0_, p2_ - p1_);
     }
 
     static bool Intersect(const Triangle& tr1, const Triangle& tr2);

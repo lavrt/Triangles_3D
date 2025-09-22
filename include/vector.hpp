@@ -5,6 +5,8 @@ struct Vector {
     double y;
     double z;
 
+    Vector(double x, double y, double z) : x(x), y(y), z(z) {}
+
     static Vector Cross(const Vector& a, const Vector& b);
     static double Dot(const Vector& a, const Vector& b);
 

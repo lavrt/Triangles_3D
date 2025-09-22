@@ -11,7 +11,7 @@ Vector Vector::Normalized() const {
     double len = this->Length();
 
     if (len < Constants::kEpsilon) {
-        throw std::runtime_error("An attempt to normalize the null vector");
+        throw std::invalid_argument("An attempt to normalize the null vector");
     }
 
     return Vector{x / len, y / len, z / len};

@@ -1,10 +1,19 @@
-cmake_minimum_required(VERSION 3.11)
-project(test_triangles_3d)
-
-set(CMAKE_CXX_STANDARD 20)
-
 find_package(GTest REQUIRED)
-include_directories(${GTEST_INCLUDE_DIRS})
 
-add_executable(test_vector test_vector.cc)
-target_link_libraries(test_vector GTest::gtest GTest::gtest_main)
+set(SOURCES
+    test_main.cc
+    test_vector.cc ../src/vector.cc
+)
+
+add_executable(run_tests ${SOURCES})
+
+target_include_directories(run_tests
+    PUBLIC
+        ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(run_tests GTest::gtest GTest::gtest_main)
+
+include(GoogleTest)
+
+gtest_discover_tests(run_tests)

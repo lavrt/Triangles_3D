@@ -4,6 +4,8 @@ project(triangles)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# triangles_3d -------------------------------
+
 set(SOURCES
     src/main.cc
     src/aabb.cc
@@ -20,3 +22,8 @@ target_include_directories(triangles_3d
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
+
+# tests --------------------------------------
+
+enable_testing()
+add_subdirectory(tests)

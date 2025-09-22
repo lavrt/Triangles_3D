@@ -35,7 +35,7 @@ bool Triangle::Contains(const Triangle& other) const {
         number_of_positive += d > 0;
         number_of_negative += d < 0;
     }
-
+    // NOTE можно написать получше, необязательно directions[]
     return number_of_positive == directions.size() || number_of_negative == directions.size();
 }
 

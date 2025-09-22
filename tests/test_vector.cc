@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "vector.hpp"
-
 #include <cmath>
+
+#include "vector.hpp"
 
 class VectorTest : public ::testing::Test {
 protected:

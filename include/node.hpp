@@ -3,6 +3,7 @@
 #include <span>
 #include <vector>
 #include <memory>
+#include <stdexcept>
 
 #include "aabb.hpp"
 #include "triangle.hpp"
@@ -22,12 +23,24 @@ public:
         aabb_ = aabb;
     }
 
-    void SetTriangles(std::span<Triangle> triangles) noexcept {
+    void SetTriangles(std::span<Triangle> triangles) {
+        if (left_ != nullptr || right_ != nullptr) {
+            throw std::runtime_error(
+                "An attempt to change the node type from a leaf node to an internal node"
+            );
+        }
+
         is_leaf_ = true;
         triangles_ = triangles;
     }
 
     void SetLeft(std::unique_ptr<BVHNode> left) {
+        if (triangles_.size() != 0) {
+            throw std::runtime_error(
+                "An attempt to change the node type from an internal node to a leaf node"
+            );
+        }
+
         is_leaf_ = false;
         left_ = std::move(left);
     }

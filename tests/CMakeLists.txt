@@ -1,12 +1,13 @@
 find_package(GTest REQUIRED)
 
 set(SOURCES
-    test_main.cc
     test_triangle.cc ../src/triangle.cc
     test_segment.cc ../src/segment.cc
     test_vector.cc ../src/vector.cc
     test_point.cc ../src/point.cc
     test_aabb.cc ../src/aabb.cc
+    test_node.cc
+    test_main.cc
 )
 
 add_executable(run_tests ${SOURCES})

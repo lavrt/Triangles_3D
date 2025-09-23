@@ -5,7 +5,7 @@
 #include <vector>
 #include <fstream>
 
-#include "bvh_node.hpp"
+#include "node.hpp"
 
 class BVH {
 private:

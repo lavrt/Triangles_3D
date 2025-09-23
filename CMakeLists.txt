@@ -7,13 +7,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # triangles_3d -------------------------------
 
 set(SOURCES
+    src/bvh.cc
     src/main.cc
     src/aabb.cc
-    src/bvh.cc
     src/point.cc
     src/vector.cc
-    src/triangle.cc
     src/segment.cc
+    src/triangle.cc
 )
 
 add_executable(triangles_3d ${SOURCES})

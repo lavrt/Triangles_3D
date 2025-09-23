@@ -80,7 +80,7 @@ bool Triangle::Intersect(const Triangle& t1, const Triangle& t2) {
         Segment edges1[] {{t1.p0_, t1.p1_}, {t1.p0_, t1.p2_}, {t1.p1_, t1.p2_}};
         Segment edges2[] {{t2.p0_, t2.p1_}, {t2.p0_, t2.p2_}, {t2.p1_, t2.p2_}};
 
-        if (Segment::Intersect(edges1, edges2) || t1.Contains(t2) || t2.Contains(t1)) {
+        if (Segment::IntersectInPlane(edges1, edges2) || t1.Contains(t2) || t2.Contains(t1)) {
             return true;
         }
 

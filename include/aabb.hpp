@@ -12,8 +12,8 @@ struct AABB {
 
     AABB(Point min, Point max) : min(min), max(max) {}
     
+    static bool Intersects(const AABB& a, const AABB& b);
+
     void Expand(const AABB& other);
     Point GetCenter() const;
-
-    static bool Intersects(const AABB& a, const AABB& b);
 };

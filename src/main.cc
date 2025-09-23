@@ -15,7 +15,6 @@ int main() {
         return 1;
     }
 
-
     std::vector<Triangle> triangles;
     triangles.reserve(n);
 
@@ -38,7 +37,6 @@ int main() {
     tree.Build();
     
     std::set<size_t> answer = tree.FindIntersectingTriangles();
-
     for (size_t id : answer) {
         std::cout << id << "\n";
     }

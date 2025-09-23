@@ -105,73 +105,58 @@ TEST_F(SegmentTest, OnSegmentPrecision) {
 // Intersect ---------------------------------------------------------------------------------------
 
 TEST_F(SegmentTest, IntersectCrossingSegments) {
-    // Пересекающиеся отрезки (крест-накрест)
-    EXPECT_TRUE(Segment::Intersect(seg_horizontal, seg_vertical));
+    EXPECT_TRUE(Segment::IntersectInPlane(seg_horizontal, seg_vertical));
 }
 
 TEST_F(SegmentTest, IntersectParallelSegments) {
-    // Параллельные непересекающиеся отрезки
     Segment parallel{Point(0, 1, 0), Point(2, 1, 0)};
-    EXPECT_FALSE(Segment::Intersect(seg_horizontal, parallel));
+    EXPECT_FALSE(Segment::IntersectInPlane(seg_horizontal, parallel));
 }
 
 TEST_F(SegmentTest, IntersectCollinearOverlapping) {
-    // Коллинеарные перекрывающиеся отрезки
     Segment overlapping{Point(1, 0, 0), Point(3, 0, 0)};
-    EXPECT_TRUE(Segment::Intersect(seg_horizontal, overlapping));
+    EXPECT_TRUE(Segment::IntersectInPlane(seg_horizontal, overlapping));
 }
 
 TEST_F(SegmentTest, IntersectCollinearTouching) {
-    // Коллинеарные касающиеся отрезки
     Segment touching{Point(2, 0, 0), Point(4, 0, 0)};
-    EXPECT_TRUE(Segment::Intersect(seg_horizontal, touching));
+    EXPECT_TRUE(Segment::IntersectInPlane(seg_horizontal, touching));
 }
 
 TEST_F(SegmentTest, IntersectCollinearSeparated) {
-    // Коллинеарные разделенные отрезки
     Segment separated{Point(3, 0, 0), Point(5, 0, 0)};
-    EXPECT_FALSE(Segment::Intersect(seg_horizontal, separated));
+    EXPECT_FALSE(Segment::IntersectInPlane(seg_horizontal, separated));
 }
 
 TEST_F(SegmentTest, IntersectEndpointsTouching) {
-    // Отрезки касаются концами
     Segment touching_end{Point(2, 0, 0), Point(2, 2, 0)};
-    EXPECT_TRUE(Segment::Intersect(seg_horizontal, touching_end));
+    EXPECT_TRUE(Segment::IntersectInPlane(seg_horizontal, touching_end));
 }
 
 TEST_F(SegmentTest, IntersectSharedEndpoint) {
-    // Отрезки имеют общий конец
     Segment shared_end{Point(0, 0, 0), Point(0, 2, 0)};
-    EXPECT_TRUE(Segment::Intersect(seg_horizontal, shared_end));
+    EXPECT_TRUE(Segment::IntersectInPlane(seg_horizontal, shared_end));
 }
 
 TEST_F(SegmentTest, IntersectDegenerateSegments) {
-    // Вырожденные отрезки
     Segment deg1{Point(1, 0, 0), Point(1, 0, 0)};
     Segment deg2{Point(1, 0, 0), Point(1, 0, 0)};
     
-    // Две точки в одном месте
-    EXPECT_TRUE(Segment::Intersect(deg1, deg2));
+    EXPECT_TRUE(Segment::IntersectInPlane(deg1, deg2));
     
-    // Точка на отрезке
-    EXPECT_TRUE(Segment::Intersect(deg1, seg_horizontal));
+    EXPECT_TRUE(Segment::IntersectInPlane(deg1, seg_horizontal));
     
-    // Точка вне отрезка
     Segment deg_outside{Point(5, 5, 5), Point(5, 5, 5)};
-    EXPECT_FALSE(Segment::Intersect(deg_outside, seg_horizontal));
+    EXPECT_FALSE(Segment::IntersectInPlane(deg_outside, seg_horizontal));
 }
 
 TEST_F(SegmentTest, Intersect3DSegments) {
     Segment seg1{Point(0, 0, 0), Point(2, 2, 0)};
     Segment seg2{Point(0, 2, 0), Point(2, 0, 0)};
-    EXPECT_TRUE(Segment::Intersect(seg1, seg2));
-    
-    // Segment seg3{Point(0, 0, 0), Point(2, 2, 0)};
-    // Segment seg4{Point(0, 0, 1), Point(2, 2, 1)};
-    // EXPECT_FALSE(Segment::Intersect(seg3, seg4)); // FIXME
+    EXPECT_TRUE(Segment::IntersectInPlane(seg1, seg2));
 }
 
 TEST_F(SegmentTest, IntersectCommutative) {
-    EXPECT_EQ(Segment::Intersect(seg_horizontal, seg_vertical),
-              Segment::Intersect(seg_vertical, seg_horizontal));
+    EXPECT_EQ(Segment::IntersectInPlane(seg_horizontal, seg_vertical),
+              Segment::IntersectInPlane(seg_vertical, seg_horizontal));
 }

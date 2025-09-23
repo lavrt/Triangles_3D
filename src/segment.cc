@@ -2,7 +2,7 @@
 
 #include "constants.hpp"
 
-bool Segment::Intersect(const Segment& s1, const Segment& s2) {
+bool Segment::IntersectInPlane(const Segment& s1, const Segment& s2) {
     double d1 = s2.Direction(s1.p0);
     double d2 = s2.Direction(s1.p1);
     double d3 = s1.Direction(s2.p0);
@@ -24,10 +24,10 @@ bool Segment::Intersect(const Segment& s1, const Segment& s2) {
     return false;
 }
 
-bool Segment::Intersect(std::span<Segment> edges1, std::span<Segment> edges2) {
+bool Segment::IntersectInPlane(std::span<Segment> edges1, std::span<Segment> edges2) {
     for (const Segment& s1 : edges1) {
         for (const Segment& s2 : edges2) {
-            if (Intersect(s1, s2)) {
+            if (IntersectInPlane(s1, s2)) {
                 return true;
             }
         }

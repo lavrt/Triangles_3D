@@ -6,6 +6,7 @@ set(SOURCES
     test_vector.cc ../src/vector.cc
     test_point.cc ../src/point.cc
     test_aabb.cc ../src/aabb.cc
+    test_bvh.cc ../src/bvh.cc
     test_node.cc
     test_main.cc
 )

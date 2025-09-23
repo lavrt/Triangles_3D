@@ -11,7 +11,7 @@ class BVH {
 private:
     static constexpr int kMaxTrianglesPerLeaf = 3;
 
-    std::unique_ptr<BVHNode> root_;
+    std::unique_ptr<BVHNode> root_ = nullptr;
     std::vector<Triangle> triangles_;
     std::set<size_t> intersecting_triangles_;
 

@@ -98,6 +98,10 @@ void BVH::RecursiveFindIntersections(const std::unique_ptr<BVHNode>& a, const st
 }
 
 void BVH::Dump(const std::string& file_name) const {
+    if (root_ == nullptr) {
+        throw std::runtime_error("Empty tree dump");
+    }
+
     std::ofstream file(file_name + ".gv");
     if (!file) {
         throw std::runtime_error("Cannot open file: " + file_name + ".gv");

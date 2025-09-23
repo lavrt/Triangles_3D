@@ -10,6 +10,12 @@ int main() {
     size_t n = 0;
     std::cin >> n;
 
+    if (!std::cin.good()) {
+        std::cerr << "Input error: expected number of triangles\n";
+        return 1;
+    }
+
+
     std::vector<Triangle> triangles;
     triangles.reserve(n);
 
@@ -18,49 +24,24 @@ int main() {
         std::cin >> p0.x >> p0.y >> p0.z
                  >> p1.x >> p1.y >> p1.z
                  >> p2.x >> p2.y >> p2.z;
+
+        if (!std::cin.good()) {
+            std::cerr << "Input error on the triangle " << i << "\n";
+            return 1;
+        }
                 
         triangles.push_back({i, p0, p1, p2});
     }
 
     BVH tree{std::move(triangles)};
+
     tree.Build();
-    tree.Dump("dump");
-    std::set<size_t> s = tree.FindIntersectingTriangles();
+    
+    std::set<size_t> answer = tree.FindIntersectingTriangles();
 
-    for (auto d : s) {
-        std::cout << d << "\n";
+    for (size_t id : answer) {
+        std::cout << id << "\n";
     }
-
-    // __________________________________________________
-
-    // Triangle t1 {1,
-    //     {10, 10, 0},
-    //     {0, 10, 0},
-    //     {0, 0, 0},
-    // };
-
-    // Triangle t2 {2,
-    //     {8, 9, 0},
-    //     {1, 9, 0},
-    //     {1, 2, 0},
-    // };
-
-    // __________________________________________________
-
-    // Triangle t1 {1,
-    //     {0, -2, 0},
-    //     {2, 0, 0},
-    //     {-0.92, 0.8, 3.13},
-    // };
-
-    // Triangle t2 {2,
-    //     {0, 3, 0},
-    //     {-3, 0, 0},
-    //     {0, 0, 2},
-    // };
-
-    // std::cout << (Triangle::RelativePlanesPosition(t1, t2) == PlanesPosition::Coincide); 
-    // std::cout << Triangle::Intersect(t1, t2);
 
     return 0;
 }

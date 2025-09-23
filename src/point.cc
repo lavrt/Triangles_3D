@@ -11,11 +11,7 @@ double Point::operator[](size_t axis) const {
 }
 
 Vector Point::operator-(const Point& other) const {
-    return Vector{
-        x - other.x,
-        y - other.y,
-        z - other.z
-    };
+    return Vector{x - other.x, y - other.y, z - other.z};
 }
 
 Vector Point::AsVector() const {

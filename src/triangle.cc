@@ -26,27 +26,20 @@ AABB Triangle::ComputeBoundingBox(std::span<Triangle> triangles) {
 }
 
 bool Triangle::Contains(const Triangle& other) const {
-    Segment edges_of_big_triangle[] {
-        {p0_, p1_},
-        {p1_, p2_},
-        {p2_, p0_},
-    };
+    static constexpr size_t kNumberOfChecks = 9;
 
-    std::array<double, 9> directions;
-
-    for (size_t i = 0; i != 9; ++i) {
-        directions[i] = edges_of_big_triangle[i / 3].Direction(other[i % 3]);
-    }
+    Segment edges_of_big_triangle[] {{p0_, p1_}, {p1_, p2_}, {p2_, p0_}};
 
     size_t number_of_positive = 0;
     size_t number_of_negative = 0;
 
-    for (double d : directions) {
-        number_of_positive += d > 0;
-        number_of_negative += d < 0;
+    for (size_t i = 0; i != kNumberOfChecks; ++i) {
+        edges_of_big_triangle[i / 3].Direction(other[i % 3]) > 0
+            ? ++number_of_positive
+            : ++number_of_negative;
     }
-    // NOTE можно написать получше, необязательно directions[]
-    return number_of_positive == directions.size() || number_of_negative == directions.size();
+
+    return number_of_positive == kNumberOfChecks || number_of_negative == kNumberOfChecks;
 }
 
 PlanesPosition Triangle::RelativePlanesPosition(const Triangle& t1, const Triangle& t2) {
@@ -72,11 +65,13 @@ PlanesPosition Triangle::RelativePlanesPosition(const Triangle& t1, const Triang
 }
 
 bool Triangle::Intersect(const Triangle& t1, const Triangle& t2) {
-    if (RelativePlanesPosition(t1, t2) == PlanesPosition::Parallel) {
+    auto relative_planes_position = RelativePlanesPosition(t1, t2);
+
+    if (relative_planes_position == PlanesPosition::Parallel) {
         return false;
     }
 
-    if (RelativePlanesPosition(t1, t2) == PlanesPosition::Coincide) {
+    if (relative_planes_position == PlanesPosition::Coincide) {
         Segment edges1[] {{t1.p0_, t1.p1_}, {t1.p0_, t1.p2_}, {t1.p1_, t1.p2_}};
         Segment edges2[] {{t2.p0_, t2.p1_}, {t2.p0_, t2.p2_}, {t2.p1_, t2.p2_}};
 
@@ -99,8 +94,7 @@ bool Triangle::SAT(const Triangle& a, const Triangle& b) {
         auto [a_min, a_max] = a.Project(axis);
         auto [b_min, b_max] = b.Project(axis);
 
-        return !(a_max < b_min - Constants::kEpsilon
-            || b_max < a_min - Constants::kEpsilon);
+        return !(a_max < b_min - Constants::kEpsilon || b_max < a_min - Constants::kEpsilon);
     };
 
     Vector a_vectors[] {a.p1_ - a.p0_, a.p2_ - a.p1_, a.p0_ - a.p2_};

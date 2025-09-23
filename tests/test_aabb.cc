@@ -1,9 +1,8 @@
 #include <gtest/gtest.h>
 
-#include <limits>
-
 #include "aabb.hpp"
 #include "point.hpp"
+#include "constants.hpp"
 
 class AABBTest : public ::testing::Test {
 protected:
@@ -20,13 +19,13 @@ protected:
 TEST_F(AABBTest, DefaultConstructorInitializesToExtremes) {
     AABB aabb;
     
-    EXPECT_DOUBLE_EQ(aabb.min.x, std::numeric_limits<double>::max());
-    EXPECT_DOUBLE_EQ(aabb.min.y, std::numeric_limits<double>::max());
-    EXPECT_DOUBLE_EQ(aabb.min.z, std::numeric_limits<double>::max());
+    EXPECT_DOUBLE_EQ(aabb.min.x, Constants::kMaxDouble);
+    EXPECT_DOUBLE_EQ(aabb.min.y, Constants::kMaxDouble);
+    EXPECT_DOUBLE_EQ(aabb.min.z, Constants::kMaxDouble);
     
-    EXPECT_DOUBLE_EQ(aabb.max.x, std::numeric_limits<double>::lowest());
-    EXPECT_DOUBLE_EQ(aabb.max.y, std::numeric_limits<double>::lowest());
-    EXPECT_DOUBLE_EQ(aabb.max.z, std::numeric_limits<double>::lowest());
+    EXPECT_DOUBLE_EQ(aabb.max.x, Constants::kLowestDouble);
+    EXPECT_DOUBLE_EQ(aabb.max.y, Constants::kLowestDouble);
+    EXPECT_DOUBLE_EQ(aabb.max.z, Constants::kLowestDouble);
 }
 
 TEST_F(AABBTest, ParameterizedConstructorStoresMinMax) {

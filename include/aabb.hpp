@@ -1,27 +1,14 @@
 #pragma once
 
-#include <span>
-#include <limits>
-
 #include "point.hpp"
+#include "constants.hpp"
 
 struct AABB {
     Point min;
     Point max;
 
-    AABB() {
-        min = {
-            std::numeric_limits<double>::max(),
-            std::numeric_limits<double>::max(),
-            std::numeric_limits<double>::max()
-        };
-
-        max = {
-            std::numeric_limits<double>::lowest(),
-            std::numeric_limits<double>::lowest(),
-            std::numeric_limits<double>::lowest()
-        };
-    }
+    AABB() : min({Constants::kMaxDouble, Constants::kMaxDouble, Constants::kMaxDouble}),
+             max({Constants::kLowestDouble, Constants::kLowestDouble, Constants::kLowestDouble}) {}
 
     AABB(Point min, Point max) : min(min), max(max) {}
     

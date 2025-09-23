@@ -39,19 +39,8 @@ std::unique_ptr<BVHNode> BVH::RecursiveBuild(size_t start, size_t end) {
 }
 
 size_t BVH::GetSplitAxis(const AABB& aabb) const {
-    double len_of_x = aabb.max.x - aabb.min.x;
-    double len_of_y = aabb.max.y - aabb.min.y;
-    double len_of_z = aabb.max.z - aabb.min.z;
-
-    double maxlen = std::max({len_of_x, len_of_y, len_of_z});
-
-    if (maxlen == len_of_x) {
-        return 0;
-    } else if (maxlen == len_of_y) {
-        return 1;
-    } else {
-        return 2;
-    }
+    const Vector diff = aabb.max - aabb.min;
+    return (diff.x >= diff.y && diff.x >= diff.z) ? 0 : (diff.y >= diff.z) ? 1 : 2;
 }
 
 std::set<size_t> BVH::FindIntersectingTriangles() {

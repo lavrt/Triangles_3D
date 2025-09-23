@@ -73,7 +73,7 @@ void BVH::RecursiveFindIntersections(const std::unique_ptr<BVHNode>& a, const st
                 if (a_tr.GetId() >= b_tr.GetId()) {
                     continue;
                 }
-                if (Triangle::Intersect(a_tr, b_tr)) {
+                if (Triangle::Intersect(a_tr, b_tr)) { 
                     intersecting_triangles_.insert(a_tr.GetId());
                     intersecting_triangles_.insert(b_tr.GetId());
                 }

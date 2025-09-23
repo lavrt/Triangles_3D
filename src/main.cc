@@ -22,8 +22,6 @@ int main() {
         triangles.push_back({i, p0, p1, p2});
     }
 
-    std::vector<Triangle> triangles_new = triangles;
-
     BVH tree{std::move(triangles)};
     tree.Build();
     tree.Dump("dump");
@@ -32,8 +30,6 @@ int main() {
     for (auto d : s) {
         std::cout << d << "\n";
     }
-
-    // std::cout << Triangle::Intersect(triangles_new[4], triangles_new[3]);
 
     // __________________________________________________
 

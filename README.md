@@ -19,7 +19,7 @@ A bounding volume hierarchy (BVH) is a tree structure on a set of geometric obje
 The tree allows to quickly discard large groups of objects that obviously do not intersect and check only potential candidates. BVH reduces the number of pairwise intersection tests from O(n²) to O(n log n) in practice.
 
 <div align="center">
-<img src="images/bvh.png" style="width: 100%; height: auto;">
+<img src="docs/bvh.png" style="width: 100%; height: auto;">
 </div>
 
 ## Intersection detection algorithm
@@ -45,7 +45,7 @@ Two convex geometries do not intersect if and only if there is a hyperplane betw
 hyperplane is called the separating axis, and the projections of the shapes on it do not intersect.
 
 <div align="center">
-<img src="images/sat.png" style="width: 50%; height: auto;">
+<img src="docs/sat.png" style="width: 50%; height: auto;">
 </div>
 
 ***Property of the theorem:***

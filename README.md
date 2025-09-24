@@ -39,12 +39,14 @@ In other cases, the triangles do not intersect.
 We will check the intersection of triangles using the separating axis theorem.
 
 **SAT**
+
 Two convex geometries do not intersect if and only if there is a hyperplane between them that separates them. The axis orthogonal to the separating
 hyperplane is called the separating axis, and the projections of the shapes on it do not intersect.
 
 ![Separating Axis Theorem](./images/sat.png)
 
 **Property of the theorem**
+
 The potential separating axis will be in the following sets:
 
 - normals to the edges of each of the objects;

@@ -36,13 +36,13 @@ Triangles can intersect if:
 In other cases, the triangles do not intersect.
 
 #### 3. The planes intersect
-We will check the intersection of triangles using the separating axis theorem.
+We will check the intersection of triangles using the SAT (Separating Axis Theorem).
 
 ***SAT:***
 Two convex geometries do not intersect if and only if there is a hyperplane between them that separates them. The axis orthogonal to the separating
 hyperplane is called the separating axis, and the projections of the shapes on it do not intersect.
 
-![Separating Axis Theorem](./images/sat.png)
+![Separating Axis Theorem](./images/sat.png){width=60%}
 
 ***Property of the theorem:***
 The potential separating axis will be in the following sets:

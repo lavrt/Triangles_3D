@@ -18,7 +18,9 @@ A bounding volume hierarchy (BVH) is a tree structure on a set of geometric obje
 
 The tree allows to quickly discard large groups of objects that obviously do not intersect and check only potential candidates. BVH reduces the number of pairwise intersection tests from O(n²) to O(n log n) in practice.
 
-<img src="images/bvh.png" style="display: block; margin: 0 auto; width: 100%; height: auto;">
+<div align="center">
+<img src="images/bvh.png" style="width: 100%; height: auto;">
+</div>
 
 ## Intersection detection algorithm
 

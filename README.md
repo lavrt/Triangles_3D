@@ -18,7 +18,7 @@ A bounding volume hierarchy (BVH) is a tree structure on a set of geometric obje
 
 The tree allows to quickly discard large groups of objects that obviously do not intersect and check only potential candidates. BVH reduces the number of pairwise intersection tests from O(n²) to O(n log n) in practice.
 
-![Bounding Volume Hierarchy](./images/bvh.png)
+<img src="images/bvh.png" style="display: block; margin: 0 auto; width: 100%; height: auto;">
 
 ## Intersection detection algorithm
 
@@ -42,7 +42,7 @@ We will check the intersection of triangles using the SAT (Separating Axis Theor
 Two convex geometries do not intersect if and only if there is a hyperplane between them that separates them. The axis orthogonal to the separating
 hyperplane is called the separating axis, and the projections of the shapes on it do not intersect.
 
-<img src="images/sat.png" style="width: 50%; height: auto;">
+<img src="images/sat.png" style="display: block; margin: 0 auto; width: 50%; height: auto;">
 
 ***Property of the theorem:***
 The potential separating axis will be in the following sets:

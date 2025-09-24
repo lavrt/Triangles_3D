@@ -11,19 +11,18 @@
 class BVHNode {
 private:
     AABB aabb_;
+    std::span<Triangle> triangles_;
+    bool is_leaf_;
 
     std::unique_ptr<BVHNode> left_;
-    std::unique_ptr<BVHNode> right_;
-
-    bool is_leaf_;
-    std::span<Triangle> triangles_;
+    std::unique_ptr<BVHNode> right_;    
 
 public:
     void SetAABB(const AABB& aabb) {
         aabb_ = aabb;
     }
 
-    void SetTriangles(std::span<Triangle> triangles) {
+    void SetTriangles(const std::span<Triangle>& triangles) {
         if (left_ != nullptr || right_ != nullptr) {
             throw std::runtime_error(
                 "An attempt to change the node type from a leaf node to an internal node"

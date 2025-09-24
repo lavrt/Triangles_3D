@@ -2,8 +2,6 @@
 
 #include <cmath>
 #include <stdexcept>
-#include <limits>
-#include <iostream>
 
 #include "constants.hpp"
 

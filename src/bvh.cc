@@ -39,7 +39,7 @@ std::unique_ptr<BVHNode> BVH::RecursiveBuild(size_t start, size_t end) {
 }
 
 size_t BVH::GetSplitAxis(const AABB& aabb) const {
-    const Vector diff = aabb.max - aabb.min;
+    Vector diff = aabb.max - aabb.min;
     return (diff.x >= diff.y && diff.x >= diff.z) ? 0 : (diff.y >= diff.z) ? 1 : 2;
 }
 
@@ -59,10 +59,7 @@ void BVH::RecursiveFindIntersections(const std::unique_ptr<BVHNode>& a, const st
 
         for (const Triangle& a_tr : a_triangles) {
             for (const Triangle& b_tr : b_triangles) {
-                if (a_tr.GetId() >= b_tr.GetId()) {
-                    continue;
-                }
-                if (Triangle::Intersect(a_tr, b_tr)) { 
+                if (a_tr.GetId() < b_tr.GetId() && Triangle::Intersect(a_tr, b_tr)) { 
                     intersecting_triangles_.insert(a_tr.GetId());
                     intersecting_triangles_.insert(b_tr.GetId());
                 }
@@ -118,7 +115,6 @@ void BVH::DefiningGraphNodes(std::ofstream& file, const std::unique_ptr<BVHNode>
     static size_t rank = 0;
     file << "    node_" << node.get() << " [rank=" << rank << ",label=\" { node: " << node.get()
          << " | aabb: \\{" << node->GetAABB().min << ", " << node->GetAABB().max << "\\} | ";
-
 
     if (!node->IsLeaf()) {
         file << "{ left: " << node->GetLeft().get() << " | right: " << node->GetRight().get() << " }";

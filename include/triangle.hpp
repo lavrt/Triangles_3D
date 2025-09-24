@@ -28,7 +28,7 @@ public:
                 {std::max({p0.x, p1.x, p2.x}), std::max({p0.y, p1.y, p2.y}), std::max({p0.z, p1.z, p2.z})})
     {}
 
-    static AABB ComputeBoundingBox(std::span<Triangle> triangles);
+    static AABB ComputeBoundingBox(const std::span<Triangle>& triangles);
     static bool Intersect(const Triangle& tr1, const Triangle& tr2);
     static bool SAT(const Triangle& t1, const Triangle& t2);
     static PlanesPosition RelativePlanesPosition(const Triangle& t1, const Triangle& t2);

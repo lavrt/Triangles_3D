@@ -11,11 +11,11 @@ Point Triangle::operator[](size_t i) const {
         case 1: return p1_;
         case 2: return p2_;
         
-        default: throw std::runtime_error("Incorrect access to fields of the class: Triangle");
+        default: throw std::out_of_range("Incorrect access to fields of the class: Triangle");
     }
 }
 
-AABB Triangle::ComputeBoundingBox(std::span<Triangle> triangles) {
+AABB Triangle::ComputeBoundingBox(const std::span<Triangle>& triangles) {
     AABB aabb;
 
     for (const auto& triangle : triangles) {
@@ -53,9 +53,7 @@ PlanesPosition Triangle::RelativePlanesPosition(const Triangle& t1, const Triang
     double d1 = -Vector::Dot(normal1, t1.p0_.AsVector());
     double d2 = -Vector::Dot(normal2, t2.p0_.AsVector());
 
-    bool normals_same_direction = Vector::Dot(normal1, normal2) > 0;
-
-    double distance_between_planes = normals_same_direction
+    double distance_between_planes = (Vector::Dot(normal1, normal2) > 0)
         ? std::abs(d1 - d2)
         : std::abs(d1 + d2);
 

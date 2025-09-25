@@ -155,7 +155,11 @@ TEST_F(VectorTest, NormalizedUnitVector) {
 }
 
 TEST_F(VectorTest, NormalizedZeroVector) {
-    EXPECT_THROW(v_zero.Normalized(), std::invalid_argument);
+    Vector zero_normalized = v_zero.Normalized();
+
+    EXPECT_DOUBLE_EQ(zero_normalized.x, 0.0);
+    EXPECT_DOUBLE_EQ(zero_normalized.y, 0.0);
+    EXPECT_DOUBLE_EQ(zero_normalized.z, 0.0);
 }
 
 // Collinearity ------------------------------------------------------------------------------------

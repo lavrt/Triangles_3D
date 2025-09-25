@@ -3,6 +3,11 @@ find_package(GTest REQUIRED)
 set(SOURCES
     test_triangle.cc ../src/triangle.cc
     test_bvh.cc ../src/bvh.cc
+    test_triangle.cc
+    test_segment.cc
+    test_vector.cc
+    test_point.cc
+    test_aabb.cc
     test_node.cc
     test_main.cc
 )

@@ -91,10 +91,6 @@ Triangles_3D/
 ├── src/
 | ├── main.cc
 | ├── bvh.cc
-| ├── aabb.cc
-| ├── point.cc
-| ├── vector.cc
-| ├── segment.cc
 │ └── triangle.cc
 ├── tests/
 | ├── CMakeLists.txt

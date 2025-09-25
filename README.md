@@ -126,6 +126,10 @@ To convert the generated DOT files to PNG images:
 dot filename.gv -Tpng -o filename.png
 ```
 
+<div align="center">
+<img src="docs/dump_example.png" style="width: 70%; height: auto;">
+</div>
+
 ## Requirements
 - C++20 or later
 - CMake 3.11+

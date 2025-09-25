@@ -118,6 +118,10 @@ cd build && ctest       # running tests
 
 The BVH implementation includes a graph visualization feature that generates DOT files for Graphviz.
 
+<div align="center">
+<img src="docs/dump_example.png" style="width: 70%; height: auto;">
+</div>
+
 To convert the generated DOT files to PNG images:
 1. Install Graphviz (if not already installed)
 2. Run your program (the .gv files are generated automatically when you call Dump())
@@ -125,10 +129,6 @@ To convert the generated DOT files to PNG images:
 ```bash
 dot filename.gv -Tpng -o filename.png
 ```
-
-<div align="center">
-<img src="docs/dump_example.png" style="width: 70%; height: auto;">
-</div>
 
 ## Requirements
 - C++20 or later

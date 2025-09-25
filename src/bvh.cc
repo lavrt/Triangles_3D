@@ -106,9 +106,6 @@ void BVH::Dump(const std::string& file_name) const {
     file << "}\n";
 
     file.close();
-
-    std::string dotCmd = "dot " + file_name + ".gv -Tpng -o " + file_name + ".png";
-    std::system(dotCmd.c_str());
 }
 
 void BVH::DefiningGraphNodes(std::ofstream& file, const std::unique_ptr<BVHNode>& node) const {

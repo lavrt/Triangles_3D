@@ -12,10 +12,10 @@ class BVHNode {
 private:
     AABB aabb_;
     std::span<Triangle> triangles_;
-    bool is_leaf_;
+    bool is_leaf_ = true;
 
-    std::unique_ptr<BVHNode> left_;
-    std::unique_ptr<BVHNode> right_;    
+    std::unique_ptr<BVHNode> left_ = nullptr;
+    std::unique_ptr<BVHNode> right_ = nullptr;    
 
 public:
     void SetAABB(const AABB& aabb) {

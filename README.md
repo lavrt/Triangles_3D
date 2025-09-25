@@ -114,6 +114,18 @@ cmake --build build
 cd build && ctest       # running tests
 ```
 
+## Visualization
+
+The BVH implementation includes a graph visualization feature that generates DOT files for Graphviz.
+
+To convert the generated DOT files to PNG images:
+1. Install Graphviz (if not already installed)
+2. Run your program (the .gv files are generated automatically when you call Dump())
+3. Convert to PNG using the dot command:
+```bash
+dot filename.gv -Tpng -o filename.png
+```
+
 ## Requirements
 - C++20 or later
 - CMake 3.11+

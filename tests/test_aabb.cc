@@ -268,9 +268,9 @@ TEST_F(AABBTest, PrecisionHandling) {
     AABB aabb(Point(0.1, 0.2, 0.3), Point(0.4, 0.5, 0.6));
     
     Point center = aabb.GetCenter();
-    EXPECT_NEAR(center.x, 0.25, 1e-10);
-    EXPECT_NEAR(center.y, 0.35, 1e-10);
-    EXPECT_NEAR(center.z, 0.45, 1e-10);
+    EXPECT_DOUBLE_EQ(center.x, 0.25);
+    EXPECT_DOUBLE_EQ(center.y, 0.35);
+    EXPECT_DOUBLE_EQ(center.z, 0.45);
 }
 
 TEST_F(AABBTest, ExpandWithDegenerate) {

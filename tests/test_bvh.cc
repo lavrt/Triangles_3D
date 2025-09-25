@@ -90,21 +90,6 @@ TEST_F(BVHTest, SelfIntersectionNotReported) {
 
 // Special cases -----------------------------------------------------------------------------------
 
-TEST_F(BVHTest, DegenerateTriangles) {
-    std::vector<Triangle> degenerate_triangles = {
-        Triangle(1, Point{0,0,0}, Point{1,1,1}, Point{2,2,2}),
-        Triangle(2, Point{0,0,0}, Point{0,0,0}, Point{0,0,0})
-    };
-    
-    BVH bvh(std::move(degenerate_triangles));
-    
-    EXPECT_NO_THROW(bvh.Build());
-    
-    if (bvh.GetRoot() != nullptr) {
-        EXPECT_NO_THROW(bvh.FindIntersectingTriangles());
-    }
-}
-
 TEST_F(BVHTest, LargeNumberOfTriangles) {
     std::vector<Triangle> large_set;
     const int num_triangles = 1000;

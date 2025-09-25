@@ -16,7 +16,7 @@ The naive approach of checking every triangle against every other triangle has O
 
 A bounding volume hierarchy (BVH) is a tree structure on a set of geometric objects. All geometric objects, which form the leaf nodes of the tree, are wrapped in bounding volumes. These nodes are then grouped as small sets and enclosed within larger bounding volumes. These, in turn, are also grouped and enclosed within other larger bounding volumes in a recursive fashion, eventually resulting in a tree structure with a single bounding volume at the top of the tree. Bounding volume hierarchies are used to support several operations on sets of geometric objects efficiently, such as in collision detection and ray tracing. 
 
-The tree allows to quickly discard large groups of objects that obviously do not intersect and check only potential candidates. BVH reduces the number of pairwise intersection tests from O(n²) to O(n log n) in practice.
+The tree allows to quickly discard large groups of objects that obviously do not intersect and check only potential candidates. In practice, BVH reduces the number of pairwise intersection tests from O(n²) to O(n log n) for well-distributed meshes, though worst-case scenarios may degrade performance.
 
 <div align="center">
 <img src="docs/bvh.png" style="width: 100%; height: auto;">

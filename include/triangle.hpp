@@ -34,7 +34,7 @@ public:
     static PlanesPosition RelativePlanesPosition(const Triangle& t1, const Triangle& t2);
 
     std::pair<double, double> Project(const Vector& axis) const;
-    bool Contains(const Triangle& other) const;
+    bool Contains(const std::pair<size_t, size_t>& plane, const Triangle& other) const;
     Point operator[](size_t i) const;
 
     size_t GetId() const noexcept {

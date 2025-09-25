@@ -71,28 +71,21 @@ bool Triangle::Intersect(const Triangle& t1, const Triangle& t2) {
 
     if (relative_planes_position == PlanesPosition::Coincide) { 
         Segment edges1[] {{t1.p0_, t1.p1_}, {t1.p0_, t1.p2_}, {t1.p1_, t1.p2_}};
-        Segment edges2[] {{t2.p0_, t2.p1_}, {t2.p0_, t2.p2_}, {t2.p1_, t2.p2_}};
-
-        
+        Segment edges2[] {{t2.p0_, t2.p1_}, {t2.p0_, t2.p2_}, {t2.p1_, t2.p2_}};       
 
         if (Vector::Dot(t1.GetNormal(), Constants::Basis::z)) { 
-            if (Segment::IntersectInPlane(Constants::Planes::xy, edges1, edges2) ||
-                t1.Contains(Constants::Planes::xy, t2) || t2.Contains(Constants::Planes::xy, t1))
-            {
-                return true;
-            } 
-        } else if (Vector::Dot(t1.GetNormal(), Constants::Basis::y)) {
-            if (Segment::IntersectInPlane(Constants::Planes::xz, edges1, edges2) ||
-                t1.Contains(Constants::Planes::xz, t2) || t2.Contains(Constants::Planes::xz, t1))
-            {
-                return true;
-            }
-        } else {
-            if (Segment::IntersectInPlane(Constants::Planes::yz, edges1, edges2) ||
-                t1.Contains(Constants::Planes::yz, t2) || t2.Contains(Constants::Planes::yz, t1))
-            {
-                return true;
-            }
+            return Segment::IntersectInPlane(Constants::Planes::xy, edges1, edges2) ||
+                t1.Contains(Constants::Planes::xy, t2) || t2.Contains(Constants::Planes::xy, t1);
+        } 
+        
+        if (Vector::Dot(t1.GetNormal(), Constants::Basis::y)) {
+            return Segment::IntersectInPlane(Constants::Planes::xz, edges1, edges2) ||
+                t1.Contains(Constants::Planes::xz, t2) || t2.Contains(Constants::Planes::xz, t1);
+        } 
+        
+        if (Vector::Dot(t1.GetNormal(), Constants::Basis::x)) {
+            return Segment::IntersectInPlane(Constants::Planes::yz, edges1, edges2) ||
+                t1.Contains(Constants::Planes::yz, t2) || t2.Contains(Constants::Planes::yz, t1);
         }
 
         return false;

@@ -10,8 +10,4 @@ namespace Constants {
     namespace Planes {
         inline constexpr std::pair<size_t, size_t> xy{0, 1}, xz{0, 2}, yz{1, 2};
     }
-    
-    namespace Basis {
-        inline const Vector x{1, 0, 0}, y{0, 1, 0}, z{0, 0, 1};
-    }
 }

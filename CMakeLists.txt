@@ -9,10 +9,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(SOURCES
     src/bvh.cc
     src/main.cc
-    src/aabb.cc
-    src/point.cc
-    src/vector.cc
-    src/segment.cc
     src/triangle.cc
 )
 

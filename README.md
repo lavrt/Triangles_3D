@@ -27,7 +27,7 @@ The tree allows to quickly discard large groups of objects that obviously do not
 Let's consider three situations of the relative position of planes containing triangles.
 
 #### 1. The planes are parallel
-The intersection of triangles located in parallel planes is impossible.
+If the planes are parallel but not coincident, the triangles cannot intersect.
 
 #### 2. The planes are coincident
 Triangles can intersect if:

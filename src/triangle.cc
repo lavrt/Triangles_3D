@@ -45,7 +45,7 @@ bool Triangle::Contains(const Triangle& other) const {
 PlanesPosition Triangle::RelativePlanesPosition(const Triangle& t1, const Triangle& t2) {
     Vector normal1 = t1.GetNormal();
     Vector normal2 = t2.GetNormal();
-
+    
     if (!normal1.Collinear(normal2)) {
         return PlanesPosition::Intersect;
     }
@@ -69,7 +69,7 @@ bool Triangle::Intersect(const Triangle& t1, const Triangle& t2) {
         return false;
     }
 
-    if (relative_planes_position == PlanesPosition::Coincide) {
+    if (relative_planes_position == PlanesPosition::Coincide) { 
         Segment edges1[] {{t1.p0_, t1.p1_}, {t1.p0_, t1.p2_}, {t1.p1_, t1.p2_}};
         Segment edges2[] {{t2.p0_, t2.p1_}, {t2.p0_, t2.p2_}, {t2.p1_, t2.p2_}};
 
@@ -129,4 +129,3 @@ std::pair<double, double> Triangle::Project(const Vector& axis) const {
         *std::max_element(projections.begin(), projections.end()),
     };
 }
-

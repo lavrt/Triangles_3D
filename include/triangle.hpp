@@ -23,7 +23,7 @@ private:
 
 public:
     Triangle(size_t id, Point p0, Point p1, Point p2) 
-        : id_(id), p0_(p0), p1_(p1), p2_(p2), normal_(Vector::Cross(p1_ - p0_, p2_ - p1_)),
+        : id_(id), p0_(p0), p1_(p1), p2_(p2), normal_(Vector::Cross(p1_ - p0_, p2_ - p1_).Normalized()),
           aabb_({std::min({p0.x, p1.x, p2.x}), std::min({p0.y, p1.y, p2.y}), std::min({p0.z, p1.z, p2.z})}, 
                 {std::max({p0.x, p1.x, p2.x}), std::max({p0.y, p1.y, p2.y}), std::max({p0.z, p1.z, p2.z})})
     {}

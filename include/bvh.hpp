@@ -22,7 +22,7 @@ private:
     void DefiningGraphDependencies(std::ofstream& file, const std::unique_ptr<BVHNode>& node) const;
 
 public:
-    BVH(std::vector<Triangle>&& triangles) : triangles_(std::move(triangles)) {}
+    BVH(std::vector<Triangle>&& triangles) noexcept : triangles_(std::move(triangles)) {}
 
     void Build();
     void Dump(const std::string& file_name) const;

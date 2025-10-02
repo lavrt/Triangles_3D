@@ -14,6 +14,14 @@ struct Segment {
         return (p1 - p0).Length();
     }
 
+
+    /**
+     * @brief Checks if two line segments intersect in 3D space
+     * 
+     * @param s1 First segment to test
+     * @param s2 Second segment to test
+     * @return true if segments intersect (including endpoints touching), false otherwise
+     */
     static bool Intersect(const Segment& s1, const Segment& s2) {
         Vector v1 = s1.p1 - s1.p0;
         Vector v2 = s2.p1 - s2.p0;
@@ -22,20 +30,20 @@ struct Segment {
         Vector N = Vector::Cross(v1, v2);
 
         if (N == Constants::null_vec) {
-            Vector cross_diff_v1 = Vector::Cross(diff, v1);
-            if (cross_diff_v1 != Constants::null_vec) {
+            if (Vector::Cross(diff, v1) != Constants::null_vec) {
                 return false;
             }
+
             double denom = Vector::Dot(v1, v1);
             double t0 = Vector::Dot(diff, v1) / denom;
             double t1 = Vector::Dot(s2.p1 - s1.p0, v1);
             double proj_min = std::min(t0, t1);
             double proj_max = std::max(t0, t1);
+
             return std::max(proj_min, 0.0) <= std::min(proj_max, 1.0) + Constants::kEpsilon;
         }
 
-        double dist = std::abs(Vector::Dot(diff, N)) / N.Length();
-        if (dist >= Constants::kEpsilon) {
+        if (std::abs(Vector::Dot(diff, N)) >= Constants::kEpsilon) {
             return false;
         }
 

@@ -31,7 +31,7 @@ int main() {
                 
         triangles.push_back({i, p0, p1, p2});
     }
-
+    
     BVH tree{std::move(triangles)};
 
     tree.Build();

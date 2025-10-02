@@ -50,14 +50,10 @@ std::tuple<double, double, double> Triangle::IntersectRayTriangle(const Point& p
     Vector Q = Vector::Cross(T, E1);
 
     double denom = Vector::Dot(P, E1);
-    
-    std::cout << "Vector::Dot(Q, E2) = " << Vector::Dot(Q, E2) << "\n";
 
     double t = Vector::Dot(Q, E2) / denom;
     double u = Vector::Dot(P, T) / denom;
     double v = Vector::Dot(Q, D) / denom;
-
-    std::cout << "t = " << t << ", u = " << u << ", v = " << v << "\n";
 
     return {t, u, v};
 }
@@ -220,34 +216,7 @@ bool Triangle::IntersectDegenerateTriangles(const Triangle& t1, const Triangle& 
             return false;
         }
 
-        Segment segments[] {
-            {triangle->p0_, triangle->p1_},
-            {triangle->p0_, triangle->p2_},
-            {triangle->p2_, triangle->p1_} 
-        };
-
-        if (std::abs(Vector::Dot(triangle->GetNormal(), Constants::Basis::z)) > Constants::kEpsilon) { 
-            return triangle->Contains(Constants::Planes::xy, *degenerate_triangle)
-                || segments[0].OnSegment(Constants::Planes::xy, degenerate_triangle->p0_)
-                || segments[1].OnSegment(Constants::Planes::xy, degenerate_triangle->p0_)
-                || segments[2].OnSegment(Constants::Planes::xy, degenerate_triangle->p0_);
-        } 
-        
-        if (std::abs(Vector::Dot(triangle->GetNormal(), Constants::Basis::y)) > Constants::kEpsilon) {
-            return triangle->Contains(Constants::Planes::xz, *degenerate_triangle)
-                || segments[0].OnSegment(Constants::Planes::xz, degenerate_triangle->p0_)
-                || segments[1].OnSegment(Constants::Planes::xz, degenerate_triangle->p0_)
-                || segments[2].OnSegment(Constants::Planes::xz, degenerate_triangle->p0_);
-        } 
-        
-        if (std::abs(Vector::Dot(triangle->GetNormal(), Constants::Basis::x)) > Constants::kEpsilon) {
-            return triangle->Contains(Constants::Planes::yz, *degenerate_triangle)
-                || segments[0].OnSegment(Constants::Planes::yz, degenerate_triangle->p0_)
-                || segments[1].OnSegment(Constants::Planes::yz, degenerate_triangle->p0_)
-                || segments[2].OnSegment(Constants::Planes::yz, degenerate_triangle->p0_);
-        }
-
-        throw std::runtime_error(""); // TODO
+        return triangle->Contains(degenerate_triangle->p0_);
     }
 
     if (t1.GetType() == TriangleType::Normal && t2.GetType() == TriangleType::Segment ||
@@ -298,7 +267,7 @@ bool Triangle::Intersect(const Triangle& t1, const Triangle& t2) {
 
     auto relative_planes_position = RelativePlanesPosition(t1, t2);
 
-    if (relative_planes_position == PlanesPosition::Parallel) { // std::cout << "_________\n"; // NOTE debug
+    if (relative_planes_position == PlanesPosition::Parallel) {
         return false;
     }
 

@@ -48,7 +48,24 @@ public:
 
     std::pair<double, double> Project(const Vector& axis) const;
     bool Contains(const std::pair<size_t, size_t>& plane, const Triangle& other) const;
+
+    /**
+     * @brief Point-in-triangle test for 2D triangles
+     * 
+     * Uses barycentric coordinate method:
+     * - Represents point p as: p = alpha*p0 + beta*p1 + gamma*p2
+     * - Where alpha + beta + gamma = 1 and alpha,beta,gamma >= 0 for interior points
+     * 
+     * LIMITATIONS:
+     * - It is intended only for checking the intersection of a triangle with a point located in
+     *   the plane of the triangle. If the point is not in the plane of the triangle, it may give
+     *   a false positive result because the point is projected onto the triangle.
+     * 
+     * @param p Test point
+     * @return true if the point is located inside the boundaries of the triangle or on the boundary
+     */
     bool Contains(const Point& p) const;
+
     Point operator[](size_t i) const;
     Segment ToSegment() const;
     Vector ToVector() const;

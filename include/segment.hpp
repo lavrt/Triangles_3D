@@ -14,9 +14,8 @@ struct Segment {
         return (p1 - p0).Length();
     }
 
-
     /**
-     * @brief Checks if two line segments intersect in 3D space
+     * @brief Checks if two non-degenerate line segments intersect in 3D space
      * 
      * @param s1 First segment to test
      * @param s2 Second segment to test
@@ -55,12 +54,11 @@ struct Segment {
             && s >= -Constants::kEpsilon && s <= 1 + Constants::kEpsilon;
     }
 
-    static bool IntersectInPlane(const std::pair<size_t, size_t>& plane,
-        const std::span<Segment>& edges1, const std::span<Segment>& edges2)
+    static bool Intersect(const std::span<Segment>& edges1, const std::span<Segment>& edges2)
     {
         for (const Segment& s1 : edges1) {
             for (const Segment& s2 : edges2) {
-                if (IntersectInPlane(plane, s1, s2)) {
+                if (Intersect(s1, s2)) {
                     return true;
                 }
             }
@@ -81,27 +79,27 @@ struct Segment {
             && p[plane.second] <= std::max(p0[plane.second], p1[plane.second]);
     }
 
-    static bool IntersectInPlane(const std::pair<size_t, size_t>& plane,
-        const Segment& s1, const Segment& s2)
-    {
-        double d1 = s2.Direction(plane, s1.p0);
-        double d2 = s2.Direction(plane, s1.p1);
-        double d3 = s1.Direction(plane, s2.p0);
-        double d4 = s1.Direction(plane, s2.p1);
+    // static bool IntersectInPlane(const std::pair<size_t, size_t>& plane,
+    //     const Segment& s1, const Segment& s2)
+    // {
+    //     double d1 = s2.Direction(plane, s1.p0);
+    //     double d2 = s2.Direction(plane, s1.p1);
+    //     double d3 = s1.Direction(plane, s2.p0);
+    //     double d4 = s1.Direction(plane, s2.p1);
 
-        if (((d1 > Constants::kEpsilon && d2 < -Constants::kEpsilon)
-            || (d1 < -Constants::kEpsilon && d2 > Constants::kEpsilon))
-            && ((d3 > Constants::kEpsilon && d4 < -Constants::kEpsilon)
-            || (d3 < -Constants::kEpsilon && d4 > Constants::kEpsilon)))
-        {
-            return true;
-        } 
+    //     if (((d1 > Constants::kEpsilon && d2 < -Constants::kEpsilon)
+    //         || (d1 < -Constants::kEpsilon && d2 > Constants::kEpsilon))
+    //         && ((d3 > Constants::kEpsilon && d4 < -Constants::kEpsilon)
+    //         || (d3 < -Constants::kEpsilon && d4 > Constants::kEpsilon)))
+    //     {
+    //         return true;
+    //     } 
 
-        if (std::abs(d1) < Constants::kEpsilon && s2.OnSegment(plane, s1.p0)) return true;
-        if (std::abs(d2) < Constants::kEpsilon && s2.OnSegment(plane, s1.p1)) return true;
-        if (std::abs(d3) < Constants::kEpsilon && s1.OnSegment(plane, s2.p0)) return true;
-        if (std::abs(d4) < Constants::kEpsilon && s1.OnSegment(plane, s2.p1)) return true;
+    //     if (std::abs(d1) < Constants::kEpsilon && s2.OnSegment(plane, s1.p0)) return true;
+    //     if (std::abs(d2) < Constants::kEpsilon && s2.OnSegment(plane, s1.p1)) return true;
+    //     if (std::abs(d3) < Constants::kEpsilon && s1.OnSegment(plane, s2.p0)) return true;
+    //     if (std::abs(d4) < Constants::kEpsilon && s1.OnSegment(plane, s2.p1)) return true;
 
-        return false;
-    }
+    //     return false;
+    // }
 };

@@ -106,58 +106,46 @@ TEST_F(SegmentTest, OnSegmentPrecision) {
 // Intersect ---------------------------------------------------------------------------------------
 
 TEST_F(SegmentTest, IntersectCrossingSegments) {
-    EXPECT_TRUE(Segment::IntersectInPlane(Constants::Planes::xy, seg_horizontal, seg_vertical));
+    EXPECT_TRUE(Segment::Intersect(seg_horizontal, seg_vertical));
 }
 
 TEST_F(SegmentTest, IntersectParallelSegments) {
     Segment parallel{Point(0, 1, 0), Point(2, 1, 0)};
-    EXPECT_FALSE(Segment::IntersectInPlane(Constants::Planes::xy, seg_horizontal, parallel));
+    EXPECT_FALSE(Segment::Intersect(seg_horizontal, parallel));
 }
 
 TEST_F(SegmentTest, IntersectCollinearOverlapping) {
     Segment overlapping{Point(1, 0, 0), Point(3, 0, 0)};
-    EXPECT_TRUE(Segment::IntersectInPlane(Constants::Planes::xy, seg_horizontal, overlapping));
+    EXPECT_TRUE(Segment::Intersect(seg_horizontal, overlapping));
 }
 
 TEST_F(SegmentTest, IntersectCollinearTouching) {
     Segment touching{Point(2, 0, 0), Point(4, 0, 0)};
-    EXPECT_TRUE(Segment::IntersectInPlane(Constants::Planes::xy, seg_horizontal, touching));
+    EXPECT_TRUE(Segment::Intersect(seg_horizontal, touching));
 }
 
 TEST_F(SegmentTest, IntersectCollinearSeparated) {
     Segment separated{Point(3, 0, 0), Point(5, 0, 0)};
-    EXPECT_FALSE(Segment::IntersectInPlane(Constants::Planes::xy, seg_horizontal, separated));
+    EXPECT_FALSE(Segment::Intersect(seg_horizontal, separated));
 }
 
 TEST_F(SegmentTest, IntersectEndpointsTouching) {
     Segment touching_end{Point(2, 0, 0), Point(2, 2, 0)};
-    EXPECT_TRUE(Segment::IntersectInPlane(Constants::Planes::xy, seg_horizontal, touching_end));
+    EXPECT_TRUE(Segment::Intersect(seg_horizontal, touching_end));
 }
 
 TEST_F(SegmentTest, IntersectSharedEndpoint) {
     Segment shared_end{Point(0, 0, 0), Point(0, 2, 0)};
-    EXPECT_TRUE(Segment::IntersectInPlane(Constants::Planes::xy, seg_horizontal, shared_end));
-}
-
-TEST_F(SegmentTest, IntersectDegenerateSegments) {
-    Segment deg1{Point(1, 0, 0), Point(1, 0, 0)};
-    Segment deg2{Point(1, 0, 0), Point(1, 0, 0)};
-    
-    EXPECT_TRUE(Segment::IntersectInPlane(Constants::Planes::xy, deg1, deg2));
-    
-    EXPECT_TRUE(Segment::IntersectInPlane(Constants::Planes::xy, deg1, seg_horizontal));
-    
-    Segment deg_outside{Point(5, 5, 5), Point(5, 5, 5)};
-    EXPECT_FALSE(Segment::IntersectInPlane(Constants::Planes::xy, deg_outside, seg_horizontal));
+    EXPECT_TRUE(Segment::Intersect(seg_horizontal, shared_end));
 }
 
 TEST_F(SegmentTest, Intersect3DSegments) {
     Segment seg1{Point(0, 0, 0), Point(2, 2, 0)};
     Segment seg2{Point(0, 2, 0), Point(2, 0, 0)};
-    EXPECT_TRUE(Segment::IntersectInPlane(Constants::Planes::xy, seg1, seg2));
+    EXPECT_TRUE(Segment::Intersect(seg1, seg2));
 }
 
 TEST_F(SegmentTest, IntersectCommutative) {
-    EXPECT_EQ(Segment::IntersectInPlane(Constants::Planes::xy, seg_horizontal, seg_vertical),
-              Segment::IntersectInPlane(Constants::Planes::xy, seg_vertical, seg_horizontal));
+    EXPECT_EQ(Segment::Intersect(seg_horizontal, seg_vertical),
+              Segment::Intersect(seg_vertical, seg_horizontal));
 }

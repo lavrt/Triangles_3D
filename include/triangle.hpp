@@ -47,7 +47,17 @@ public:
     static PlanesPosition RelativePlanesPosition(const Triangle& t1, const Triangle& t2);
 
     std::pair<double, double> Project(const Vector& axis) const;
-    bool Contains(const std::pair<size_t, size_t>& plane, const Triangle& other) const;
+    
+    /**
+     * @brief Checks whether all points of the "other" triangle are in the "this" triangle
+     * 
+     * LIMITATIONS:
+     * - It is intended only for checking the nesting of triangles located in the same plane
+     * 
+     * @param other Second triangle
+     * @return true if all points of the "other" triangle are inside the "this" triangle
+     */
+    bool Contains(const Triangle& other) const;
 
     /**
      * @brief Point-in-triangle test for 2D triangles
@@ -66,9 +76,21 @@ public:
      */
     bool Contains(const Point& p) const;
 
-    Point operator[](size_t i) const;
+    /**
+     * @brief Represents a triangle degenerated into a segment in the form of a segment
+     * 
+     * @return segment
+     */
     Segment ToSegment() const;
+    
+    /**
+     * @brief Represents a triangle degenerated into a segment in the form of a vector
+     * 
+     * @return vector
+     */
     Vector ToVector() const;
+
+    Point operator[](size_t i) const;
 
     TriangleType GetType() const noexcept {
         return type_;

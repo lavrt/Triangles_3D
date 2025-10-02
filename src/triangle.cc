@@ -7,7 +7,7 @@
 #include "constants.hpp"
 
 TriangleType Triangle::DetermineType() const {
-    return this->GetNormal() != Constants::null_vec
+    return normal_ != Constants::null_vec
         ? TriangleType::Normal
         : p0_ == p1_ && p1_ == p2_
             ? TriangleType::Point
@@ -16,7 +16,7 @@ TriangleType Triangle::DetermineType() const {
 
 Segment Triangle::ToSegment() const {
     if (this->GetType() != TriangleType::Segment) {
-        throw std::runtime_error(""); // TODO
+        throw std::runtime_error("The triangle is not degenerate into a line segment");
     }
 
     double vector_lengths[] {(p1_ - p0_).Length(), (p2_ - p1_).Length(), (p2_ - p0_).Length()};
@@ -98,21 +98,8 @@ AABB Triangle::ComputeBoundingBox(const std::span<Triangle>& triangles) {
     return aabb;
 }
 
-bool Triangle::Contains(const std::pair<size_t, size_t>& plane, const Triangle& other) const {
-    static constexpr size_t kNumberOfChecks = 9;
-
-    Segment edges_of_big_triangle[] {{p0_, p1_}, {p1_, p2_}, {p2_, p0_}};
-
-    size_t number_of_positive = 0;
-    size_t number_of_negative = 0;
-
-    for (size_t i = 0; i != kNumberOfChecks; ++i) {
-        edges_of_big_triangle[i / 3].Direction(plane, other[i % 3]) > 0
-            ? ++number_of_positive
-            : ++number_of_negative;
-    }
-
-    return number_of_positive == kNumberOfChecks || number_of_negative == kNumberOfChecks;
+bool Triangle::Contains(const Triangle& other) const {
+    return this->Contains(other.p0_) && this->Contains(other.p1_) && this->Contains(other.p2_);
 }
 
 PlanesPosition Triangle::RelativePlanesPosition(const Triangle& t1, const Triangle& t2) {
@@ -273,24 +260,9 @@ bool Triangle::Intersect(const Triangle& t1, const Triangle& t2) {
 
     if (relative_planes_position == PlanesPosition::Coincide) { 
         Segment edges1[] {{t1.p0_, t1.p1_}, {t1.p0_, t1.p2_}, {t1.p1_, t1.p2_}};
-        Segment edges2[] {{t2.p0_, t2.p1_}, {t2.p0_, t2.p2_}, {t2.p1_, t2.p2_}};       
+        Segment edges2[] {{t2.p0_, t2.p1_}, {t2.p0_, t2.p2_}, {t2.p1_, t2.p2_}};
 
-        if (Vector::Dot(t1.GetNormal(), Constants::Basis::z)) { 
-            return Segment::IntersectInPlane(Constants::Planes::xy, edges1, edges2) ||
-                t1.Contains(Constants::Planes::xy, t2) || t2.Contains(Constants::Planes::xy, t1);
-        } 
-        
-        if (Vector::Dot(t1.GetNormal(), Constants::Basis::y)) {
-            return Segment::IntersectInPlane(Constants::Planes::xz, edges1, edges2) ||
-                t1.Contains(Constants::Planes::xz, t2) || t2.Contains(Constants::Planes::xz, t1);
-        } 
-        
-        if (Vector::Dot(t1.GetNormal(), Constants::Basis::x)) {
-            return Segment::IntersectInPlane(Constants::Planes::yz, edges1, edges2) ||
-                t1.Contains(Constants::Planes::yz, t2) || t2.Contains(Constants::Planes::yz, t1);
-        }
-
-        return false;
+        return Segment::Intersect(edges1, edges2) || t1.Contains(t2) || t2.Contains(t1); 
     }
 
     return SAT(t1, t2);

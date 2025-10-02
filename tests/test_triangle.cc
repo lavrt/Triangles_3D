@@ -153,7 +153,7 @@ TEST(TriangleEdgeCasesTest, ContainsMethod) {
     Triangle large(1, Point{0,0,0}, Point{3,0,0}, Point{0,3,0});
     Triangle small(2, Point{0.5,0.5,0}, Point{1.5,0.5,0}, Point{0.5,1.5,0});
     
-    bool result = large.Contains(Constants::Planes::xy, small);
+    bool result = large.Contains(small);
     EXPECT_TRUE(result);
 }
 

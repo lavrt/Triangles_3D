@@ -50,16 +50,33 @@ public:
           aabb_({std::min({p0.x, p1.x, p2.x}), std::min({p0.y, p1.y, p2.y}), std::min({p0.z, p1.z, p2.z})}, 
                 {std::max({p0.x, p1.x, p2.x}), std::max({p0.y, p1.y, p2.y}), std::max({p0.z, p1.z, p2.z})})
     {}
-
-    static AABB ComputeBoundingBox(const std::span<Triangle>& triangles);
-    static bool Intersect(const Triangle& t1, const Triangle& t2);
-    static bool SAT(const Triangle& t1, const Triangle& t2);
-    static PlanesPosition RelativePlanesPosition(const Triangle& t1, const Triangle& t2);
-
-    std::pair<double, double> Project(const Vector& axis) const;
-
-    static bool IntersectSegmentTriangle(const Segment& s, const Triangle& triangle);
     
+    /**
+     * @brief The main function for checking the intersection of triangles
+     * 
+     * Checks whether triangles intersect in 3D, supports processing of degenerate triangles
+     * 
+     * @param t1 First triangle
+     * @param t2 Second triangle
+     * @return true if the triangles intersect
+     */
+    static bool Intersect(const Triangle& t1, const Triangle& t2);
+
+    /**
+     * @brief Checks whether two non-planar triangles intersect
+     * 
+     * Implements the separating axis theorem (SAT)
+     * 
+     * LIMITATIONS:
+     * - It is intended only for checking for the intersection of two triangles located in
+     * intersecting planes
+     * 
+     * @param t1 First triangle
+     * @param t2 Second triangle
+     * @return true if the triangles intersect
+     */
+    static bool SAT(const Triangle& t1, const Triangle& t2);
+
     /**
      * @brief Checks whether all points of the "other" triangle are in the "this" triangle
      * 
@@ -88,9 +105,13 @@ public:
      */
     bool Contains(const Point& p) const;
 
+    static AABB ComputeBoundingBox(const std::span<Triangle>& triangles);
+    static PlanesPosition RelativePlanesPosition(const Triangle& t1, const Triangle& t2);
+    std::pair<double, double> Project(const Vector& axis) const;
+    bool Intersect(const Segment& s) const;
+    Point operator[](size_t i) const;
     Segment ToSegment() const;    
     Vector ToVector() const;
-    Point operator[](size_t i) const;
 
     TriangleType GetType() const noexcept {
         return type_;

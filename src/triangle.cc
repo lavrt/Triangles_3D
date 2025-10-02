@@ -37,13 +37,13 @@ Vector Triangle::ToVector() const {
     return segment.p0 - segment.p1;
 }
 
-bool Triangle::IntersectSegmentTriangle(const Segment& s, const Triangle& triangle) {
+bool Triangle::Intersect(const Segment& s) const {
     Point p = s.p0;
     Vector vec = s.p1 - s.p0;
 
-    Vector v0 = triangle.p0_.AsVector();
-    Vector v1 = triangle.p1_.AsVector();
-    Vector v2 = triangle.p2_.AsVector();
+    Vector v0 = p0_.AsVector();
+    Vector v1 = p1_.AsVector();
+    Vector v2 = p2_.AsVector();
 
     Vector D = vec;
     Vector E1 = v1 - v0;
@@ -78,7 +78,8 @@ bool Triangle::Contains(const Point& p) const {
     double gamma = (UV * WU - UU * WV) / denom;
     double alpha = 1 - beta - gamma;
 
-    return alpha >= -Constants::kEpsilon && beta >= -Constants::kEpsilon && gamma >= -Constants::kEpsilon;
+    return alpha >= -Constants::kEpsilon && beta >= -Constants::kEpsilon
+        && gamma >= -Constants::kEpsilon;
 }
 
 Point Triangle::operator[](size_t i) const {
@@ -243,7 +244,8 @@ bool Triangle::Degenerate::IntersectPointSegment(const Triangle& t1, const Trian
     
     Vector vectors_to_point[] = {point - segment.p0, point - segment.p1};
 
-    return std::abs(vectors_to_point[0].Length() + vectors_to_point[1].Length() - segment.Length()) < Constants::kEpsilon;
+    return std::abs(vectors_to_point[0].Length() + vectors_to_point[1].Length() - segment.Length())
+        < Constants::kEpsilon;
 }
 
 bool Triangle::Degenerate::IntersectSegmentSegment(const Triangle& t1, const Triangle& t2) {
@@ -297,7 +299,9 @@ bool Triangle::Degenerate::IntersectNormalPoint(const Triangle& t1, const Triang
         degenerate_triangle = &t1;
     }
 
-    if (std::abs(Vector::Dot(triangle->p0_ - degenerate_triangle->p0_, triangle->GetNormal())) >= Constants::kEpsilon) {
+    if (std::abs(Vector::Dot(triangle->p0_ - degenerate_triangle->p0_, triangle->GetNormal()))
+        >= Constants::kEpsilon)
+    {
         return false;
     }
 
@@ -335,5 +339,5 @@ bool Triangle::Degenerate::IntersectNormalSegment(const Triangle& t1, const Tria
         return false;
     }
 
-    return IntersectSegmentTriangle(segment, *triangle);
+    return triangle->Intersect(segment);
 }

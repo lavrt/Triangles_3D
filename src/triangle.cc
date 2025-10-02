@@ -37,7 +37,10 @@ Vector Triangle::ToVector() const {
     return segment.p0 - segment.p1;
 }
 
-std::tuple<double, double, double> Triangle::IntersectRayTriangle(const Point& p, const Vector& vec, const Triangle& triangle) {
+bool Triangle::IntersectSegmentTriangle(const Segment& s, const Triangle& triangle) {
+    Point p = s.p0;
+    Vector vec = s.p1 - s.p0;
+
     Vector v0 = triangle.p0_.AsVector();
     Vector v1 = triangle.p1_.AsVector();
     Vector v2 = triangle.p2_.AsVector();
@@ -55,7 +58,7 @@ std::tuple<double, double, double> Triangle::IntersectRayTriangle(const Point& p
     double u = Vector::Dot(P, T) / denom;
     double v = Vector::Dot(Q, D) / denom;
 
-    return {t, u, v};
+    return u >= 0 && v >= 0 && 1 - u - v >= 0 && std::abs(t) <= 1;
 }
 
 bool Triangle::Contains(const Point& p) const {
@@ -122,134 +125,9 @@ PlanesPosition Triangle::RelativePlanesPosition(const Triangle& t1, const Triang
         : PlanesPosition::Parallel;
 }
 
-bool Triangle::IntersectDegenerateTriangles(const Triangle& t1, const Triangle& t2) {
-    if (t1.GetType() == TriangleType::Point && t2.GetType() == TriangleType::Point) {
-        return t1.p0_ == t2.p0_;
-    }
-
-    if (t1.GetType() == TriangleType::Point && t2.GetType() == TriangleType::Segment ||
-        t1.GetType() == TriangleType::Segment && t2.GetType() == TriangleType::Point)
-    {
-        Segment segment;
-        Point point;
-
-        if (t1.GetType() == TriangleType::Segment) {
-            segment = t1.ToSegment();
-            point = t2.p0_;
-        } else {
-            segment = t2.ToSegment();
-            point = t1.p0_;
-        }
-        
-        Vector vectors_to_point[] = {point - segment.p0, point - segment.p1};
-
-        return std::abs(vectors_to_point[0].Length() + vectors_to_point[1].Length() - segment.Length()) < Constants::kEpsilon;
-    }
-
-    if (t1.GetType() == TriangleType::Segment && t2.GetType() == TriangleType::Segment) {
-        Segment s1 = t1.ToSegment();
-        Segment s2 = t2.ToSegment();
-
-        Vector v1 = s1.p1 - s1.p0;
-        Vector v2 = s2.p1 - s2.p0;
-
-        Vector diff = s2.p0 - s1.p0;
-
-        Vector N = Vector::Cross(v1, v2);
-
-        if (N == Constants::null_vec) {
-            if (Vector::Cross(diff, v1) != Constants::null_vec) {
-                return false;
-            }
-
-            double denom = Vector::Dot(v1, v1);
-
-            double t0 = Vector::Dot(diff, v1) / denom;
-            double t1 = Vector::Dot(s2.p1 - s1.p0, v1) / denom;
-            
-            double proj_min = std::min(t0, t1);
-            double proj_max = std::max(t0, t1);
-
-            return std::max(proj_min, 0.0) <= std::min(proj_max, 1.0) + Constants::kEpsilon;
-        }
-
-        double dist = std::abs(Vector::Dot(diff, N));
-        if (dist > Constants::kEpsilon) {
-            return false;
-        }
-        double denom = Vector::Dot(N, N);
-        double t = Vector::Dot(Vector::Cross(diff, v2), N) / denom;
-        double s = Vector::Dot(Vector::Cross(diff, v1), N) / denom;
-
-        return t >= 0 - Constants::kEpsilon && t <= 1 + Constants::kEpsilon
-            && s >= 0 - Constants::kEpsilon && s <= 1 + Constants::kEpsilon;
-    }
-
-    if (t1.GetType() == TriangleType::Normal && t2.GetType() == TriangleType::Point ||
-        t1.GetType() == TriangleType::Point && t2.GetType() == TriangleType::Normal)
-    {
-        const Triangle* triangle;
-        const Triangle* degenerate_triangle;
-        
-        if (t1.GetType() == TriangleType::Normal) {
-            triangle = &t1;
-            degenerate_triangle = &t2;
-        } else {
-            triangle = &t2;
-            degenerate_triangle = &t1;
-        }
-
-        if (std::abs(Vector::Dot(triangle->p0_ - degenerate_triangle->p0_, triangle->GetNormal())) >= Constants::kEpsilon) {
-            return false;
-        }
-
-        return triangle->Contains(degenerate_triangle->p0_);
-    }
-
-    if (t1.GetType() == TriangleType::Normal && t2.GetType() == TriangleType::Segment ||
-        t1.GetType() == TriangleType::Segment && t2.GetType() == TriangleType::Normal)
-    {
-        const Triangle* triangle;
-        const Triangle* degenerate_triangle;
-        
-        if (t1.GetType() == TriangleType::Normal) {
-            triangle = &t1;
-            degenerate_triangle = &t2;
-        } else {
-            triangle = &t2;
-            degenerate_triangle = &t1;
-        }
-
-        Segment segment = degenerate_triangle->ToSegment();
-        Point p = segment.p0;
-        Vector vec = segment.p0 - segment.p1;
-
-        if (std::abs(Vector::Dot(triangle->GetNormal(), vec)) <= Constants::kEpsilon) { 
-            if (Vector::Dot(p - triangle->p0_, triangle->GetNormal())) { 
-                return false;
-            }
-            
-            if (Segment::Intersect({triangle->p0_, triangle->p1_}, segment)) return true;
-            if (Segment::Intersect({triangle->p1_, triangle->p2_}, segment)) return true;
-            if (Segment::Intersect({triangle->p2_, triangle->p0_}, segment)) return true;
-
-            if (triangle->Contains(segment.p0)) return true;
-            if (triangle->Contains(segment.p1)) return true;
-
-            return false;
-        }
-
-        auto [t, u, v] = IntersectRayTriangle(p, vec, *triangle);
-
-        return u >= 0 && v >= 0 && 1 - u - v >= 0 && std::abs(t) <= 1;
-    }
-
-    throw std::runtime_error(""); // TODO
-}
-
 bool Triangle::Intersect(const Triangle& t1, const Triangle& t2) {
     if (t1.GetType() != TriangleType::Normal || t2.GetType() != TriangleType::Normal) {
-        return IntersectDegenerateTriangles(t1, t2);
+        return Degenerate::Intersect(t1, t2);
     }
 
     auto relative_planes_position = RelativePlanesPosition(t1, t2);
@@ -313,4 +191,149 @@ std::pair<double, double> Triangle::Project(const Vector& axis) const {
         *std::min_element(projections.begin(), projections.end()),
         *std::max_element(projections.begin(), projections.end()),
     };
+}
+
+// Triangle::Degenerate ----------------------------------------------------------------------------
+
+bool Triangle::Degenerate::Intersect(const Triangle& t1, const Triangle& t2) {
+    if (t1.GetType() == TriangleType::Point && t2.GetType() == TriangleType::Point) {
+        return IntersectPointPoint(t1, t2);
+    }
+
+    if (t1.GetType() == TriangleType::Point && t2.GetType() == TriangleType::Segment ||
+        t1.GetType() == TriangleType::Segment && t2.GetType() == TriangleType::Point)
+    {
+        return IntersectPointSegment(t1, t2);
+    }
+
+    if (t1.GetType() == TriangleType::Segment && t2.GetType() == TriangleType::Segment) {
+        return IntersectSegmentSegment(t1, t2);
+    }
+
+    if (t1.GetType() == TriangleType::Normal && t2.GetType() == TriangleType::Point ||
+        t1.GetType() == TriangleType::Point && t2.GetType() == TriangleType::Normal)
+    {
+        return IntersectNormalPoint(t1, t2);
+    }
+
+    if (t1.GetType() == TriangleType::Normal && t2.GetType() == TriangleType::Segment ||
+        t1.GetType() == TriangleType::Segment && t2.GetType() == TriangleType::Normal)
+    {
+        return IntersectNormalSegment(t1, t2);
+    }
+
+    throw std::runtime_error("Triangles are not degenerate");
+}
+
+bool Triangle::Degenerate::IntersectPointPoint(const Triangle& t1, const Triangle& t2) {
+    return t1.p0_ == t2.p0_;
+}
+
+bool Triangle::Degenerate::IntersectPointSegment(const Triangle& t1, const Triangle& t2) {
+    Segment segment;
+    Point point;
+
+    if (t1.GetType() == TriangleType::Segment) {
+        segment = t1.ToSegment();
+        point = t2.p0_;
+    } else {
+        segment = t2.ToSegment();
+        point = t1.p0_;
+    }
+    
+    Vector vectors_to_point[] = {point - segment.p0, point - segment.p1};
+
+    return std::abs(vectors_to_point[0].Length() + vectors_to_point[1].Length() - segment.Length()) < Constants::kEpsilon;
+}
+
+bool Triangle::Degenerate::IntersectSegmentSegment(const Triangle& t1, const Triangle& t2) {
+    Segment s1 = t1.ToSegment();
+    Segment s2 = t2.ToSegment();
+
+    Vector v1 = s1.p1 - s1.p0;
+    Vector v2 = s2.p1 - s2.p0;
+
+    Vector diff = s2.p0 - s1.p0;
+
+    Vector N = Vector::Cross(v1, v2);
+
+    if (N == Constants::null_vec) {
+        if (Vector::Cross(diff, v1) != Constants::null_vec) {
+            return false;
+        }
+
+        double denom = Vector::Dot(v1, v1);
+
+        double t0 = Vector::Dot(diff, v1) / denom;
+        double t1 = Vector::Dot(s2.p1 - s1.p0, v1) / denom;
+        
+        double proj_min = std::min(t0, t1);
+        double proj_max = std::max(t0, t1);
+
+        return std::max(proj_min, 0.0) <= std::min(proj_max, 1.0) + Constants::kEpsilon;
+    }
+
+    double dist = std::abs(Vector::Dot(diff, N));
+    if (dist > Constants::kEpsilon) {
+        return false;
+    }
+    double denom = Vector::Dot(N, N);
+    double t = Vector::Dot(Vector::Cross(diff, v2), N) / denom;
+    double s = Vector::Dot(Vector::Cross(diff, v1), N) / denom;
+
+    return t >= 0 - Constants::kEpsilon && t <= 1 + Constants::kEpsilon
+        && s >= 0 - Constants::kEpsilon && s <= 1 + Constants::kEpsilon;
+}
+
+bool Triangle::Degenerate::IntersectNormalPoint(const Triangle& t1, const Triangle& t2) {
+    const Triangle* triangle;
+    const Triangle* degenerate_triangle;
+    
+    if (t1.GetType() == TriangleType::Normal) {
+        triangle = &t1;
+        degenerate_triangle = &t2;
+    } else {
+        triangle = &t2;
+        degenerate_triangle = &t1;
+    }
+
+    if (std::abs(Vector::Dot(triangle->p0_ - degenerate_triangle->p0_, triangle->GetNormal())) >= Constants::kEpsilon) {
+        return false;
+    }
+
+    return triangle->Contains(degenerate_triangle->p0_);
+}
+
+bool Triangle::Degenerate::IntersectNormalSegment(const Triangle& t1, const Triangle& t2) {
+    const Triangle* triangle;
+    const Triangle* degenerate_triangle;
+    
+    if (t1.GetType() == TriangleType::Normal) {
+        triangle = &t1;
+        degenerate_triangle = &t2;
+    } else {
+        triangle = &t2;
+        degenerate_triangle = &t1;
+    }
+
+    Segment segment = degenerate_triangle->ToSegment();
+    Point p = segment.p0;
+    Vector vec = segment.p0 - segment.p1;
+
+    if (std::abs(Vector::Dot(triangle->GetNormal(), vec)) <= Constants::kEpsilon) { 
+        if (Vector::Dot(p - triangle->p0_, triangle->GetNormal())) { 
+            return false;
+        }
+        
+        if (Segment::Intersect({triangle->p0_, triangle->p1_}, segment)) return true;
+        if (Segment::Intersect({triangle->p1_, triangle->p2_}, segment)) return true;
+        if (Segment::Intersect({triangle->p2_, triangle->p0_}, segment)) return true;
+
+        if (triangle->Contains(segment.p0)) return true;
+        if (triangle->Contains(segment.p1)) return true;
+
+        return false;
+    }
+
+    return IntersectSegmentTriangle(segment, *triangle);
 }

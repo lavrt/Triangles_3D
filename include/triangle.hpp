@@ -30,6 +30,18 @@ private:
 
     TriangleType DetermineType() const;
 
+    class Degenerate {
+    public:
+        static bool Intersect(const Triangle& t1, const Triangle& t2);
+    
+    private:
+        static bool IntersectPointPoint(const Triangle& t1, const Triangle& t2);
+        static bool IntersectPointSegment(const Triangle& t1, const Triangle& t2);
+        static bool IntersectSegmentSegment(const Triangle& t1, const Triangle& t2);
+        static bool IntersectNormalPoint(const Triangle& t1, const Triangle& t2);
+        static bool IntersectNormalSegment(const Triangle& t1, const Triangle& t2);
+    };
+
 public:
     Triangle(size_t id, Point p0, Point p1, Point p2) 
         : id_(id), p0_(p0), p1_(p1), p2_(p2),
@@ -41,12 +53,12 @@ public:
 
     static AABB ComputeBoundingBox(const std::span<Triangle>& triangles);
     static bool Intersect(const Triangle& t1, const Triangle& t2);
-    static bool IntersectDegenerateTriangles(const Triangle& t1, const Triangle& t2);
-    static std::tuple<double, double, double> IntersectRayTriangle(const Point& p, const Vector& v, const Triangle& t);
     static bool SAT(const Triangle& t1, const Triangle& t2);
     static PlanesPosition RelativePlanesPosition(const Triangle& t1, const Triangle& t2);
 
     std::pair<double, double> Project(const Vector& axis) const;
+
+    static bool IntersectSegmentTriangle(const Segment& s, const Triangle& triangle);
     
     /**
      * @brief Checks whether all points of the "other" triangle are in the "this" triangle
@@ -76,20 +88,8 @@ public:
      */
     bool Contains(const Point& p) const;
 
-    /**
-     * @brief Represents a triangle degenerated into a segment in the form of a segment
-     * 
-     * @return segment
-     */
-    Segment ToSegment() const;
-    
-    /**
-     * @brief Represents a triangle degenerated into a segment in the form of a vector
-     * 
-     * @return vector
-     */
+    Segment ToSegment() const;    
     Vector ToVector() const;
-
     Point operator[](size_t i) const;
 
     TriangleType GetType() const noexcept {

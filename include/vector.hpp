@@ -61,8 +61,4 @@ struct Vector {
 
 namespace Constants {
     inline const Vector null_vec{0, 0, 0};
-
-    namespace Basis {
-        inline const Vector x{1, 0, 0}, y{0, 1, 0}, z{0, 0, 1};
-    }
 }

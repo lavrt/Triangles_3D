@@ -23,10 +23,6 @@ struct Vector {
         return a.x * b.x + a.y * b.y + a.z * b.z;
     }
 
-    static double Triple(const Vector& a, const Vector& b, const Vector& c) {
-        return Dot(a, Cross(b, c));
-    }
-
     Vector Normalized() const {
         double len = this->Length();
         return (len < Constants::kEpsilon) ? Vector{0, 0, 0} : Vector{x / len, y / len, z / len};

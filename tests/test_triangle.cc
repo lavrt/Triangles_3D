@@ -157,6 +157,32 @@ TEST(TriangleEdgeCasesTest, ContainsMethod) {
     EXPECT_TRUE(result);
 }
 
+// Custom test cases -------------------------------------------------------------------------------
+
+TEST(TriangleSpecificTest, CustomTestCase1) {
+    Triangle t0(0, 
+        Point{0, 0, 0}, 
+        Point{1, 0, 0}, 
+        Point{0, 1, 0}
+    );
+    
+    Triangle t1(1, 
+        Point{5, 5, 5}, 
+        Point{5, 5, 5}, 
+        Point{5, 5, 5}
+    );
+    
+    Triangle t2(2, 
+        Point{0, 0.5, -0.5}, 
+        Point{0, 0.5, 0.5}, 
+        Point{-1, 0, 0}
+    );
+    
+    EXPECT_FALSE(Triangle::Intersect(t0, t1));
+    EXPECT_TRUE(Triangle::Intersect(t0, t2));   
+    EXPECT_FALSE(Triangle::Intersect(t1, t2));
+}
+
 // Special cases -----------------------------------------------------------------------------------
 
 TEST(TriangleDegenerateTest, PointTriangleIntersection) {

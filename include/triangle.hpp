@@ -1,13 +1,19 @@
 #pragma once
 
 #include <span>
+#include <tuple>
 #include <algorithm>
 
+#include "segment.hpp"
 #include "point.hpp"
 #include "aabb.hpp"
 
 enum class PlanesPosition {
     Parallel, Coincide, Intersect
+};
+
+enum class TriangleType {
+    Normal, Point, Segment
 };
 
 class Triangle {
@@ -20,22 +26,36 @@ private:
 
     AABB aabb_;
     Vector normal_;
+    TriangleType type_;
+
+    TriangleType DetermineType() const;
 
 public:
     Triangle(size_t id, Point p0, Point p1, Point p2) 
-        : id_(id), p0_(p0), p1_(p1), p2_(p2), normal_(Vector::Cross(p1_ - p0_, p2_ - p1_).Normalized()),
+        : id_(id), p0_(p0), p1_(p1), p2_(p2),
+          type_(this->DetermineType()),
+          normal_(Vector::Cross(p1_ - p0_, p2_ - p1_).Normalized()),
           aabb_({std::min({p0.x, p1.x, p2.x}), std::min({p0.y, p1.y, p2.y}), std::min({p0.z, p1.z, p2.z})}, 
                 {std::max({p0.x, p1.x, p2.x}), std::max({p0.y, p1.y, p2.y}), std::max({p0.z, p1.z, p2.z})})
     {}
 
     static AABB ComputeBoundingBox(const std::span<Triangle>& triangles);
-    static bool Intersect(const Triangle& tr1, const Triangle& tr2);
+    static bool Intersect(const Triangle& t1, const Triangle& t2);
+    static bool IntersectDegenerateTriangles(const Triangle& t1, const Triangle& t2);
+    static std::tuple<double, double, double> IntersectRayTriangle(const Point& p, const Vector& v, const Triangle& t);
     static bool SAT(const Triangle& t1, const Triangle& t2);
     static PlanesPosition RelativePlanesPosition(const Triangle& t1, const Triangle& t2);
 
     std::pair<double, double> Project(const Vector& axis) const;
     bool Contains(const std::pair<size_t, size_t>& plane, const Triangle& other) const;
+    bool Contains(const Point& p) const;
     Point operator[](size_t i) const;
+    Segment ToSegment() const;
+    Vector ToVector() const;
+
+    TriangleType GetType() const noexcept {
+        return type_;
+    }
 
     size_t GetId() const noexcept {
         return id_;

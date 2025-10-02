@@ -23,6 +23,10 @@ struct Vector {
         return a.x * b.x + a.y * b.y + a.z * b.z;
     }
 
+    static double Triple(const Vector& a, const Vector& b, const Vector& c) {
+        return Dot(a, Cross(b, c));
+    }
+
     Vector Normalized() const {
         double len = this->Length();
         return (len < Constants::kEpsilon) ? Vector{0, 0, 0} : Vector{x / len, y / len, z / len};
@@ -35,9 +39,29 @@ struct Vector {
     bool Collinear(const Vector& other) const {
         return Vector::Cross(*this, other).Length() < Constants::kEpsilon;
     }
+
+    bool operator==(const Vector& other) const {
+        return std::abs(x - other.x) < Constants::kEpsilon
+            && std::abs(y - other.y) < Constants::kEpsilon
+            && std::abs(z - other.z) < Constants::kEpsilon;
+    }
+
+    bool operator!=(const Vector& other) const {
+        return !(*this == other);
+    }
+
+    Vector operator*(double k) const {
+        return {x * k, y * k, z * k};
+    }
+
+    Vector operator-(const Vector& other) const {
+        return {x - other.x, y - other.y, z - other.z};
+    }
 };
 
 namespace Constants {
+    inline const Vector null_vec{0, 0, 0};
+
     namespace Basis {
         inline const Vector x{1, 0, 0}, y{0, 1, 0}, z{0, 0, 1};
     }

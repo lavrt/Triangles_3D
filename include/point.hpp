@@ -23,6 +23,16 @@ struct Point {
         return Vector{x - other.x, y - other.y, z - other.z};
     }
 
+    bool operator==(const Point& other) const {
+        return std::abs(x - other.x) < Constants::kEpsilon
+            && std::abs(y - other.y) < Constants::kEpsilon
+            && std::abs(z - other.z) < Constants::kEpsilon;
+    }
+
+    Point operator+(const Vector& vector) const {
+        return {x + vector.x, y + vector.y, z + vector.z};
+    }
+
     Vector AsVector() const {
         return Vector{x, y, z};
     }

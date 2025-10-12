@@ -16,7 +16,7 @@ enum class TriangleType {
     Normal, Point, Segment
 };
 
-class Triangle {
+class Triangle { // TODO можно не хранить нормаль и сделать поля public
 private:
     size_t id_;
 
@@ -30,7 +30,7 @@ private:
 
     TriangleType DetermineType() const;
 
-    class Degenerate {
+    class Degenerate { // TODO можно перегрузить типо точка и вектор и тд
     public:
         static bool Intersect(const Triangle& t1, const Triangle& t2);
     

@@ -36,7 +36,7 @@ struct Vector {
         return Vector::Cross(*this, other).Length() < Constants::kEpsilon;
     }
 
-    bool operator==(const Vector& other) const {
+    bool operator==(const Vector& other) const { // TODO "примерно равно" - другой метод с более явным названием
         return std::abs(x - other.x) < Constants::kEpsilon
             && std::abs(y - other.y) < Constants::kEpsilon
             && std::abs(z - other.z) < Constants::kEpsilon;

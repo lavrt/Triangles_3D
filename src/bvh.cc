@@ -43,7 +43,7 @@ size_t BVH::GetSplitAxis(const AABB& aabb) const {
     return (diff.x >= diff.y && diff.x >= diff.z) ? 0 : (diff.y >= diff.z) ? 1 : 2;
 }
 
-std::set<size_t> BVH::FindIntersectingTriangles() {
+std::set<size_t> BVH::FindIntersectingTriangles() { // TODO можно индекс не size_t а свой класс (не обяз)
     RecursiveFindIntersections(root_, root_);
     return intersecting_triangles_;
 }

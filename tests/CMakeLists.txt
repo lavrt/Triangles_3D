@@ -1,26 +1,55 @@
+# GTest -----------------------------------------------------------
+
 find_package(GTest REQUIRED)
 
-set(SOURCES
-    test_triangle.cc ../src/triangle.cc
-    test_bvh.cc ../src/bvh.cc
-    test_triangle.cc
-    test_segment.cc
-    test_vector.cc
-    test_point.cc
-    test_aabb.cc
-    test_node.cc
-    test_main.cc
+set(SOURCES_GTEST
+    gtest/test_triangle.cc ${CMAKE_SOURCE_DIR}/src/triangle.cc
+    gtest/test_bvh.cc ${CMAKE_SOURCE_DIR}/src/bvh.cc
+    gtest/test_triangle.cc
+    gtest/test_segment.cc
+    gtest/test_vector.cc
+    gtest/test_point.cc
+    gtest/test_aabb.cc
+    gtest/test_node.cc
+    gtest/test_main.cc
 )
 
-add_executable(run_tests ${SOURCES})
+add_executable(run_gtest ${SOURCES_GTEST})
 
-target_include_directories(run_tests
+target_include_directories(run_gtest
     PUBLIC
         ${CMAKE_SOURCE_DIR}/include
 )
 
-target_link_libraries(run_tests GTest::gtest GTest::gtest_main)
+target_link_libraries(run_gtest GTest::gtest GTest::gtest_main)
 
 include(GoogleTest)
+gtest_discover_tests(run_gtest)
 
-gtest_discover_tests(run_tests)
+# E2E tests -------------------------------------------------------
+
+## test generation ------------------
+
+add_executable(run_e2e_generation e2e/test_generation/main.cc)
+
+## test execution -------------------
+
+add_executable(run_e2e_test_execution e2e/test_execution/main.cc ${CMAKE_SOURCE_DIR}/src/triangle.cc)
+
+target_include_directories(run_e2e_test_execution
+    PUBLIC
+        ${CMAKE_SOURCE_DIR}/include
+)
+
+## reference program ----------------
+
+find_package(fcl REQUIRED)
+
+add_executable(run_e2e_reference e2e/reference/main.cc)
+
+target_link_libraries(run_e2e_reference
+    PUBLIC
+        fcl
+)
+
+

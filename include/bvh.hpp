@@ -7,7 +7,7 @@
 
 #include "node.hpp"
 
-class BVH {
+class BVH { // TODO BSP скорее, можно шаблон, можно вектор нод и в нодах держать вектор треугольников в единст экземпляре
 private:
     static constexpr int kMaxTrianglesPerLeaf = 3;
 

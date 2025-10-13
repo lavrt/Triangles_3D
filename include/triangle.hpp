@@ -28,8 +28,6 @@ private:
     Vector normal_;
     TriangleType type_;
 
-    TriangleType DetermineType() const;
-
     class Degenerate { // TODO можно перегрузить типо точка и вектор и тд
     public:
         static bool Intersect(const Triangle& t1, const Triangle& t2);
@@ -86,7 +84,9 @@ public:
      * @param other Second triangle
      * @return true if all points of the "other" triangle are inside the "this" triangle
      */
-    bool Contains(const Triangle& other) const;
+    bool Contains(const Triangle& other) const {
+        return this->Contains(other.p0_) && this->Contains(other.p1_) && this->Contains(other.p2_);
+    }
 
     /**
      * @brief Point-in-triangle test for 2D triangles
@@ -105,13 +105,60 @@ public:
      */
     bool Contains(const Point& p) const;
 
-    static AABB ComputeBoundingBox(const std::span<Triangle>& triangles);
     static PlanesPosition RelativePlanesPosition(const Triangle& t1, const Triangle& t2);
     std::pair<double, double> Project(const Vector& axis) const;
     bool Intersect(const Segment& s) const;
-    Point operator[](size_t i) const;
-    Segment ToSegment() const;    
-    Vector ToVector() const;
+
+    static AABB ComputeBoundingBox(const std::span<Triangle>& triangles) {
+        AABB aabb;
+
+        for (const auto& triangle : triangles) {
+            aabb.Expand(triangle.GetAABB());
+        }
+
+        return aabb;
+    }
+
+    Segment ToSegment() const {
+        if (this->GetType() != TriangleType::Segment) {
+            throw std::runtime_error("The triangle is not degenerate into a line segment");
+        }
+
+        double vector_lengths[] {(p1_ - p0_).Length(), (p2_ - p1_).Length(), (p2_ - p0_).Length()};
+
+        if (std::abs(vector_lengths[0] + vector_lengths[1] - vector_lengths[2]) < Constants::kEpsilon) {
+            return {p0_, p2_};
+        }
+
+        if (std::abs(vector_lengths[0] + vector_lengths[2] - vector_lengths[1]) < Constants::kEpsilon) {
+            return {p1_, p2_};
+        }
+
+        return {p0_, p1_};
+    }
+
+    Vector ToVector() const {
+        Segment segment = this->ToSegment();
+        return segment.p0 - segment.p1;
+    }
+
+    TriangleType DetermineType() const {
+        return normal_ != Constants::null_vec
+            ? TriangleType::Normal
+            : p0_ == p1_ && p1_ == p2_
+                ? TriangleType::Point
+                : TriangleType::Segment;
+    }
+
+    Point operator[](size_t i) const {
+        switch (i) {
+            case 0: return p0_;
+            case 1: return p1_;
+            case 2: return p2_;
+            
+            default: throw std::out_of_range("Incorrect access to fields of the class: Triangle");
+        }
+    }
 
     TriangleType GetType() const noexcept {
         return type_;

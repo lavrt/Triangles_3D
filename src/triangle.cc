@@ -6,37 +6,6 @@
 #include "segment.hpp"
 #include "constants.hpp"
 
-TriangleType Triangle::DetermineType() const {
-    return normal_ != Constants::null_vec
-        ? TriangleType::Normal
-        : p0_ == p1_ && p1_ == p2_
-            ? TriangleType::Point
-            : TriangleType::Segment;
-}
-
-Segment Triangle::ToSegment() const {
-    if (this->GetType() != TriangleType::Segment) {
-        throw std::runtime_error("The triangle is not degenerate into a line segment");
-    }
-
-    double vector_lengths[] {(p1_ - p0_).Length(), (p2_ - p1_).Length(), (p2_ - p0_).Length()};
-
-    if (std::abs(vector_lengths[0] + vector_lengths[1] - vector_lengths[2]) < Constants::kEpsilon) {
-        return {p0_, p2_};
-    }
-
-    if (std::abs(vector_lengths[0] + vector_lengths[2] - vector_lengths[1]) < Constants::kEpsilon) {
-        return {p1_, p2_};
-    }
-
-    return {p0_, p1_};
-}
-
-Vector Triangle::ToVector() const {
-    Segment segment = this->ToSegment();
-    return segment.p0 - segment.p1;
-}
-
 bool Triangle::Intersect(const Segment& s) const {
     Point p = s.p0;
     Vector vec = s.p1 - s.p0;
@@ -80,30 +49,6 @@ bool Triangle::Contains(const Point& p) const {
 
     return alpha >= -Constants::kEpsilon && beta >= -Constants::kEpsilon
         && gamma >= -Constants::kEpsilon;
-}
-
-Point Triangle::operator[](size_t i) const {
-    switch (i) {
-        case 0: return p0_;
-        case 1: return p1_;
-        case 2: return p2_;
-        
-        default: throw std::out_of_range("Incorrect access to fields of the class: Triangle");
-    }
-}
-
-AABB Triangle::ComputeBoundingBox(const std::span<Triangle>& triangles) {
-    AABB aabb;
-
-    for (const auto& triangle : triangles) {
-        aabb.Expand(triangle.GetAABB());
-    }
-
-    return aabb;
-}
-
-bool Triangle::Contains(const Triangle& other) const {
-    return this->Contains(other.p0_) && this->Contains(other.p1_) && this->Contains(other.p2_);
 }
 
 PlanesPosition Triangle::RelativePlanesPosition(const Triangle& t1, const Triangle& t2) {

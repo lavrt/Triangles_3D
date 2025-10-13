@@ -3,10 +3,6 @@
 #include <stdexcept>
 #include <cassert>
 
-void BVH::Build() {
-    root_ = RecursiveBuild(0, triangles_.size());
-}
-
 std::unique_ptr<BVHNode> BVH::RecursiveBuild(size_t start, size_t end) {
     std::span<Triangle> triangles(triangles_.begin() + start, triangles_.begin() + end);
 
@@ -36,16 +32,6 @@ std::unique_ptr<BVHNode> BVH::RecursiveBuild(size_t start, size_t end) {
     node->SetRight(RecursiveBuild(mid, end));
 
     return node;
-}
-
-size_t BVH::GetSplitAxis(const AABB& aabb) const {
-    Vector diff = aabb.max - aabb.min;
-    return (diff.x >= diff.y && diff.x >= diff.z) ? 0 : (diff.y >= diff.z) ? 1 : 2;
-}
-
-std::set<size_t> BVH::FindIntersectingTriangles() { // TODO можно индекс не size_t а свой класс (не обяз)
-    RecursiveFindIntersections(root_, root_);
-    return intersecting_triangles_;
 }
 
 void BVH::RecursiveFindIntersections(const std::unique_ptr<BVHNode>& a, const std::unique_ptr<BVHNode>& b) {

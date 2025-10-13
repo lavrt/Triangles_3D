@@ -28,17 +28,12 @@ private:
     Vector normal_;
     TriangleType type_;
 
-    class Degenerate { // TODO можно перегрузить типо точка и вектор и тд
-    public:
-        static bool Intersect(const Triangle& t1, const Triangle& t2);
-    
-    private:
-        static bool IntersectPointPoint(const Triangle& t1, const Triangle& t2);
-        static bool IntersectPointSegment(const Triangle& t1, const Triangle& t2);
-        static bool IntersectSegmentSegment(const Triangle& t1, const Triangle& t2);
-        static bool IntersectNormalPoint(const Triangle& t1, const Triangle& t2);
-        static bool IntersectNormalSegment(const Triangle& t1, const Triangle& t2);
-    };
+    static bool IntersectDegenerate(const Triangle& t1, const Triangle& t2);
+    static bool Intersect(const Point& p1, const Point& p2);
+    static bool Intersect(const Point& p, const Segment& s);
+    static bool Intersect(const Segment& s1, const Segment& s2);
+    static bool Intersect(const Triangle& t, const Point& p);
+    static bool Intersect(const Triangle& t, const Segment& s);
 
 public:
     Triangle(size_t id, Point p0, Point p1, Point p2) 
@@ -107,7 +102,6 @@ public:
 
     static PlanesPosition RelativePlanesPosition(const Triangle& t1, const Triangle& t2);
     std::pair<double, double> Project(const Vector& axis) const;
-    bool Intersect(const Segment& s) const;
 
     static AABB ComputeBoundingBox(const std::span<Triangle>& triangles) {
         AABB aabb;
@@ -117,6 +111,14 @@ public:
         }
 
         return aabb;
+    }
+
+    Point ToPoint() const {
+        if (p0_ != p1_ || p1_ != p2_ || p2_ != p0_) {
+            throw std::runtime_error("The triangle is not degenerate into a point");
+        }
+        
+        return p0_;
     }
 
     Segment ToSegment() const {

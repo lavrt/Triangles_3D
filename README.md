@@ -76,31 +76,6 @@ In our case, it is necessary to check the intersections of the projections of th
 - ```Node```: Node in the BVH tree hierarchy
 - ```BVH```: Main BVH class for building and querying the acceleration structure
 
-## Project Structure
-```
-Triangles_3D/
-├── include/
-| ├── bvh.hpp
-| ├── aabb.hpp
-| ├── node.hpp
-| ├── point.hpp
-| ├── vector.hpp
-| ├── segment.hpp
-| ├── triangle.hpp
-│ └── constants.hpp
-├── src/
-| ├── main.cc
-| ├── bvh.cc
-│ └── triangle.cc
-├── tests/
-| ├── CMakeLists.txt
-| ├── test_main.cc
-│ └── ...
-├── .gitignore
-├── CMakeLists.txt
-└── README.md
-```
-
 ## Installing and Running
 ```bash
 git clone https://github.com/lavrt/Triangles_3D

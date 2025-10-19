@@ -34,6 +34,6 @@ struct AABB {
     }
 
     Point<T> GetCenter() const {
-        return Point{(max.x + min.x) / 2, (max.y + min.y) / 2, (max.z + min.z) / 2};
+        return Point<T>{(max.x + min.x) / 2, (max.y + min.y) / 2, (max.z + min.z) / 2};
     }
 };

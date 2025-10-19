@@ -32,8 +32,8 @@ struct Segment {
 
         Vector<T> N = Vector<T>::Cross(v1, v2);
 
-        if (N == Vector<T>{0, 0, 0}) {
-            if (Vector<T>::Cross(diff, v1) != Vector<T>{0, 0, 0}) {
+        if (N.IsNullVector()) {
+            if (!Vector<T>::Cross(diff, v1).IsNullVector()) {
                 return false;
             }
 

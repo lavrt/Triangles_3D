@@ -26,7 +26,7 @@ struct Vector {
 
     Vector Normalized() const {
         T len = this->Length();
-        return (len < Constants::kEpsilon) ? Vector{0, 0, 0} : Vector{x / len, y / len, z / len};
+        return (len < Constants::kEpsilon) ? Vector<T>{0, 0, 0} : Vector{x / len, y / len, z / len};
     }
 
     T Length() const {
@@ -37,14 +37,10 @@ struct Vector {
         return Vector::Cross(*this, other).Length() < Constants::kEpsilon;
     }
 
-    bool operator==(const Vector& other) const { // TODO "примерно равно" - другой метод с более явным названием
-        return std::abs(x - other.x) < Constants::kEpsilon
-            && std::abs(y - other.y) < Constants::kEpsilon
-            && std::abs(z - other.z) < Constants::kEpsilon;
-    }
-
-    bool operator!=(const Vector& other) const {
-        return !(*this == other);
+    bool IsNullVector() const {
+        return std::abs(x) < Constants::kEpsilon
+            && std::abs(y) < Constants::kEpsilon
+            && std::abs(z) < Constants::kEpsilon;
     }
 
     Vector operator*(T k) const {

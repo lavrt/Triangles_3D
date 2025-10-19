@@ -83,8 +83,8 @@ private:
 
         Vector<T> N = Vector<T>::Cross(v1, v2);
 
-        if (N == Vector<T>{0, 0, 0}) {
-            if (Vector<T>::Cross(diff, v1) != Vector<T>{0, 0, 0}) {
+        if (N.IsNullVector()) {
+            if (!Vector<T>::Cross(diff, v1).IsNullVector()) {
                 return false;
             }
 
@@ -368,7 +368,7 @@ public:
     }
 
     TriangleType DetermineType() const {
-        return normal_ != Vector<T>{0, 0, 0}
+        return !normal_.IsNullVector()
             ? TriangleType::Normal
             : p0_ == p1_ && p1_ == p2_
                 ? TriangleType::Point

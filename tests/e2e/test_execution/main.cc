@@ -6,7 +6,7 @@
 
 namespace {
 
-std::vector<Triangle> ReadTrianglesFromFile(const std::string& filename) {
+std::vector<Triangle<double>> ReadTrianglesFromFile(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         throw std::runtime_error("File opening error");
@@ -19,7 +19,7 @@ std::vector<Triangle> ReadTrianglesFromFile(const std::string& filename) {
     size_t number_of_triangles = 0;
     ss >> number_of_triangles;
 
-    std::vector<Triangle> triangles;
+    std::vector<Triangle<double>> triangles;
     triangles.reserve(number_of_triangles);
 
     while (std::getline(file, line)) {
@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
         }
     }
 
-    std::vector<Triangle> triangles = ReadTrianglesFromFile("./tests/e2e/test_data/" + data);
+    std::vector<Triangle<double>> triangles = ReadTrianglesFromFile("./tests/e2e/test_data/" + data);
 
     std::ifstream s("./tests/e2e/test_data/" + answers_filename);
     if (!s.is_open()) {
@@ -84,7 +84,7 @@ int main(int argc, char** argv) {
     auto it = answers.begin();    
     for (size_t i = 0; i != triangles.size(); ++i) {
         for (size_t j = i + 1; j < triangles.size(); ++j) {
-            if (Triangle::Intersect(triangles[i], triangles[j]) != *(it++)) {
+            if (Triangle<double>::Intersect(triangles[i], triangles[j]) != *(it++)) {
                 std::cerr << "Error:\n"
                           << "Expected: " << (*(it - 1) ? "HIT" : "MISS") << "\n"
                           << "Got: " << (!*(it - 1) ? "HIT" : "MISS") << "\n"

@@ -6,32 +6,32 @@
 
 class AABBTest : public ::testing::Test {
 protected:
-    AABB aabb1 = AABB(Point(0, 0, 0), Point(1, 1, 1));
-    AABB aabb2 = AABB(Point(2, 2, 2), Point(3, 3, 3));
-    AABB aabb_overlap = AABB(Point(0.5, 0.5, 0.5), Point(1.5, 1.5, 1.5));
-    AABB aabb_touching = AABB(Point(1, 1, 1), Point(2, 2, 2));
-    AABB aabb_negative = AABB(Point(-2, -2, -2), Point(-1, -1, -1));
-    AABB aabb_large = AABB(Point(-10, -10, -10), Point(10, 10, 10));
+    AABB<double> aabb1 = AABB<double>(Point<double>(0, 0, 0), Point<double>(1, 1, 1));
+    AABB<double> aabb2 = AABB<double>(Point<double>(2, 2, 2), Point<double>(3, 3, 3));
+    AABB<double> aabb_overlap = AABB<double>(Point<double>(0.5, 0.5, 0.5), Point<double>(1.5, 1.5, 1.5));
+    AABB<double> aabb_touching = AABB<double>(Point<double>(1, 1, 1), Point<double>(2, 2, 2));
+    AABB<double> aabb_negative = AABB<double>(Point<double>(-2, -2, -2), Point<double>(-1, -1, -1));
+    AABB<double> aabb_large = AABB<double>(Point<double>(-10, -10, -10), Point<double>(10, 10, 10));
 };
 
 // Constructors ------------------------------------------------------------------------------------
 
 TEST_F(AABBTest, DefaultConstructorInitializesToExtremes) {
-    AABB aabb;
+    AABB<double> aabb;
     
-    EXPECT_DOUBLE_EQ(aabb.min.x, Constants::kMaxDouble);
-    EXPECT_DOUBLE_EQ(aabb.min.y, Constants::kMaxDouble);
-    EXPECT_DOUBLE_EQ(aabb.min.z, Constants::kMaxDouble);
+    EXPECT_DOUBLE_EQ(aabb.min.x, Limits::MaxValue<double>());
+    EXPECT_DOUBLE_EQ(aabb.min.y, Limits::MaxValue<double>());
+    EXPECT_DOUBLE_EQ(aabb.min.z, Limits::MaxValue<double>());
     
-    EXPECT_DOUBLE_EQ(aabb.max.x, Constants::kLowestDouble);
-    EXPECT_DOUBLE_EQ(aabb.max.y, Constants::kLowestDouble);
-    EXPECT_DOUBLE_EQ(aabb.max.z, Constants::kLowestDouble);
+    EXPECT_DOUBLE_EQ(aabb.max.x, Limits::LowestValue<double>());
+    EXPECT_DOUBLE_EQ(aabb.max.y, Limits::LowestValue<double>());
+    EXPECT_DOUBLE_EQ(aabb.max.z, Limits::LowestValue<double>());
 }
 
 TEST_F(AABBTest, ParameterizedConstructorStoresMinMax) {
-    Point min(1, 2, 3);
-    Point max(4, 5, 6);
-    AABB aabb(min, max);
+    Point<double> min(1, 2, 3);
+    Point<double> max(4, 5, 6);
+    AABB<double> aabb(min, max);
     
     EXPECT_DOUBLE_EQ(aabb.min.x, 1);
     EXPECT_DOUBLE_EQ(aabb.min.y, 2);
@@ -43,7 +43,7 @@ TEST_F(AABBTest, ParameterizedConstructorStoresMinMax) {
 }
 
 TEST_F(AABBTest, ConstructorWithReversedCoordinates) {
-    AABB aabb(Point(5, 5, 5), Point(1, 1, 1));
+    AABB<double> aabb(Point<double>(5, 5, 5), Point<double>(1, 1, 1));
     
     EXPECT_DOUBLE_EQ(aabb.min.x, 5);
     EXPECT_DOUBLE_EQ(aabb.max.x, 1);
@@ -52,8 +52,8 @@ TEST_F(AABBTest, ConstructorWithReversedCoordinates) {
 // Expand ------------------------------------------------------------------------------------------
 
 TEST_F(AABBTest, ExpandWithLargerAABBIncreasesBounds) {
-    AABB original(Point(0, 0, 0), Point(1, 1, 1));
-    AABB larger(Point(-1, -1, -1), Point(2, 2, 2));
+    AABB<double> original(Point<double>(0, 0, 0), Point<double>(1, 1, 1));
+    AABB<double> larger(Point<double>(-1, -1, -1), Point<double>(2, 2, 2));
     
     original.Expand(larger);
     
@@ -67,8 +67,8 @@ TEST_F(AABBTest, ExpandWithLargerAABBIncreasesBounds) {
 }
 
 TEST_F(AABBTest, ExpandWithSmallerAABBNoChange) {
-    AABB original(Point(0, 0, 0), Point(3, 3, 3));
-    AABB smaller(Point(1, 1, 1), Point(2, 2, 2));
+    AABB<double> original(Point<double>(0, 0, 0), Point<double>(3, 3, 3));
+    AABB<double> smaller(Point<double>(1, 1, 1), Point<double>(2, 2, 2));
     
     original.Expand(smaller);
     
@@ -77,8 +77,8 @@ TEST_F(AABBTest, ExpandWithSmallerAABBNoChange) {
 }
 
 TEST_F(AABBTest, ExpandWithPartialOverlapExtendsAppropriately) {
-    AABB original(Point(0, 0, 0), Point(2, 2, 2));
-    AABB other(Point(1, 1, 1), Point(3, 3, 3));
+    AABB<double> original(Point<double>(0, 0, 0), Point<double>(2, 2, 2));
+    AABB<double> other(Point<double>(1, 1, 1), Point<double>(3, 3, 3));
     
     original.Expand(other);
     
@@ -87,8 +87,8 @@ TEST_F(AABBTest, ExpandWithPartialOverlapExtendsAppropriately) {
 }
 
 TEST_F(AABBTest, ExpandWithNegativeCoordinates) {
-    AABB original(Point(0, 0, 0), Point(1, 1, 1));
-    AABB negative(Point(-2, -2, -2), Point(-1, -1, -1));
+    AABB<double> original(Point<double>(0, 0, 0), Point<double>(1, 1, 1));
+    AABB<double> negative(Point<double>(-2, -2, -2), Point<double>(-1, -1, -1));
     
     original.Expand(negative);
     
@@ -97,8 +97,8 @@ TEST_F(AABBTest, ExpandWithNegativeCoordinates) {
 }
 
 TEST_F(AABBTest, ExpandEmptyAABBWithNormal) {
-    AABB empty;
-    AABB normal(Point(0, 0, 0), Point(1, 1, 1));
+    AABB<double> empty;
+    AABB<double> normal(Point<double>(0, 0, 0), Point<double>(1, 1, 1));
     
     empty.Expand(normal);
     
@@ -107,8 +107,8 @@ TEST_F(AABBTest, ExpandEmptyAABBWithNormal) {
 }
 
 TEST_F(AABBTest, ExpandNormalWithEmptyAABB) {
-    AABB normal(Point(0, 0, 0), Point(1, 1, 1));
-    AABB empty;
+    AABB<double> normal(Point<double>(0, 0, 0), Point<double>(1, 1, 1));
+    AABB<double> empty;
     
     normal.Expand(empty);
     
@@ -117,10 +117,10 @@ TEST_F(AABBTest, ExpandNormalWithEmptyAABB) {
 }
 
 TEST_F(AABBTest, ExpandMultipleTimes) {
-    AABB aabb(Point(0, 0, 0), Point(1, 1, 1));
+    AABB<double> aabb(Point<double>(0, 0, 0), Point<double>(1, 1, 1));
     
-    aabb.Expand(AABB(Point(-1, 2, 3), Point(4, 5, 6)));
-    aabb.Expand(AABB(Point(7, -2, 1), Point(8, 0, 2)));
+    aabb.Expand(AABB<double>(Point<double>(-1, 2, 3), Point<double>(4, 5, 6)));
+    aabb.Expand(AABB<double>(Point<double>(7, -2, 1), Point<double>(8, 0, 2)));
     
     EXPECT_DOUBLE_EQ(aabb.min.x, -1);
     EXPECT_DOUBLE_EQ(aabb.min.y, -2);
@@ -134,8 +134,8 @@ TEST_F(AABBTest, ExpandMultipleTimes) {
 // GetCenter ---------------------------------------------------------------------------------------
 
 TEST_F(AABBTest, GetCenterBasic) {
-    Point center = aabb1.GetCenter();
-    Point expected(0.5, 0.5, 0.5);
+    Point<double> center = aabb1.GetCenter();
+    Point<double> expected(0.5, 0.5, 0.5);
     
     EXPECT_DOUBLE_EQ(center.x, expected.x);
     EXPECT_DOUBLE_EQ(center.y, expected.y);
@@ -143,8 +143,8 @@ TEST_F(AABBTest, GetCenterBasic) {
 }
 
 TEST_F(AABBTest, GetCenterSymmetricNegative) {
-    AABB aabb(Point(-2, -2, -2), Point(2, 2, 2));
-    Point center = aabb.GetCenter();
+    AABB<double> aabb(Point<double>(-2, -2, -2), Point<double>(2, 2, 2));
+    Point<double> center = aabb.GetCenter();
     
     EXPECT_DOUBLE_EQ(center.x, 0);
     EXPECT_DOUBLE_EQ(center.y, 0);
@@ -152,8 +152,8 @@ TEST_F(AABBTest, GetCenterSymmetricNegative) {
 }
 
 TEST_F(AABBTest, GetCenterAsymmetric) {
-    AABB aabb(Point(1, 2, 3), Point(5, 6, 7));
-    Point center = aabb.GetCenter();
+    AABB<double> aabb(Point<double>(1, 2, 3), Point<double>(5, 6, 7));
+    Point<double> center = aabb.GetCenter();
     
     EXPECT_DOUBLE_EQ(center.x, 3.0);
     EXPECT_DOUBLE_EQ(center.y, 4.0);
@@ -161,8 +161,8 @@ TEST_F(AABBTest, GetCenterAsymmetric) {
 }
 
 TEST_F(AABBTest, GetCenterNegativeRange) {
-    AABB aabb(Point(-5, -3, -1), Point(-1, -1, 0));
-    Point center = aabb.GetCenter();
+    AABB<double> aabb(Point<double>(-5, -3, -1), Point<double>(-1, -1, 0));
+    Point<double> center = aabb.GetCenter();
     
     EXPECT_DOUBLE_EQ(center.x, -3.0);
     EXPECT_DOUBLE_EQ(center.y, -2.0); 
@@ -170,8 +170,8 @@ TEST_F(AABBTest, GetCenterNegativeRange) {
 }
 
 TEST_F(AABBTest, GetCenterDegenerate) {
-    AABB aabb(Point(1, 1, 1), Point(1, 1, 1));
-    Point center = aabb.GetCenter();
+    AABB<double> aabb(Point<double>(1, 1, 1), Point<double>(1, 1, 1));
+    Point<double> center = aabb.GetCenter();
     
     EXPECT_DOUBLE_EQ(center.x, 1);
     EXPECT_DOUBLE_EQ(center.y, 1);
@@ -181,101 +181,101 @@ TEST_F(AABBTest, GetCenterDegenerate) {
 // Intersects --------------------------------------------------------------------------------------
 
 TEST_F(AABBTest, IntersectsSeparatedAABB) {
-    EXPECT_FALSE(AABB::Intersects(aabb1, aabb2));
+    EXPECT_FALSE(AABB<double>::Intersects(aabb1, aabb2));
 }
 
 TEST_F(AABBTest, IntersectsOverlappingAABB) {
-    EXPECT_TRUE(AABB::Intersects(aabb1, aabb_overlap));
+    EXPECT_TRUE(AABB<double>::Intersects(aabb1, aabb_overlap));
 }
 
 TEST_F(AABBTest, IntersectsTouchingAABB) {
-    EXPECT_TRUE(AABB::Intersects(aabb1, aabb_touching));
+    EXPECT_TRUE(AABB<double>::Intersects(aabb1, aabb_touching));
 }
 
 TEST_F(AABBTest, IntersectsIdenticalAABB) {
-    EXPECT_TRUE(AABB::Intersects(aabb1, aabb1));
+    EXPECT_TRUE(AABB<double>::Intersects(aabb1, aabb1));
 }
 
 TEST_F(AABBTest, IntersectsContainedAABB) {
-    AABB small(Point(0.25, 0.25, 0.25), Point(0.75, 0.75, 0.75));
-    EXPECT_TRUE(AABB::Intersects(aabb1, small));
-    EXPECT_TRUE(AABB::Intersects(small, aabb1));
+    AABB<double> small(Point<double>(0.25, 0.25, 0.25), Point<double>(0.75, 0.75, 0.75));
+    EXPECT_TRUE(AABB<double>::Intersects(aabb1, small));
+    EXPECT_TRUE(AABB<double>::Intersects(small, aabb1));
 }
 
 TEST_F(AABBTest, IntersectsNegativeCoordinates) {
-    AABB neg1(Point(-3, -3, -3), Point(-2, -2, -2));
-    AABB neg2(Point(-2.5, -2.5, -2.5), Point(-1, -1, -1));
+    AABB<double> neg1(Point<double>(-3, -3, -3), Point<double>(-2, -2, -2));
+    AABB<double> neg2(Point<double>(-2.5, -2.5, -2.5), Point<double>(-1, -1, -1));
     
-    EXPECT_TRUE(AABB::Intersects(neg1, neg2));
+    EXPECT_TRUE(AABB<double>::Intersects(neg1, neg2));
 }
 
 TEST_F(AABBTest, IntersectsNoOverlapOnSomeAxes) {
-    AABB x_overlap(Point(0.5, 5, 5), Point(1.5, 6, 6));
-    EXPECT_FALSE(AABB::Intersects(aabb1, x_overlap));
+    AABB<double> x_overlap(Point<double>(0.5, 5, 5), Point<double>(1.5, 6, 6));
+    EXPECT_FALSE(AABB<double>::Intersects(aabb1, x_overlap));
 }
 
 TEST_F(AABBTest, IntersectsEdgeTouching) {
-    AABB right_touch(Point(1, 0.25, 0.25), Point(2, 0.75, 0.75));
-    EXPECT_TRUE(AABB::Intersects(aabb1, right_touch));
+    AABB<double> right_touch(Point<double>(1, 0.25, 0.25), Point<double>(2, 0.75, 0.75));
+    EXPECT_TRUE(AABB<double>::Intersects(aabb1, right_touch));
 }
 
 TEST_F(AABBTest, IntersectsDegenerateAABB) {
-    AABB point_inside(Point(0.5, 0.5, 0.5), Point(0.5, 0.5, 0.5));
-    EXPECT_TRUE(AABB::Intersects(aabb1, point_inside));
+    AABB<double> point_inside(Point<double>(0.5, 0.5, 0.5), Point<double>(0.5, 0.5, 0.5));
+    EXPECT_TRUE(AABB<double>::Intersects(aabb1, point_inside));
     
-    AABB point_outside(Point(5, 5, 5), Point(5, 5, 5));
-    EXPECT_FALSE(AABB::Intersects(aabb1, point_outside));
+    AABB<double> point_outside(Point<double>(5, 5, 5), Point<double>(5, 5, 5));
+    EXPECT_FALSE(AABB<double>::Intersects(aabb1, point_outside));
 }
 
 TEST_F(AABBTest, IntersectsLargeContainsSmall) {
-    EXPECT_TRUE(AABB::Intersects(aabb_large, aabb1));
-    EXPECT_TRUE(AABB::Intersects(aabb1, aabb_large));
+    EXPECT_TRUE(AABB<double>::Intersects(aabb_large, aabb1));
+    EXPECT_TRUE(AABB<double>::Intersects(aabb1, aabb_large));
 }
 
 TEST_F(AABBTest, IntersectsCommutative) {
-    EXPECT_EQ(AABB::Intersects(aabb1, aabb2), AABB::Intersects(aabb2, aabb1));
-    EXPECT_EQ(AABB::Intersects(aabb1, aabb_overlap), AABB::Intersects(aabb_overlap, aabb1));
+    EXPECT_EQ(AABB<double>::Intersects(aabb1, aabb2), AABB<double>::Intersects(aabb2, aabb1));
+    EXPECT_EQ(AABB<double>::Intersects(aabb1, aabb_overlap), AABB<double>::Intersects(aabb_overlap, aabb1));
 }
 
 // Special cases -----------------------------------------------------------------------------------
 
 TEST_F(AABBTest, DegenerateAABBBehavior) {
-    AABB degenerate(Point(1, 1, 1), Point(1, 1, 1));
+    AABB<double> degenerate(Point<double>(1, 1, 1), Point<double>(1, 1, 1));
     
-    Point center = degenerate.GetCenter();
+    Point<double> center = degenerate.GetCenter();
     EXPECT_DOUBLE_EQ(center.x, 1);
     
-    EXPECT_TRUE(AABB::Intersects(degenerate, degenerate));
+    EXPECT_TRUE(AABB<double>::Intersects(degenerate, degenerate));
     
-    EXPECT_TRUE(AABB::Intersects(aabb_large, degenerate));
+    EXPECT_TRUE(AABB<double>::Intersects(aabb_large, degenerate));
 }
 
 TEST_F(AABBTest, VeryLargeCoordinates) {
-    AABB large(
-        Point(-1e6, -1e6, -1e6),
-        Point(1e6, 1e6, 1e6)
+    AABB<double> large(
+        Point<double>(-1e6, -1e6, -1e6),
+        Point<double>(1e6, 1e6, 1e6)
     );
     
-    Point center = large.GetCenter();
+    Point<double> center = large.GetCenter();
     EXPECT_DOUBLE_EQ(center.x, 0);
     EXPECT_DOUBLE_EQ(center.y, 0);
     EXPECT_DOUBLE_EQ(center.z, 0);
     
-    EXPECT_TRUE(AABB::Intersects(large, aabb1));
+    EXPECT_TRUE(AABB<double>::Intersects(large, aabb1));
 }
 
 TEST_F(AABBTest, PrecisionHandling) {
-    AABB aabb(Point(0.1, 0.2, 0.3), Point(0.4, 0.5, 0.6));
+    AABB<double> aabb(Point<double>(0.1, 0.2, 0.3), Point<double>(0.4, 0.5, 0.6));
     
-    Point center = aabb.GetCenter();
+    Point<double> center = aabb.GetCenter();
     EXPECT_DOUBLE_EQ(center.x, 0.25);
     EXPECT_DOUBLE_EQ(center.y, 0.35);
     EXPECT_DOUBLE_EQ(center.z, 0.45);
 }
 
 TEST_F(AABBTest, ExpandWithDegenerate) {
-    AABB normal(Point(0, 0, 0), Point(1, 1, 1));
-    AABB degenerate(Point(2, 2, 2), Point(2, 2, 2));
+    AABB<double> normal(Point<double>(0, 0, 0), Point<double>(1, 1, 1));
+    AABB<double> degenerate(Point<double>(2, 2, 2), Point<double>(2, 2, 2));
     
     normal.Expand(degenerate);
     

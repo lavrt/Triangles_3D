@@ -6,11 +6,12 @@
 #include "point.hpp"
 #include "constants.hpp"
 
+template <typename T>
 struct Segment {
-    Point p0;
-    Point p1;
+    Point<T> p0;
+    Point<T> p1;
 
-    double Length() const {
+    T Length() const {
         return (p1 - p0).Length();
     }
 
@@ -25,33 +26,33 @@ struct Segment {
      * @return true if segments intersect (including endpoints touching), false otherwise
      */
     static bool Intersect(const Segment& s1, const Segment& s2) {
-        Vector v1 = s1.p1 - s1.p0;
-        Vector v2 = s2.p1 - s2.p0;
-        Vector diff = s2.p0 - s1.p0;
+        Vector<T> v1 = s1.p1 - s1.p0;
+        Vector<T> v2 = s2.p1 - s2.p0;
+        Vector<T> diff = s2.p0 - s1.p0;
 
-        Vector N = Vector::Cross(v1, v2);
+        Vector<T> N = Vector<T>::Cross(v1, v2);
 
-        if (N == Constants::null_vec) {
-            if (Vector::Cross(diff, v1) != Constants::null_vec) {
+        if (N == Vector<T>{0, 0, 0}) {
+            if (Vector<T>::Cross(diff, v1) != Vector<T>{0, 0, 0}) {
                 return false;
             }
 
-            double denom = Vector::Dot(v1, v1);
-            double t0 = Vector::Dot(diff, v1) / denom;
-            double t1 = Vector::Dot(s2.p1 - s1.p0, v1);
-            double proj_min = std::min(t0, t1);
-            double proj_max = std::max(t0, t1);
+            T denom = Vector<T>::Dot(v1, v1);
+            T t0 = Vector<T>::Dot(diff, v1) / denom;
+            T t1 = Vector<T>::Dot(s2.p1 - s1.p0, v1);
+            T proj_min = std::min(t0, t1);
+            T proj_max = std::max(t0, t1);
 
             return std::max(proj_min, 0.0) <= std::min(proj_max, 1.0) + Constants::kEpsilon;
         }
 
-        if (std::abs(Vector::Dot(diff, N)) >= Constants::kEpsilon) {
+        if (std::abs(Vector<T>::Dot(diff, N)) >= Constants::kEpsilon) {
             return false;
         }
 
-        double denom = Vector::Dot(N, N);
-        double t = Vector::Dot(Vector::Cross(diff, v2), N) / denom;
-        double s = Vector::Dot(Vector::Cross(diff, v1), N) / denom;
+        T denom = Vector<T>::Dot(N, N);
+        T t = Vector<T>::Dot(Vector<T>::Cross(diff, v2), N) / denom;
+        T s = Vector<T>::Dot(Vector<T>::Cross(diff, v1), N) / denom;
 
         return t >= -Constants::kEpsilon && t <= 1 + Constants::kEpsilon
             && s >= -Constants::kEpsilon && s <= 1 + Constants::kEpsilon;

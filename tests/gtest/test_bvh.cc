@@ -6,13 +6,13 @@
 
 class BVHTest : public ::testing::Test {
 protected:    
-    std::vector<Triangle> triangles {
-        Triangle(1, Point{0,0,0}, Point{1,0,0}, Point{0,1,0}),
-        Triangle(2, Point{2,0,0}, Point{3,0,0}, Point{2,1,0}),
-        Triangle(3, Point{4,0,0}, Point{5,0,0}, Point{4,1,0}),
-        Triangle(4, Point{0,2,0}, Point{1,2,0}, Point{0,3,0}),
-        Triangle(5, Point{2,2,0}, Point{3,2,0}, Point{2,3,0}),
-        Triangle(6, Point{4,2,0}, Point{5,2,0}, Point{4,3,0})
+    std::vector<Triangle<double>> triangles {
+        Triangle<double>(1, Point<double>{0,0,0}, Point<double>{1,0,0}, Point<double>{0,1,0}),
+        Triangle<double>(2, Point<double>{2,0,0}, Point<double>{3,0,0}, Point<double>{2,1,0}),
+        Triangle<double>(3, Point<double>{4,0,0}, Point<double>{5,0,0}, Point<double>{4,1,0}),
+        Triangle<double>(4, Point<double>{0,2,0}, Point<double>{1,2,0}, Point<double>{0,3,0}),
+        Triangle<double>(5, Point<double>{2,2,0}, Point<double>{3,2,0}, Point<double>{2,3,0}),
+        Triangle<double>(6, Point<double>{4,2,0}, Point<double>{5,2,0}, Point<double>{4,3,0})
     };
 };
 
@@ -28,15 +28,15 @@ TEST_F(BVHTest, ConstructionAndBuild) {
 }
 
 TEST_F(BVHTest, EmptyTriangleList) {
-    std::vector<Triangle> empty_triangles;
-    BVH bvh(std::move(empty_triangles));
+    std::vector<Triangle<double>> empty_triangles;
+    BVH<double> bvh(std::move(empty_triangles));
     
     EXPECT_NO_THROW(bvh.Build());
 }
 
 TEST_F(BVHTest, SingleTriangle) {
-    std::vector<Triangle> single_triangle = {
-        Triangle(1, Point{0,0,0}, Point{1,0,0}, Point{0,1,0})
+    std::vector<Triangle<double>> single_triangle = {
+        Triangle<double>(1, Point<double>{0,0,0}, Point<double>{1,0,0}, Point<double>{0,1,0})
     };
     
     BVH bvh(std::move(single_triangle));
@@ -50,12 +50,12 @@ TEST_F(BVHTest, SingleTriangle) {
 // Lookup intersections ----------------------------------------------------------------------------
 
 TEST_F(BVHTest, NoIntersectionsForSeparatedTriangles) {
-    std::vector<Triangle> separated_triangles = {
-        Triangle(1, Point{0,0,0}, Point{1,0,0}, Point{0,1,0}),
-        Triangle(2, Point{10,0,0}, Point{11,0,0}, Point{10,1,0})
+    std::vector<Triangle<double>> separated_triangles {
+        Triangle<double>(1, Point<double>{0,0,0}, Point<double>{1,0,0}, Point<double>{0,1,0}),
+        Triangle<double>(2, Point<double>{10,0,0}, Point<double>{11,0,0}, Point<double>{10,1,0})
     };
     
-    BVH bvh(std::move(separated_triangles));
+    BVH<double> bvh(std::move(separated_triangles));
     bvh.Build();
     
     auto intersections = bvh.FindIntersectingTriangles();
@@ -63,12 +63,12 @@ TEST_F(BVHTest, NoIntersectionsForSeparatedTriangles) {
 }
 
 TEST_F(BVHTest, IntersectingTrianglesDetection) {
-    std::vector<Triangle> intersecting_triangles = {
-        Triangle(1, Point{0,0,0}, Point{2,0,0}, Point{0,2,0}),
-        Triangle(2, Point{1,1,0}, Point{3,1,0}, Point{1,3,0})
+    std::vector<Triangle<double>> intersecting_triangles {
+        Triangle<double>(1, Point<double>{0,0,0}, Point<double>{2,0,0}, Point<double>{0,2,0}),
+        Triangle<double>(2, Point<double>{1,1,0}, Point<double>{3,1,0}, Point<double>{1,3,0})
     };
     
-    BVH bvh(std::move(intersecting_triangles));
+    BVH<double> bvh(std::move(intersecting_triangles));
     bvh.Build();
     
     auto intersections = bvh.FindIntersectingTriangles();
@@ -77,11 +77,11 @@ TEST_F(BVHTest, IntersectingTrianglesDetection) {
 }
 
 TEST_F(BVHTest, SelfIntersectionNotReported) {
-    std::vector<Triangle> single_triangle = {
-        Triangle(1, Point{0,0,0}, Point{1,0,0}, Point{0,1,0})
+    std::vector<Triangle<double>> single_triangle {
+        Triangle<double>(1, Point<double>{0,0,0}, Point<double>{1,0,0}, Point<double>{0,1,0})
     };
     
-    BVH bvh(std::move(single_triangle));
+    BVH<double> bvh(std::move(single_triangle));
     bvh.Build();
     
     auto intersections = bvh.FindIntersectingTriangles();
@@ -91,17 +91,17 @@ TEST_F(BVHTest, SelfIntersectionNotReported) {
 // Special cases -----------------------------------------------------------------------------------
 
 TEST_F(BVHTest, LargeNumberOfTriangles) {
-    std::vector<Triangle> large_set;
+    std::vector<Triangle<double>> large_set;
     const int num_triangles = 1000;
     
     for (int i = 0; i < num_triangles; ++i) {
         double x = static_cast<double>(i);
         large_set.emplace_back(
-            i, Point{x,0,0}, Point{x+1,0,0}, Point{x,1,0}
+            i, Point<double>{x,0,0}, Point<double>{x+1,0,0}, Point<double>{x,1,0}
         );
     }
     
-    BVH bvh(std::move(large_set));
+    BVH<double> bvh(std::move(large_set));
     
     bvh.Build();
     

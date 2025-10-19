@@ -3,19 +3,20 @@
 #include "point.hpp"
 #include "constants.hpp"
 
+template <typename T>
 struct AABB {
-    Point min;
-    Point max;
+    Point<T> min;
+    Point<T> max;
 
-    AABB() : min({Constants::kMaxDouble, Constants::kMaxDouble, Constants::kMaxDouble}),
-             max({Constants::kLowestDouble, Constants::kLowestDouble, Constants::kLowestDouble}) {}
+    AABB() : min({Limits::MaxValue<T>(), Limits::MaxValue<T>(), Limits::MaxValue<T>()}),
+             max({Limits::LowestValue<T>(), Limits::LowestValue<T>(), Limits::LowestValue<T>()}) {}
 
-    AABB(Point min, Point max) : min(min), max(max) {}
+    AABB(Point<T> min, Point<T> max) : min(min), max(max) {}
     
     static bool Intersects(const AABB& a, const AABB& b) noexcept {
-        return (a.min.x <= b.max.x && a.max.x >= b.min.x)
-            && (a.min.y <= b.max.y && a.max.y >= b.min.y)
-            && (a.min.z <= b.max.z && a.max.z >= b.min.z);
+        return (a.min.x <= b.max.x + Constants::kEpsilon && a.max.x + Constants::kEpsilon >= b.min.x)
+            && (a.min.y <= b.max.y + Constants::kEpsilon && a.max.y + Constants::kEpsilon >= b.min.y)
+            && (a.min.z <= b.max.z + Constants::kEpsilon && a.max.z + Constants::kEpsilon >= b.min.z);
     }
 
     void Expand(const AABB& other) {
@@ -32,7 +33,7 @@ struct AABB {
         };
     }
 
-    Point GetCenter() const {
+    Point<T> GetCenter() const {
         return Point{(max.x + min.x) / 2, (max.y + min.y) / 2, (max.z + min.z) / 2};
     }
 };

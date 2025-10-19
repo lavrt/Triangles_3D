@@ -3,8 +3,8 @@
 find_package(GTest REQUIRED)
 
 set(SOURCES_GTEST
-    gtest/test_triangle.cc ${CMAKE_SOURCE_DIR}/src/triangle.cc
-    gtest/test_bvh.cc ${CMAKE_SOURCE_DIR}/src/bvh.cc
+    gtest/test_triangle.cc
+    gtest/test_bvh.cc
     gtest/test_triangle.cc
     gtest/test_segment.cc
     gtest/test_vector.cc
@@ -34,7 +34,7 @@ add_executable(run_e2e_generation e2e/test_generation/main.cc)
 
 ## test execution -------------------
 
-add_executable(run_e2e_test_execution e2e/test_execution/main.cc ${CMAKE_SOURCE_DIR}/src/triangle.cc)
+add_executable(run_e2e_test_execution e2e/test_execution/main.cc)
 
 target_include_directories(run_e2e_test_execution
     PUBLIC

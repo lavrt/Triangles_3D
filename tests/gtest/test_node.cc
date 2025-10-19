@@ -6,16 +6,16 @@
 
 class NodeTest : public ::testing::Test {
 protected: 
-    std::vector<Triangle> triangles {
-        Triangle(1, Point{0,0,0}, Point{1,0,0}, Point{0,1,0}),
-        Triangle(2, Point{2,0,0}, Point{3,0,0}, Point{2,1,0})
+    std::vector<Triangle<double>> triangles {
+        Triangle<double>(1, Point<double>{0,0,0}, Point<double>{1,0,0}, Point<double>{0,1,0}),
+        Triangle<double>(2, Point<double>{2,0,0}, Point<double>{3,0,0}, Point<double>{2,1,0})
     };
 };
 
 // Constructor -------------------------------------------------------------------------------------
 
 TEST_F(NodeTest, DefaultConstruction) {
-    BVHNode node;
+    BVHNode<double> node;
     
     EXPECT_TRUE(node.IsLeaf());
     EXPECT_EQ(node.GetNumberOfTriangles(), 0);
@@ -26,7 +26,7 @@ TEST_F(NodeTest, DefaultConstruction) {
 // Other functions ---------------------------------------------------------------------------------
 
 TEST_F(NodeTest, SetTrianglesMakesLeaf) {
-    BVHNode node;
+    BVHNode<double> node;
     node.SetTriangles(triangles);
     
     EXPECT_TRUE(node.IsLeaf());
@@ -37,10 +37,10 @@ TEST_F(NodeTest, SetTrianglesMakesLeaf) {
 }
 
 TEST_F(NodeTest, SetChildrenMakesInternalNode) {
-    BVHNode node;
+    BVHNode<double> node;
     
-    auto left = std::make_unique<BVHNode>();
-    auto right = std::make_unique<BVHNode>();
+    auto left = std::make_unique<BVHNode<double>>();
+    auto right = std::make_unique<BVHNode<double>>();
     
     node.SetLeft(std::move(left));
     node.SetRight(std::move(right));
@@ -52,12 +52,12 @@ TEST_F(NodeTest, SetChildrenMakesInternalNode) {
 }
 
 TEST_F(NodeTest, AABBManagement) {
-    BVHNode node;
-    AABB bbox{Point{0,0,0}, Point{1,1,1}};
+    BVHNode<double> node;
+    AABB<double> bbox{Point<double>{0,0,0}, Point<double>{1,1,1}};
     
     node.SetAABB(bbox);
     
-    AABB result = node.GetAABB();
+    AABB<double> result = node.GetAABB();
     EXPECT_EQ(result.min.x, 0);
     EXPECT_EQ(result.min.y, 0);
     EXPECT_EQ(result.min.z, 0);
@@ -67,7 +67,7 @@ TEST_F(NodeTest, AABBManagement) {
 }
 
 TEST_F(NodeTest, TriangleSpanIntegrity) {
-    BVHNode node;
+    BVHNode<double> node;
     node.SetTriangles(triangles);
     
     auto span = node.GetTriangles();
@@ -77,8 +77,8 @@ TEST_F(NodeTest, TriangleSpanIntegrity) {
 }
 
 TEST_F(NodeTest, StateTransitions) {
-    BVHNode node;
+    BVHNode<double> node;
     
-    node.SetLeft(std::make_unique<BVHNode>());
+    node.SetLeft(std::make_unique<BVHNode<double>>());
     EXPECT_FALSE(node.IsLeaf());
 }

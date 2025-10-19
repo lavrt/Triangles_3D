@@ -8,21 +8,22 @@
 #include "aabb.hpp"
 #include "triangle.hpp"
 
+template <typename T>
 class BVHNode {
 private:
-    AABB aabb_;
-    std::span<Triangle> triangles_;
+    AABB<T> aabb_;
+    std::span<Triangle<T>> triangles_;
     bool is_leaf_ = true;
 
     std::unique_ptr<BVHNode> left_ = nullptr;
     std::unique_ptr<BVHNode> right_ = nullptr;    
 
 public:
-    void SetAABB(const AABB& aabb) {
+    void SetAABB(const AABB<T>& aabb) {
         aabb_ = aabb;
     }
 
-    void SetTriangles(const std::span<Triangle>& triangles) {
+    void SetTriangles(const std::span<Triangle<T>>& triangles) {
         if (left_ != nullptr || right_ != nullptr) {
             throw std::runtime_error(
                 "An attempt to change the node type from a leaf node to an internal node"
@@ -49,11 +50,11 @@ public:
         right_ = std::move(right);
     }
 
-    AABB GetAABB() const noexcept {
+    AABB<T> GetAABB() const noexcept {
         return aabb_;
     }
 
-    std::span<Triangle> GetTriangles() const noexcept {
+    std::span<Triangle<T>> GetTriangles() const noexcept {
         return triangles_;
     }
 

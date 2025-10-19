@@ -6,13 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # triangles_3d -------------------------------
 
-set(SOURCES
-    src/bvh.cc
-    src/main.cc
-    src/triangle.cc
-)
-
-add_executable(triangles_3d ${SOURCES})
+add_executable(triangles_3d src/main.cc)
 
 target_include_directories(triangles_3d
     PUBLIC

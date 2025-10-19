@@ -8,17 +8,17 @@
 
 class SegmentTest : public ::testing::Test {
 protected:
-    Segment seg_horizontal = Segment{Point(0, 0, 0), Point(2, 0, 0)};
-    Segment seg_vertical = Segment{Point(1, -1, 0), Point(1, 1, 0)};
-    Segment seg_diagonal = Segment{Point(0, 0, 0), Point(2, 2, 0)};
-    Segment seg_3d = Segment{Point(0, 0, 0), Point(1, 1, 1)};
-    Segment seg_degenerate = Segment{Point(1, 1, 1), Point(1, 1, 1)};
+    Segment<double> seg_horizontal = Segment<double>{Point<double>(0, 0, 0), Point<double>(2, 0, 0)};
+    Segment<double> seg_vertical = Segment<double>{Point<double>(1, -1, 0), Point<double>(1, 1, 0)};
+    Segment<double> seg_diagonal = Segment<double>{Point<double>(0, 0, 0), Point<double>(2, 2, 0)};
+    Segment<double> seg_3d = Segment<double>{Point<double>(0, 0, 0), Point<double>(1, 1, 1)};
+    Segment<double> seg_degenerate = Segment<double>{Point<double>(1, 1, 1), Point<double>(1, 1, 1)};
 };
 
 // Constructor -------------------------------------------------------------------------------------
 
 TEST_F(SegmentTest, ConstructorStoresPoints) {
-    Segment seg{Point(1, 2, 3), Point(4, 5, 6)};
+    Segment<double> seg{Point<double>(1, 2, 3), Point<double>(4, 5, 6)};
     
     EXPECT_DOUBLE_EQ(seg.p0.x, 1);
     EXPECT_DOUBLE_EQ(seg.p0.y, 2);
@@ -32,46 +32,46 @@ TEST_F(SegmentTest, ConstructorStoresPoints) {
 // Intersect ---------------------------------------------------------------------------------------
 
 TEST_F(SegmentTest, IntersectCrossingSegments) {
-    EXPECT_TRUE(Segment::Intersect(seg_horizontal, seg_vertical));
+    EXPECT_TRUE(Segment<double>::Intersect(seg_horizontal, seg_vertical));
 }
 
 TEST_F(SegmentTest, IntersectParallelSegments) {
-    Segment parallel{Point(0, 1, 0), Point(2, 1, 0)};
-    EXPECT_FALSE(Segment::Intersect(seg_horizontal, parallel));
+    Segment<double> parallel{Point<double>(0, 1, 0), Point<double>(2, 1, 0)};
+    EXPECT_FALSE(Segment<double>::Intersect(seg_horizontal, parallel));
 }
 
 TEST_F(SegmentTest, IntersectCollinearOverlapping) {
-    Segment overlapping{Point(1, 0, 0), Point(3, 0, 0)};
-    EXPECT_TRUE(Segment::Intersect(seg_horizontal, overlapping));
+    Segment<double> overlapping{Point<double>(1, 0, 0), Point<double>(3, 0, 0)};
+    EXPECT_TRUE(Segment<double>::Intersect(seg_horizontal, overlapping));
 }
 
 TEST_F(SegmentTest, IntersectCollinearTouching) {
-    Segment touching{Point(2, 0, 0), Point(4, 0, 0)};
-    EXPECT_TRUE(Segment::Intersect(seg_horizontal, touching));
+    Segment<double> touching{Point<double>(2, 0, 0), Point<double>(4, 0, 0)};
+    EXPECT_TRUE(Segment<double>::Intersect(seg_horizontal, touching));
 }
 
 TEST_F(SegmentTest, IntersectCollinearSeparated) {
-    Segment separated{Point(3, 0, 0), Point(5, 0, 0)};
-    EXPECT_FALSE(Segment::Intersect(seg_horizontal, separated));
+    Segment<double> separated{Point<double>(3, 0, 0), Point<double>(5, 0, 0)};
+    EXPECT_FALSE(Segment<double>::Intersect(seg_horizontal, separated));
 }
 
 TEST_F(SegmentTest, IntersectEndpointsTouching) {
-    Segment touching_end{Point(2, 0, 0), Point(2, 2, 0)};
-    EXPECT_TRUE(Segment::Intersect(seg_horizontal, touching_end));
+    Segment<double> touching_end{Point<double>(2, 0, 0), Point<double>(2, 2, 0)};
+    EXPECT_TRUE(Segment<double>::Intersect(seg_horizontal, touching_end));
 }
 
 TEST_F(SegmentTest, IntersectSharedEndpoint) {
-    Segment shared_end{Point(0, 0, 0), Point(0, 2, 0)};
-    EXPECT_TRUE(Segment::Intersect(seg_horizontal, shared_end));
+    Segment<double> shared_end{Point<double>(0, 0, 0), Point<double>(0, 2, 0)};
+    EXPECT_TRUE(Segment<double>::Intersect(seg_horizontal, shared_end));
 }
 
 TEST_F(SegmentTest, Intersect3DSegments) {
-    Segment seg1{Point(0, 0, 0), Point(2, 2, 0)};
-    Segment seg2{Point(0, 2, 0), Point(2, 0, 0)};
-    EXPECT_TRUE(Segment::Intersect(seg1, seg2));
+    Segment<double> seg1{Point<double>(0, 0, 0), Point<double>(2, 2, 0)};
+    Segment<double> seg2{Point<double>(0, 2, 0), Point<double>(2, 0, 0)};
+    EXPECT_TRUE(Segment<double>::Intersect(seg1, seg2));
 }
 
 TEST_F(SegmentTest, IntersectCommutative) {
-    EXPECT_EQ(Segment::Intersect(seg_horizontal, seg_vertical),
-              Segment::Intersect(seg_vertical, seg_horizontal));
+    EXPECT_EQ(Segment<double>::Intersect(seg_horizontal, seg_vertical),
+              Segment<double>::Intersect(seg_vertical, seg_horizontal));
 }

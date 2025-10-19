@@ -4,6 +4,18 @@
 
 namespace Constants {
     inline constexpr double kEpsilon = 1e-12;
-    inline constexpr double kMaxDouble = std::numeric_limits<double>::max();
-    inline constexpr double kLowestDouble = std::numeric_limits<double>::lowest();
 }
+
+namespace Limits {
+
+template <typename T>
+constexpr T MaxValue() {
+    return std::numeric_limits<T>::max();
+}
+
+template <typename T>
+constexpr T LowestValue() {
+    return std::numeric_limits<T>::lowest();
+}
+
+} // namespace Limits

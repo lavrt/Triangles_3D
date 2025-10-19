@@ -19,10 +19,10 @@ int main() {
         return 1;
     }
 
-    std::vector<Triangle> triangles;
+    std::vector<Triangle<double>> triangles;
     triangles.reserve(n);
 
-    Point p0, p1, p2;
+    Point<double> p0, p1, p2;
     for (size_t i = 0; i != n; ++i) {
         std::cin >> p0.x >> p0.y >> p0.z
                  >> p1.x >> p1.y >> p1.z

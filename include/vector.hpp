@@ -4,12 +4,13 @@
 
 #include "constants.hpp"
 
+template <typename T>
 struct Vector {
-    double x;
-    double y;
-    double z;
+    T x;
+    T y;
+    T z;
 
-    Vector(double x, double y, double z) : x(x), y(y), z(z) {}
+    Vector(T x, T y, T z) : x(x), y(y), z(z) {}
 
     static Vector Cross(const Vector& a, const Vector& b) {
         return Vector{
@@ -19,16 +20,16 @@ struct Vector {
         };
     }
 
-    static double Dot(const Vector& a, const Vector& b) {
+    static T Dot(const Vector& a, const Vector& b) {
         return a.x * b.x + a.y * b.y + a.z * b.z;
     }
 
     Vector Normalized() const {
-        double len = this->Length();
+        T len = this->Length();
         return (len < Constants::kEpsilon) ? Vector{0, 0, 0} : Vector{x / len, y / len, z / len};
     }
 
-    double Length() const {
+    T Length() const {
         return sqrt(x * x + y * y + z * z);
     }
 
@@ -46,7 +47,7 @@ struct Vector {
         return !(*this == other);
     }
 
-    Vector operator*(double k) const {
+    Vector operator*(T k) const {
         return {x * k, y * k, z * k};
     }
 
@@ -54,7 +55,3 @@ struct Vector {
         return {x - other.x, y - other.y, z - other.z};
     }
 };
-
-namespace Constants {
-    inline const Vector null_vec{0, 0, 0};
-}

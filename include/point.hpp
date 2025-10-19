@@ -4,12 +4,13 @@
 
 #include "vector.hpp"
 
+template <typename T>
 struct Point {
-    double x;
-    double y;
-    double z;
+    T x;
+    T y;
+    T z;
 
-    double operator[](size_t axis) const {
+    T operator[](size_t axis) const {
         switch (axis) {
             case 0: return x;
             case 1: return y;
@@ -19,7 +20,7 @@ struct Point {
         }
     }
 
-    Vector operator-(const Point& other) const {
+    Vector<T> operator-(const Point& other) const {
         return Vector{x - other.x, y - other.y, z - other.z};
     }
 
@@ -29,16 +30,17 @@ struct Point {
             && std::abs(z - other.z) < Constants::kEpsilon;
     }
 
-    Point operator+(const Vector& vector) const {
+    Point operator+(const Vector<T>& vector) const {
         return {x + vector.x, y + vector.y, z + vector.z};
     }
 
-    Vector AsVector() const {
+    Vector<T> AsVector() const {
         return Vector{x, y, z};
     }
 };
 
-inline std::ostream& operator<<(std::ostream& os, const Point& point) {
+template <typename T>
+inline std::ostream& operator<<(std::ostream& os, const Point<T>& point) {
     os << "(" << point.x << ", " << point.y << ", " << point.z << ")";
     return os; 
 }

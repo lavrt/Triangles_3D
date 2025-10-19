@@ -22,7 +22,6 @@ private:
         return (diff.x >= diff.y && diff.x >= diff.z) ? 0 : (diff.y >= diff.z) ? 1 : 2;
     }
 
-    // std::unique_ptr<BVHNode<T>> RecursiveBuild(size_t start, size_t end); // FIXME
     std::unique_ptr<BVHNode<T>> RecursiveBuild(size_t start, size_t end) {
         std::span<Triangle<T>> triangles(triangles_.begin() + start, triangles_.begin() + end);
 
@@ -54,7 +53,6 @@ private:
         return node;
     }
 
-    // void RecursiveFindIntersections(const std::unique_ptr<BVHNode<T>>& a, const std::unique_ptr<BVHNode<T>>& b); // FIXME
     void RecursiveFindIntersections(const std::unique_ptr<BVHNode<T>>& a, const std::unique_ptr<BVHNode<T>>& b) {
         if (!AABB<T>::Intersects(a->GetAABB(), b->GetAABB())) {
             return;
@@ -90,7 +88,6 @@ private:
         }
     }
 
-    // void DefiningGraphNodes(std::ofstream& file, const std::unique_ptr<BVHNode<T>>& node) const; // FIXME
     void DefiningGraphNodes(std::ofstream& file, const std::unique_ptr<BVHNode<T>>& node) const {
         static size_t rank = 0;
         file << "    node_" << node.get() << " [rank=" << rank << ",label=\" { node: " << node.get()
@@ -114,7 +111,6 @@ private:
         rank--;
     }
 
-    // void DefiningGraphDependencies(std::ofstream& file, const std::unique_ptr<BVHNode<T>>& node) const; // FIXME
     void DefiningGraphDependencies(std::ofstream& file, const std::unique_ptr<BVHNode<T>>& node) const {
         static int flag = 0;
         if (node->GetLeft()) {
@@ -146,7 +142,6 @@ public:
         root_ = RecursiveBuild(0, triangles_.size());
     }
 
-    // void Dump(const std::string& file_name) const; // FIXME
     void Dump(const std::string& file_name) const {
         if (root_ == nullptr) {
             throw std::runtime_error("Empty tree dump");

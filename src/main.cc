@@ -6,7 +6,6 @@
 #include "triangle.hpp"
 #include "bvh.hpp"
 
-// TODO параметризованные типы типо double, float для координат
 // aabb и normal лучше не хранить в треугольнике
 // можно через std::variant
 

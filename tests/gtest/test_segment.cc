@@ -4,7 +4,7 @@
 #include <span>
 
 #include "segment.hpp"
-#include "constants.hpp"
+#include "details.hpp"
 
 class SegmentTest : public ::testing::Test {
 protected:

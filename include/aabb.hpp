@@ -1,7 +1,7 @@
 #pragma once
 
 #include "point.hpp"
-#include "constants.hpp"
+#include "details.hpp"
 
 template <typename T>
 struct AABB {

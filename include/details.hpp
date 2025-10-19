@@ -3,8 +3,10 @@
 #include <limits>
 
 namespace Constants {
-    inline constexpr double kEpsilon = 1e-12;
-}
+
+inline constexpr double kEpsilon = 1e-12;
+
+} // namespace Constants
 
 namespace Limits {
 

@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-#include "constants.hpp"
+#include "details.hpp"
 
 template <typename T>
 struct Vector {

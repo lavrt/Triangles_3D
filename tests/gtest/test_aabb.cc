@@ -2,7 +2,7 @@
 
 #include "aabb.hpp"
 #include "point.hpp"
-#include "constants.hpp"
+#include "details.hpp"
 
 class AABBTest : public ::testing::Test {
 protected:

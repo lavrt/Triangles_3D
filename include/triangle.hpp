@@ -10,6 +10,8 @@
 #include "point.hpp"
 #include "aabb.hpp"
 
+namespace Geometry {
+
 enum class PlanesPosition {
     Parallel, Coincide, Intersect
 };
@@ -401,3 +403,5 @@ public:
         return normal_;
     }
 };
+
+} // namespace Geometry

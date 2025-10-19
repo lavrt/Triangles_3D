@@ -2,6 +2,8 @@
 
 #include "point.hpp"
 
+using namespace Geometry;
+
 class PointTest : public ::testing::Test {
 protected:
     const Point<double> p1{1.0, 2.0, 3.0};

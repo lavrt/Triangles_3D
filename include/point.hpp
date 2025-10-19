@@ -4,6 +4,8 @@
 
 #include "vector.hpp"
 
+namespace Geometry {
+
 template <typename T>
 struct Point {
     T x;
@@ -39,8 +41,10 @@ struct Point {
     }
 };
 
+} // namespace Geometry
+
 template <typename T>
-inline std::ostream& operator<<(std::ostream& os, const Point<T>& point) {
+inline std::ostream& operator<<(std::ostream& os, const Geometry::Point<T>& point) {
     os << "(" << point.x << ", " << point.y << ", " << point.z << ")";
     return os; 
 }

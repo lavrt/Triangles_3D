@@ -3,6 +3,8 @@
 #include "point.hpp"
 #include "details.hpp"
 
+namespace Geometry {
+
 template <typename T>
 struct AABB {
     Point<T> min;
@@ -37,3 +39,5 @@ struct AABB {
         return Point<T>{(max.x + min.x) / 2, (max.y + min.y) / 2, (max.z + min.z) / 2};
     }
 };
+
+} // namespace Geometry

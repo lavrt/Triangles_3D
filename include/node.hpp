@@ -8,6 +8,10 @@
 #include "aabb.hpp"
 #include "triangle.hpp"
 
+namespace Geometry {
+
+namespace Acceleration {
+
 template <typename T>
 class BVHNode {
 private:
@@ -74,3 +78,7 @@ public:
         return is_leaf_;
     }
 };
+
+} // namespace Acceleration
+
+} // namespace Geometry

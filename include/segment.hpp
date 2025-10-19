@@ -6,6 +6,8 @@
 #include "point.hpp"
 #include "details.hpp"
 
+namespace Geometry {
+
 template <typename T>
 struct Segment {
     Point<T> p0;
@@ -79,3 +81,5 @@ struct Segment {
         return false;
     }
 };
+
+} // namespace Geometry

@@ -6,6 +6,8 @@
 #include "segment.hpp"
 #include "details.hpp"
 
+using namespace Geometry;
+
 class SegmentTest : public ::testing::Test {
 protected:
     Segment<double> seg_horizontal = Segment<double>{Point<double>(0, 0, 0), Point<double>(2, 0, 0)};

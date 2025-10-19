@@ -8,6 +8,10 @@
 
 #include "node.hpp"
 
+namespace Geometry {
+
+namespace Acceleration {
+
 template <typename T>
 class BVH { // TODO BSP скорее, можно шаблон, можно вектор нод и в нодах держать вектор треугольников в единст экземпляре
 private:
@@ -176,3 +180,7 @@ public:
         return root_;
     }
 };
+
+} // namespace Acceleration
+
+} // namespace Geometry

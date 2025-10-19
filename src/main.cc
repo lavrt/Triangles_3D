@@ -18,10 +18,10 @@ int main() {
         return 1;
     }
 
-    std::vector<Triangle<double>> triangles;
+    std::vector<Geometry::Triangle<double>> triangles;
     triangles.reserve(n);
 
-    Point<double> p0, p1, p2;
+    Geometry::Point<double> p0, p1, p2;
     for (size_t i = 0; i != n; ++i) {
         std::cin >> p0.x >> p0.y >> p0.z
                  >> p1.x >> p1.y >> p1.z
@@ -35,7 +35,7 @@ int main() {
         triangles.push_back({i, p0, p1, p2});
     }
     
-    BVH tree{std::move(triangles)};
+    Geometry::Acceleration::BVH tree{std::move(triangles)};
 
     tree.Build();
     

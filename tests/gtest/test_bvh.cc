@@ -4,6 +4,9 @@
 
 #include "bvh.hpp"
 
+using namespace Geometry;
+using namespace Acceleration;
+
 class BVHTest : public ::testing::Test {
 protected:    
     std::vector<Triangle<double>> triangles {

@@ -4,6 +4,8 @@
 
 #include "vector.hpp"
 
+using namespace Geometry;
+
 class VectorTest : public ::testing::Test {
 protected:
     const Vector<double> v1{1, 2, 3};

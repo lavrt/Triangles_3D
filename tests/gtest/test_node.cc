@@ -4,6 +4,9 @@
 
 #include "node.hpp"
 
+using namespace Geometry;
+using namespace Acceleration;
+
 class NodeTest : public ::testing::Test {
 protected: 
     std::vector<Triangle<double>> triangles {

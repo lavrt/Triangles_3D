@@ -4,6 +4,8 @@
 
 #include "details.hpp"
 
+namespace Geometry {
+
 template <typename T>
 struct Vector {
     T x;
@@ -51,3 +53,5 @@ struct Vector {
         return {x - other.x, y - other.y, z - other.z};
     }
 };
+
+} // namespace Geometry

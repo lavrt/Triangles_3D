@@ -4,6 +4,8 @@
 #include "point.hpp"
 #include "details.hpp"
 
+using namespace Geometry;
+
 class AABBTest : public ::testing::Test {
 protected:
     AABB<double> aabb1 = AABB<double>(Point<double>(0, 0, 0), Point<double>(1, 1, 1));

@@ -4,6 +4,8 @@
 
 #include "triangle.hpp"
 
+using namespace Geometry;
+
 class TriangleTest : public ::testing::Test {
 protected:
     Point<double> p0 = Point<double>{0, 0, 0};

@@ -1,7 +1,11 @@
 #pragma once
 
+#include <algorithm>
+#include <span>
+
 #include "point.hpp"
 #include "details.hpp"
+#include "triangle.hpp"
 
 namespace Geometry {
 
@@ -14,6 +18,27 @@ struct AABB {
              max({Limits::LowestValue<T>(), Limits::LowestValue<T>(), Limits::LowestValue<T>()}) {}
 
     AABB(Point<T> min, Point<T> max) : min(min), max(max) {}
+
+    AABB(const Triangle<T>& t)
+        : min({std::min({t.p0_.x, t.p1_.x, t.p2_.x}), std::min({t.p0_.y, t.p1_.y, t.p2_.y}), std::min({t.p0_.z, t.p1_.z, t.p2_.z})}),
+          max({std::max({t.p0_.x, t.p1_.x, t.p2_.x}), std::max({t.p0_.y, t.p1_.y, t.p2_.y}), std::max({t.p0_.z, t.p1_.z, t.p2_.z})})
+    {}
+
+    AABB(const std::span<Triangle<T>>& triangles) {
+        if (triangles.empty()) {
+            min = {0, 0, 0};
+            max = {0, 0, 0};
+            return;
+        }
+
+        AABB<T> aabb{triangles.front()};
+        for (auto it = triangles.begin() + 1, ite = triangles.end(); it != ite; ++it) {
+            aabb.Expand(*it);
+        }
+
+        min = aabb.min;
+        max = aabb.max;
+    }
     
     static bool Intersects(const AABB& a, const AABB& b) noexcept {
         return (a.min.x <= b.max.x + Constants::kEpsilon && a.max.x + Constants::kEpsilon >= b.min.x)
@@ -33,6 +58,11 @@ struct AABB {
             std::max(max.y, other.max.y),
             std::max(max.z, other.max.z)
         };
+    }
+
+    void Expand(const Triangle<T>& t) {
+        AABB aabb{t};
+        this->Expand(aabb);
     }
 
     Point<T> GetCenter() const {

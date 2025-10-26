@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include "triangle.hpp"
+#include "aabb.hpp"
 
 using namespace Geometry;
 
@@ -33,7 +34,7 @@ TEST_F(TriangleTest, ConstructorAndGetters) {
 }
 
 TEST_F(TriangleTest, NormalCalculation) {
-    Vector<double> normal = triangle.GetNormal();
+    Vector<double> normal = triangle.CalculateNormal();
 
     EXPECT_DOUBLE_EQ(normal.x, 0);
     EXPECT_DOUBLE_EQ(normal.y, 0);
@@ -41,7 +42,7 @@ TEST_F(TriangleTest, NormalCalculation) {
 }
 
 TEST_F(TriangleTest, AABBComputation) {
-    AABB<double> bbox = triangle.GetAABB();
+    AABB<double> bbox{triangle};
     
     EXPECT_EQ(bbox.min.x, 0);
     EXPECT_EQ(bbox.min.y, 0);
@@ -122,7 +123,7 @@ TEST(ComputeBoundingBoxTest, SingleTriangle) {
     Triangle<double> t(1, Point<double>{0,0,0}, Point<double>{2,0,0}, Point<double>{0,3,0});
     std::vector<Triangle<double>> triangles = {t};
     
-    AABB<double> bbox = Triangle<double>::ComputeBoundingBox(triangles);
+    AABB<double> bbox{triangles};
     
     EXPECT_EQ(bbox.min.x, 0);
     EXPECT_EQ(bbox.min.y, 0);
@@ -139,7 +140,7 @@ TEST(ComputeBoundingBoxTest, MultipleTriangles) {
         Triangle<double>(3, Point<double>{-1,-1,-1}, Point<double>{0,-1,-1}, Point<double>{-1,0,-1})
     };
     
-    AABB<double> bbox = Triangle<double>::ComputeBoundingBox(triangles);
+    AABB<double> bbox{triangles};
     
     EXPECT_EQ(bbox.min.x, -1);
     EXPECT_EQ(bbox.min.y, -1);

@@ -9,7 +9,7 @@
 
 #include "segment.hpp"
 #include "point.hpp"
-#include "aabb.hpp"
+// #include "aabb.hpp" // FIXME
 
 namespace Geometry {
 
@@ -29,16 +29,16 @@ using Shape = std::variant<Triangle<T>, Segment<T>, Point<T>>;
 
 template <typename T>
 class Triangle { // TODO можно не хранить нормаль и сделать поля public
-private:
+public:
     size_t id_;
 
     Point<T> p0_;
     Point<T> p1_;
     Point<T> p2_;
 
-    AABB<T> aabb_;
-    Vector<T> normal_;
-    TriangleType type_;
+    // AABB<T> aabb_;
+    // Vector<T> normal_;
+    // TriangleType type_;
     
     static bool Intersect(const Point<T>& p1, const Point<T>& p2) {
         return p1 == p2; // return Dot(p1 - p2, p1 - p2) < ;
@@ -89,7 +89,7 @@ private:
     }
 
     static bool Intersect(const Triangle& t, const Point<T>& p) {
-        if (std::abs(Vector<T>::Dot(t.p0_ - p, t.GetNormal())) >= Constants::kEpsilon) {
+        if (std::abs(Vector<T>::Dot(t.p0_ - p, t.CalculateNormal())) >= Constants::kEpsilon) {
             return false;
         }
 
@@ -104,8 +104,8 @@ private:
         Point<T> p = s.p0;
         Vector<T> vec = s.p0 - s.p1;
 
-        if (std::abs(Vector<T>::Dot(t.GetNormal(), vec)) <= Constants::kEpsilon) { 
-            if (Vector<T>::Dot(p - t.p0_, t.GetNormal())) { 
+        if (std::abs(Vector<T>::Dot(t.CalculateNormal(), vec)) <= Constants::kEpsilon) { 
+            if (Vector<T>::Dot(p - t.p0_, t.CalculateNormal())) { 
                 return false;
             }
             
@@ -143,17 +143,13 @@ private:
         return Intersect(t, s);
     }
 
-public:
+// NOTE here was the end of the public fields
+
     Triangle(size_t id, Point<T> p0, Point<T> p1, Point<T> p2) 
-        : id_(id), p0_(p0), p1_(p1), p2_(p2),
-          type_(this->DetermineType()),
-          normal_(Vector<T>::Cross(p1_ - p0_, p2_ - p1_).Normalized()),
-          aabb_({std::min({p0.x, p1.x, p2.x}), std::min({p0.y, p1.y, p2.y}), std::min({p0.z, p1.z, p2.z})}, 
-                {std::max({p0.x, p1.x, p2.x}), std::max({p0.y, p1.y, p2.y}), std::max({p0.z, p1.z, p2.z})})
-    {}
+        : id_(id), p0_(p0), p1_(p1), p2_(p2) {}
 
     Shape<T> MakeShape() const {
-        switch (this->GetType()) {
+        switch (this->DetermineType()) {
             case TriangleType::Normal:  return *this;
             case TriangleType::Point:   return this->ToPoint();
             case TriangleType::Segment: return this->ToSegment();
@@ -171,7 +167,7 @@ public:
      * @return true if the triangles intersect
      */
     static bool Intersect(const Triangle& t1, const Triangle& t2) {
-        if (t1.GetType() != TriangleType::Normal || t2.GetType() != TriangleType::Normal) {
+        if (t1.DetermineType() != TriangleType::Normal || t2.DetermineType() != TriangleType::Normal) {
             return std::visit([](const auto& s1, const auto& s2) {
                 return Intersect(s1, s2);
             }, t1.MakeShape(), t2.MakeShape());
@@ -221,11 +217,11 @@ public:
         Vector<T> a_vectors[] {a.p1_ - a.p0_, a.p2_ - a.p1_, a.p0_ - a.p2_};
         Vector<T> b_vectors[] {b.p1_ - b.p0_, b.p2_ - b.p1_, b.p0_ - b.p2_};
 
-        if (!ProjectionsOverlap(a.GetNormal())) {
+        if (!ProjectionsOverlap(a.CalculateNormal())) {
             return false;
         }
 
-        if (!ProjectionsOverlap(b.GetNormal())) {
+        if (!ProjectionsOverlap(b.CalculateNormal())) {
             return false;
         }
 
@@ -288,8 +284,8 @@ public:
     }
 
     static PlanesPosition RelativePlanesPosition(const Triangle& t1, const Triangle& t2) {
-        Vector<T> normal1 = t1.GetNormal();
-        Vector<T> normal2 = t2.GetNormal();
+        Vector<T> normal1 = t1.CalculateNormal();
+        Vector<T> normal2 = t2.CalculateNormal();
         
         if (!normal1.Collinear(normal2)) {
             return PlanesPosition::Intersect;
@@ -322,16 +318,6 @@ public:
         };
     }
 
-    static AABB<T> ComputeBoundingBox(const std::span<Triangle>& triangles) {
-        AABB<T> aabb; //AABB<T> aabb{triangles.front()};
-// TODO std::accumulate 
-        for (const auto& triangle : triangles) {
-            aabb.Expand(triangle.GetAABB());
-        }
-
-        return aabb;
-    }
-
     Point<T> ToPoint() const {
         if (p0_ != p1_ || p1_ != p2_ || p2_ != p0_) {
             throw std::runtime_error("The triangle is not degenerate into a point");
@@ -341,7 +327,7 @@ public:
     }
 
     Segment<T> ToSegment() const {
-        if (this->GetType() != TriangleType::Segment) {
+        if (this->DetermineType() != TriangleType::Segment) { // NOTE ?
             throw std::runtime_error("The triangle is not degenerate into a line segment");
         }
 
@@ -364,7 +350,7 @@ public:
     }
 
     TriangleType DetermineType() const {
-        return !normal_.IsNullVector()
+        return !this->CalculateNormal().IsNullVector()
             ? TriangleType::Normal
             : p0_ == p1_ && p1_ == p2_
                 ? TriangleType::Point
@@ -381,21 +367,18 @@ public:
         }
     }
 
-    TriangleType GetType() const noexcept {
-        return type_;
-    }
-
     size_t GetId() const noexcept {
         return id_;
     }
 
-    AABB<T> GetAABB() const noexcept {
-        return aabb_;
+    Vector<T> CalculateNormal() const { // NOTE new function
+        return Vector<T>::Cross(p1_ - p0_, p2_ - p1_).Normalized();
     }
 
-    Vector<T> GetNormal() const noexcept {
-        return normal_;
-    }
+    // AABB<T> CalculateAABB() const {
+    //     AABB aabb{*this};
+    //     return aabb;
+    // }
 };
 
 } // namespace Geometry

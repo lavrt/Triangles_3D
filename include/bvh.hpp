@@ -31,7 +31,7 @@ private:
 
         auto node = std::make_unique<BVHNode<T>>();
 
-        AABB<T> aabb = Triangle<T>::ComputeBoundingBox(triangles);
+        AABB<T> aabb{triangles};
         node->SetAABB(aabb);
 
         if (end - start <= kMaxTrianglesPerLeaf) {
@@ -45,7 +45,9 @@ private:
             triangles.begin(),
             triangles.end(),
             [axis](const Triangle<T>& a, const Triangle<T>& b) {
-                return a.GetAABB().GetCenter()[axis] < b.GetAABB().GetCenter()[axis];
+                AABB aabb_a{a};
+                AABB aabb_b{b};
+                return aabb_a.GetCenter()[axis] < aabb_b.GetCenter()[axis];
             }
         );
 

@@ -11,7 +11,7 @@ inline constexpr double kEpsilon = 1e-12;
 namespace Limits {
 
 template <typename T>
-constexpr T MaxValue() {
+constexpr T MaxValue() { // TODO remove
     return std::numeric_limits<T>::max();
 }
 

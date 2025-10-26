@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <array>
+#include <variant>
 
 #include "segment.hpp"
 #include "point.hpp"
@@ -21,6 +22,12 @@ enum class TriangleType {
 };
 
 template <typename T>
+class Triangle;
+
+template <typename T>
+using Shape = std::variant<Triangle<T>, Segment<T>, Point<T>>;
+
+template <typename T>
 class Triangle { // TODO можно не хранить нормаль и сделать поля public
 private:
     size_t id_;
@@ -32,49 +39,17 @@ private:
     AABB<T> aabb_;
     Vector<T> normal_;
     TriangleType type_;
-
-    static bool IntersectDegenerate(const Triangle& t1, const Triangle& t2) {
-        if (t1.GetType() == TriangleType::Point && t2.GetType() == TriangleType::Point) {
-            return Intersect(t1.ToPoint(), t2.ToPoint());
-        }
-
-        if (t1.GetType() == TriangleType::Point && t2.GetType() == TriangleType::Segment) {
-            return Intersect(t1.ToPoint(), t2.ToSegment());
-        }
-
-        if (t1.GetType() == TriangleType::Segment && t2.GetType() == TriangleType::Point) {
-            return Intersect(t2.ToPoint(), t1.ToSegment());
-        }
-
-        if (t1.GetType() == TriangleType::Segment && t2.GetType() == TriangleType::Segment) {
-            return Intersect(t1.ToSegment(), t2.ToSegment());
-        }
-
-        if (t1.GetType() == TriangleType::Normal && t2.GetType() == TriangleType::Point) {
-            return Intersect(t1, t2.ToPoint());
-        }
-
-        if (t1.GetType() == TriangleType::Point && t2.GetType() == TriangleType::Normal) {
-            return Intersect(t2, t1.ToPoint());
-        }
-
-        if (t1.GetType() == TriangleType::Normal && t2.GetType() == TriangleType::Segment) {
-            return Intersect(t1, t2.ToSegment());
-        }
-
-        if (t1.GetType() == TriangleType::Segment && t2.GetType() == TriangleType::Normal) {
-            return Intersect(t2, t1.ToSegment());
-        }
-
-        throw std::runtime_error("Triangles are not degenerate");
-    }
     
     static bool Intersect(const Point<T>& p1, const Point<T>& p2) {
-        return p1 == p2;
+        return p1 == p2; // return Dot(p1 - p2, p1 - p2) < ;
     }
 
     static bool Intersect(const Point<T>& p, const Segment<T>& s) {
         return std::abs((p - s.p0).Length() + (p - s.p1).Length() - s.Length()) < Constants::kEpsilon;
+    }
+
+    static bool Intersect(const Segment<T>& s, const Point<T>& p) {
+        return Intersect(p, s);
     }
 
     static bool Intersect(const Segment<T>& s1, const Segment<T>& s2) {
@@ -121,6 +96,10 @@ private:
         return t.Contains(p);
     }
 
+    static bool Intersect(const Point<T>& p, const Triangle& t) {
+        return Intersect(t, p);
+    } 
+
     static bool Intersect(const Triangle& t, const Segment<T>& s) {
         Point<T> p = s.p0;
         Vector<T> vec = s.p0 - s.p1;
@@ -160,6 +139,10 @@ private:
         return u >= 0 && v >= 0 && 1 - u - v >= 0 && std::abs(k) <= 1;
     }
 
+    static bool Intersect(const Segment<T>& s, const Triangle& t) {
+        return Intersect(t, s);
+    }
+
 public:
     Triangle(size_t id, Point<T> p0, Point<T> p1, Point<T> p2) 
         : id_(id), p0_(p0), p1_(p1), p2_(p2),
@@ -168,6 +151,15 @@ public:
           aabb_({std::min({p0.x, p1.x, p2.x}), std::min({p0.y, p1.y, p2.y}), std::min({p0.z, p1.z, p2.z})}, 
                 {std::max({p0.x, p1.x, p2.x}), std::max({p0.y, p1.y, p2.y}), std::max({p0.z, p1.z, p2.z})})
     {}
+
+    Shape<T> MakeShape() const {
+        switch (this->GetType()) {
+            case TriangleType::Normal:  return *this;
+            case TriangleType::Point:   return this->ToPoint();
+            case TriangleType::Segment: return this->ToSegment();
+            default: throw std::runtime_error("Unknown triangle type");
+        }
+    }
     
     /**
      * @brief The main function for checking the intersection of triangles
@@ -180,7 +172,9 @@ public:
      */
     static bool Intersect(const Triangle& t1, const Triangle& t2) {
         if (t1.GetType() != TriangleType::Normal || t2.GetType() != TriangleType::Normal) {
-            return IntersectDegenerate(t1, t2);
+            return std::visit([](const auto& s1, const auto& s2) {
+                return Intersect(s1, s2);
+            }, t1.MakeShape(), t2.MakeShape());
         }
 
         auto relative_planes_position = RelativePlanesPosition(t1, t2);
@@ -329,8 +323,8 @@ public:
     }
 
     static AABB<T> ComputeBoundingBox(const std::span<Triangle>& triangles) {
-        AABB<T> aabb;
-
+        AABB<T> aabb; //AABB<T> aabb{triangles.front()};
+// TODO std::accumulate 
         for (const auto& triangle : triangles) {
             aabb.Expand(triangle.GetAABB());
         }

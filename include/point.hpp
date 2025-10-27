@@ -23,7 +23,7 @@ struct Point {
     }
 
     Vector<T> operator-(const Point& other) const {
-        return Vector{x - other.x, y - other.y, z - other.z};
+        return {x - other.x, y - other.y, z - other.z};
     }
 
     bool operator==(const Point& other) const {

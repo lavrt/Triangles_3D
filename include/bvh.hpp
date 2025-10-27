@@ -173,7 +173,7 @@ public:
         file.close();
     }
 
-    std::set<size_t> FindIntersectingTriangles() { // TODO можно индекс не size_t а свой класс (не обяз)
+    std::set<size_t> FindIntersectingTriangles() {
         RecursiveFindIntersections(root_, root_);
         return intersecting_triangles_;
     }

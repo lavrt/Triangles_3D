@@ -138,8 +138,6 @@ public:
         return Intersect(t, s);
     }
 
-// NOTE here was the end of the public fields
-
     Triangle(size_t id, Point<T> p0, Point<T> p1, Point<T> p2) 
         : id_(id), p0_(p0), p1_(p1), p2_(p2) {}
 

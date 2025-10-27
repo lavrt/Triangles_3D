@@ -13,7 +13,7 @@ namespace Geometry {
 namespace Acceleration {
 
 template <typename T>
-class BVH { // TODO BSP скорее, можно шаблон, можно вектор нод и в нодах держать вектор треугольников в единст экземпляре
+class BVH {
 private:
     static constexpr int kMaxTrianglesPerLeaf = 3;
 

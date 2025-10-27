@@ -9,7 +9,6 @@
 
 #include "segment.hpp"
 #include "point.hpp"
-// #include "aabb.hpp" // FIXME
 
 namespace Geometry {
 
@@ -28,20 +27,16 @@ template <typename T>
 using Shape = std::variant<Triangle<T>, Segment<T>, Point<T>>;
 
 template <typename T>
-class Triangle { // TODO можно не хранить нормаль и сделать поля public
+class Triangle {
 public:
-    size_t id_;
+    size_t id_; // TODO можно убрать id
 
     Point<T> p0_;
     Point<T> p1_;
     Point<T> p2_;
-
-    // AABB<T> aabb_;
-    // Vector<T> normal_;
-    // TriangleType type_;
     
     static bool Intersect(const Point<T>& p1, const Point<T>& p2) {
-        return p1 == p2; // return Dot(p1 - p2, p1 - p2) < ;
+        return Vector<T>::Dot(p1 - p2, p1 - p2) < Constants::kEpsilon * Constants::kEpsilon;
     }
 
     static bool Intersect(const Point<T>& p, const Segment<T>& s) {
@@ -327,7 +322,7 @@ public:
     }
 
     Segment<T> ToSegment() const {
-        if (this->DetermineType() != TriangleType::Segment) { // NOTE ?
+        if (this->DetermineType() != TriangleType::Segment) {
             throw std::runtime_error("The triangle is not degenerate into a line segment");
         }
 
@@ -371,14 +366,9 @@ public:
         return id_;
     }
 
-    Vector<T> CalculateNormal() const { // NOTE new function
+    Vector<T> CalculateNormal() const {
         return Vector<T>::Cross(p1_ - p0_, p2_ - p1_).Normalized();
     }
-
-    // AABB<T> CalculateAABB() const {
-    //     AABB aabb{*this};
-    //     return aabb;
-    // }
 };
 
 } // namespace Geometry

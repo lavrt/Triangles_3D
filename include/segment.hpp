@@ -8,7 +8,7 @@
 
 namespace Geometry {
 
-template <typename T>
+template <typename T> // TODO concept
 struct Segment {
     Point<T> p0;
     Point<T> p1;

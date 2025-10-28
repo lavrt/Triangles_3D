@@ -7,12 +7,15 @@
 namespace Geometry {
 
 template <typename T>
+requires Concepts::Numeric<T>
 struct Vector {
     T x;
     T y;
     T z;
 
     Vector(T x, T y, T z) : x(x), y(y), z(z) {}
+
+    Vector() : x(0), y(0), z(0) {}
 
     static Vector Cross(const Vector& a, const Vector& b) {
         return Vector{
@@ -27,7 +30,7 @@ struct Vector {
     }
 
     Vector Normalized() const {
-        T len = this->Length();
+        T len = Length();
         return (len < Constants::kEpsilon) ? Vector<T>{0, 0, 0} : Vector{x / len, y / len, z / len};
     }
 
@@ -49,9 +52,73 @@ struct Vector {
         return {x * k, y * k, z * k};
     }
 
+    Vector& operator*=(T k) {
+        x *= k;
+        y *= k;
+        z *= k;
+        return *this;
+    }
+
+    Vector operator/(T k) const {
+        if (std::abs(k) < Constants::kEpsilon) {
+            throw std::runtime_error("Division by zero");
+        }
+
+        return {x / k, y / k, z / k};
+    }
+
+    Vector& operator/=(T k) {
+        if (std::abs(k) < Constants::kEpsilon) {
+            throw std::runtime_error("Division by zero");
+        }
+
+        x /= k;
+        y /= k;
+        z /= k;
+        return *this;
+    }
+
     Vector operator-(const Vector& other) const {
         return {x - other.x, y - other.y, z - other.z};
+    }
+
+    Vector& operator-=(const Vector& other) {
+        x -= other.x;
+        y -= other.y;
+        z -= other.z;
+        return *this;
+    }
+
+    Vector operator+(const Vector& other) const {
+        return {x + other.x, y + other.y, z + other.z};
+    }
+
+    Vector& operator+=(const Vector& other) {
+        x += other.x;
+        y += other.y;
+        z += other.z;
+        return *this;
+    }
+
+    Vector operator-() const {
+        return {-x, -y, -z};
+    }
+
+    bool operator==(const Vector& other) const {
+        return std::abs(x - other.x) < Constants::kEpsilon
+            && std::abs(y - other.y) < Constants::kEpsilon
+            && std::abs(z - other.z) < Constants::kEpsilon;
+    }
+
+    bool operator!=(const Vector& other) const {
+        return !(*this == other);
     }
 };
 
 } // namespace Geometry
+
+template <typename T>
+requires Concepts::Numeric<T>
+Geometry::Vector<T> operator*(T k, const Geometry::Vector<T>& v) {
+    return v * k;
+}

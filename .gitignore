@@ -3,6 +3,7 @@ build
 
 *.gv
 *.png
+*.tex
 
 !docs/
 !docs/**/*.png

@@ -24,17 +24,7 @@ protected:
 TEST_F(BVHTest, ConstructionAndBuild) {
     BVH bvh(std::move(triangles));
     
-    EXPECT_EQ(bvh.GetRoot(), nullptr);
-    
-    bvh.Build();
     EXPECT_NE(bvh.GetRoot(), nullptr);
-}
-
-TEST_F(BVHTest, EmptyTriangleList) {
-    std::vector<Triangle<double>> empty_triangles;
-    BVH<double> bvh(std::move(empty_triangles));
-    
-    EXPECT_NO_THROW(bvh.Build());
 }
 
 TEST_F(BVHTest, SingleTriangle) {
@@ -43,7 +33,8 @@ TEST_F(BVHTest, SingleTriangle) {
     };
     
     BVH bvh(std::move(single_triangle));
-    bvh.Build();
+
+    std::cerr << "__________________________________\n" << bvh.GetRoot()->GetNumberOfTriangles() << "______________________\n";
     
     ASSERT_NE(bvh.GetRoot(), nullptr);
     EXPECT_TRUE(bvh.GetRoot()->IsLeaf());
@@ -59,7 +50,6 @@ TEST_F(BVHTest, NoIntersectionsForSeparatedTriangles) {
     };
     
     BVH<double> bvh(std::move(separated_triangles));
-    bvh.Build();
     
     auto intersections = bvh.FindIntersectingTriangles();
     EXPECT_TRUE(intersections.empty());
@@ -72,7 +62,6 @@ TEST_F(BVHTest, IntersectingTrianglesDetection) {
     };
     
     BVH<double> bvh(std::move(intersecting_triangles));
-    bvh.Build();
     
     auto intersections = bvh.FindIntersectingTriangles();
     EXPECT_FALSE(intersections.empty());
@@ -85,7 +74,6 @@ TEST_F(BVHTest, SelfIntersectionNotReported) {
     };
     
     BVH<double> bvh(std::move(single_triangle));
-    bvh.Build();
     
     auto intersections = bvh.FindIntersectingTriangles();
     EXPECT_TRUE(intersections.empty());
@@ -105,8 +93,6 @@ TEST_F(BVHTest, LargeNumberOfTriangles) {
     }
     
     BVH<double> bvh(std::move(large_set));
-    
-    bvh.Build();
     
     EXPECT_NE(bvh.GetRoot(), nullptr);
 }

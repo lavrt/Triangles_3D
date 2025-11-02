@@ -143,9 +143,7 @@ private:
     }
 
 public:
-    BVH(std::vector<Triangle<T>>&& triangles) noexcept : triangles_(std::move(triangles)) {}
-
-    void Build() {
+    BVH(std::vector<Triangle<T>>&& triangles) : triangles_(std::move(triangles)) {
         root_ = RecursiveBuild(0, triangles_.size());
     }
 

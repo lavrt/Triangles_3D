@@ -21,12 +21,15 @@ enum class TriangleType {
 };
 
 template <typename T>
+requires Concepts::Numeric<T>
 class Triangle;
 
 template <typename T>
+requires Concepts::Numeric<T>
 using Shape = std::variant<Triangle<T>, Segment<T>, Point<T>>;
 
 template <typename T>
+requires Concepts::Numeric<T>
 class Triangle {
 public:
     size_t id_; // TODO можно убрать id
@@ -142,7 +145,7 @@ public:
         : id_(id), p0_(p0), p1_(p1), p2_(p2) {}
 
     Shape<T> MakeShape() const {
-        switch (this->DetermineType()) {
+        switch (DetermineType()) {
             case TriangleType::Normal:  return *this;
             case TriangleType::Point:   return this->ToPoint();
             case TriangleType::Segment: return this->ToSegment();

@@ -13,6 +13,7 @@ namespace Geometry {
 namespace Acceleration {
 
 template <typename T>
+requires Concepts::Numeric<T>
 class BVHNode {
 private:
     AABB<T> aabb_;

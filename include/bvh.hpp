@@ -13,6 +13,7 @@ namespace Geometry {
 namespace Acceleration {
 
 template <typename T>
+requires Concepts::Numeric<T>
 class BVH {
 private:
     static constexpr int kMaxTrianglesPerLeaf = 3;

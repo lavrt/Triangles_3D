@@ -19,11 +19,13 @@ inline constexpr double kEpsilon = 1e-12;
 namespace Limits {
 
 template <typename T>
+requires Concepts::Numeric<T>
 constexpr T MaxValue() {
     return std::numeric_limits<T>::max();
 }
 
 template <typename T>
+requires Concepts::Numeric<T>
 constexpr T LowestValue() {
     return std::numeric_limits<T>::lowest();
 }

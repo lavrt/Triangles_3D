@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <stdexcept>
 
 #include "details.hpp"
 
@@ -16,6 +17,26 @@ struct Vector {
     Vector(T x, T y, T z) : x(x), y(y), z(z) {}
 
     Vector() : x(0), y(0), z(0) {}
+
+    const T& operator[](size_t axis) const {
+        switch (axis) {
+            case 0: return x;
+            case 1: return y;
+            case 2: return z;
+
+            default: throw std::out_of_range("Incorrect access to fields of the class");
+        }
+    }
+
+    T& operator[](size_t axis) {
+        switch (axis) {
+            case 0: return x;
+            case 1: return y;
+            case 2: return z;
+
+            default: throw std::out_of_range("Incorrect access to fields of the class");
+        }
+    }
 
     static Vector Cross(const Vector& a, const Vector& b) {
         return Vector{
@@ -121,4 +142,11 @@ template <typename T>
 requires Concepts::Numeric<T>
 Geometry::Vector<T> operator*(T k, const Geometry::Vector<T>& v) {
     return v * k;
+}
+
+template <typename T>
+requires Concepts::Numeric<T>
+inline std::ostream& operator<<(std::ostream& os, const Geometry::Vector<T>& vector) {
+    os << "(" << vector.x << ", " << vector.y << ", " << vector.z << ")";
+    return os;
 }

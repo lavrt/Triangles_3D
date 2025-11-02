@@ -10,6 +10,7 @@
 namespace Geometry {
 
 template <typename T>
+requires Concepts::Numeric<T>
 struct AABB {
     Point<T> min;
     Point<T> max;
@@ -20,8 +21,12 @@ struct AABB {
     AABB(Point<T> min, Point<T> max) : min(min), max(max) {}
 
     AABB(const Triangle<T>& t)
-        : min({std::min({t.p0_.x, t.p1_.x, t.p2_.x}), std::min({t.p0_.y, t.p1_.y, t.p2_.y}), std::min({t.p0_.z, t.p1_.z, t.p2_.z})}),
-          max({std::max({t.p0_.x, t.p1_.x, t.p2_.x}), std::max({t.p0_.y, t.p1_.y, t.p2_.y}), std::max({t.p0_.z, t.p1_.z, t.p2_.z})})
+        : min({std::min({t.p0_.x, t.p1_.x, t.p2_.x}),
+               std::min({t.p0_.y, t.p1_.y, t.p2_.y}),
+               std::min({t.p0_.z, t.p1_.z, t.p2_.z})}),
+          max({std::max({t.p0_.x, t.p1_.x, t.p2_.x}),
+               std::max({t.p0_.y, t.p1_.y, t.p2_.y}),
+               std::max({t.p0_.z, t.p1_.z, t.p2_.z})})
     {}
 
     AABB(const std::span<Triangle<T>>& triangles) {

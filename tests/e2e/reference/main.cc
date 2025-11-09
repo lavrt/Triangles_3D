@@ -26,13 +26,27 @@ int main(int argc, char** argv) {
 
     TriangleTester tester;
 
-    std::ofstream out("./tests/e2e/test_data/" + output);
+    std::set<size_t> intersected_indices;
 
-    for (size_t i = 0; i != triangles.size(); ++i) {
+    for (size_t i = 0; i < triangles.size(); ++i) {
         for (size_t j = i + 1; j < triangles.size(); ++j) {
-            out << tester.TestIntersection(triangles[i], triangles[j]) << "\n";
+            if (tester.TestIntersection(triangles[i], triangles[j])) {
+                intersected_indices.insert(i);
+                intersected_indices.insert(j);
+            }
         }
     }
 
+    std::ofstream out("./tests/e2e/test_data/" + output);
+    if (!out.is_open()) {
+        std::cerr << "Cannot open output file: " << output << "\n";
+        return 1;
+    }
+
+    for (size_t idx : intersected_indices) {
+        out << idx << "\n";
+    }
+
+    std::cout << "Found " << intersected_indices.size() << " intersecting triangles.\n";
     return 0;
 }

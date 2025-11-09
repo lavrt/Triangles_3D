@@ -78,6 +78,15 @@ private:
                 }
             }
 
+            // for (size_t i = 0; i != a_tr.size(); ++i) {
+            //     for (size_t j = 0; j != b_tr.size(); ++j) {
+            //         if (i < j && Triangle<T>::Intersect(a_tr[i], b_tr[i])) {
+            //             intersecting_triangles_.insert(i);
+            //             intersecting_triangles_.insert(j);
+            //         }
+            //     }
+            // }
+
             return;
         }
 

@@ -3,6 +3,7 @@
 #include <fstream>
 
 #include "triangle.hpp"
+#include "bvh.hpp"
 
 namespace {
 
@@ -22,6 +23,7 @@ std::vector<Geometry::Triangle<double>> ReadTrianglesFromFile(const std::string&
     std::vector<Geometry::Triangle<double>> triangles;
     triangles.reserve(number_of_triangles);
 
+    size_t id = 0;
     while (std::getline(file, line)) {
         if (line.empty() || line[0] == '#') {
             continue;
@@ -43,7 +45,7 @@ std::vector<Geometry::Triangle<double>> ReadTrianglesFromFile(const std::string&
         }
 
         triangles.emplace_back(
-            0,
+            id++,
             Geometry::Point{points[0], points[1], points[2]},
             Geometry::Point{points[3], points[4], points[5]},
             Geometry::Point{points[6], points[7], points[8]}
@@ -67,31 +69,34 @@ int main(int argc, char** argv) {
             answers_filename = args[++i];
         }
     }
-
+    
     std::vector<Geometry::Triangle<double>> triangles = ReadTrianglesFromFile("./tests/e2e/test_data/" + data);
+
+    size_t triangles_size = triangles.size();
+    Geometry::Acceleration::BVH<double> bvh{std::move(triangles)};
+    auto intersections = bvh.FindIntersectingTriangles();
 
     std::ifstream s("./tests/e2e/test_data/" + answers_filename);
     if (!s.is_open()) {
         throw std::runtime_error("File opening error");
     }
 
-    std::vector<bool> answers;
-    answers.reserve(triangles.size());
-    for (bool res = 0; s >> res;) {
+    std::vector<size_t> answers;
+    answers.reserve(triangles_size);
+    for (size_t res = 0; s >> res;) {
         answers.push_back(res);
     }
 
-    auto it = answers.begin();    
-    for (size_t i = 0; i != triangles.size(); ++i) {
-        for (size_t j = i + 1; j < triangles.size(); ++j) {
-            if (Geometry::Triangle<double>::Intersect(triangles[i], triangles[j]) != *(it++)) {
-                std::cerr << "Error:\n"
-                          << "Expected: " << (*(it - 1) ? "HIT" : "MISS") << "\n"
-                          << "Got: " << (!*(it - 1) ? "HIT" : "MISS") << "\n"
-                          << "i=" << i << ", j=" << j << "\n";
-                return 1;
-            };
+    auto it_ref = answers.begin();
+    auto it_our = intersections.begin();
+    
+    for (size_t i = 0; i != answers.size(); ++i) {
+        if (*it_our != *it_ref) {
+            std::cerr << "*it_our=" << *it_our << " *it_ref=" << *it_ref << "\n";
+            std::cerr << "Error\n";
         }
+        ++it_our;
+        ++it_ref;
     }
 
     std::cout << data << " passed\n";

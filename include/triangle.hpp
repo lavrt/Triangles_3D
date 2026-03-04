@@ -32,7 +32,7 @@ template <typename T>
 requires Concepts::Numeric<T>
 class Triangle {
 public:
-    size_t id_; // TODO можно убрать id
+    size_t id_;
 
     Point<T> p0_;
     Point<T> p1_;

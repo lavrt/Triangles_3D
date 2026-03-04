@@ -6,9 +6,6 @@
 #include "triangle.hpp"
 #include "bvh.hpp"
 
-// aabb и normal лучше не хранить в треугольнике
-// можно через std::variant
-
 int main() {
     size_t n = 0;
     std::cin >> n;

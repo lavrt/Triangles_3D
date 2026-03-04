@@ -82,11 +82,11 @@ git clone https://github.com/lavrt/Triangles_3D
 cd Triangles_3D
 
 cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
-cmake --build build
+cmake --build build -j
 
-./build/triangles_3d    # running the main application
+./build/triangles_3d        # running the main application
 
-cd build && ctest       # running tests
+ctest --test-dir build      # running tests
 ```
 
 ## Visualization

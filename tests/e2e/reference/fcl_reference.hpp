@@ -1,12 +1,13 @@
 #pragma once
 
-#include <fcl/narrowphase/collision.h>
-#include <fcl/geometry/bvh/BVH_model.h>
 #include <stdexcept>
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <memory>
+
+#include <fcl/narrowphase/collision.h>
+#include <fcl/geometry/bvh/BVH_model.h>
 
 struct Triangle {
     std::vector<fcl::Vector3d> vertices;

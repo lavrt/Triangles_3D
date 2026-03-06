@@ -6,6 +6,8 @@
 #include "triangle.hpp"
 #include "bvh.hpp"
 
+using Type = double;
+
 int main() {
     size_t n = 0;
     std::cin >> n;
@@ -15,10 +17,10 @@ int main() {
         return 1;
     }
 
-    std::vector<Geometry::Triangle<double>> triangles;
+    std::vector<Geometry::Triangle<Type>> triangles;
     triangles.reserve(n);
 
-    Geometry::Point<double> p0, p1, p2;
+    Geometry::Point<Type> p0, p1, p2;
     for (size_t i = 0; i != n; ++i) {
         std::cin >> p0.x >> p0.y >> p0.z
                  >> p1.x >> p1.y >> p1.z

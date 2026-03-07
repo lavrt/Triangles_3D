@@ -24,7 +24,7 @@ std::vector<Geometry::Acceleration::IndexedTriangle<double>> ReadTrianglesFromFi
     std::vector<Geometry::Acceleration::IndexedTriangle<double>> triangles;
     triangles.reserve(number_of_triangles);
 
-    size_t id = 0;
+    Geometry::Acceleration::TrIndex id = 0;
     while (std::getline(file, line)) {
         if (line.empty() || line[0] == '#') {
             continue;
@@ -84,9 +84,9 @@ int main(int argc, char** argv) {
         throw std::runtime_error("File opening error");
     }
 
-    std::vector<size_t> answers;
+    std::vector<Geometry::Acceleration::TrIndex> answers;
     answers.reserve(triangles_size);
-    for (size_t res = 0; s >> res;) {
+    for (Geometry::Acceleration::TrIndex res = 0; s >> res;) {
         answers.push_back(res);
     }
 

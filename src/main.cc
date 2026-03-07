@@ -36,8 +36,8 @@ int main() {
     
     Geometry::Acceleration::BVH tree{std::move(triangles)};
     
-    std::set<size_t> answer = tree.FindIntersectingTriangles();
-    for (size_t id : answer) {
+    auto answer = tree.FindIntersectingTriangles();
+    for (const auto& id : answer) {
         std::cout << id << "\n";
     }
 

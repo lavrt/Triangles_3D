@@ -1,14 +1,18 @@
 #pragma once
 
+#include <cstddef>
+
 #include "triangle.hpp"
 
 namespace Geometry {
 
 namespace Acceleration {
 
+using TrIndex = size_t;
+
 template <typename T>
 struct IndexedTriangle {
-    size_t id;
+    TrIndex id;
     Triangle<T> triangle;
 };
 

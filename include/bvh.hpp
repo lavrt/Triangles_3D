@@ -21,7 +21,7 @@ private:
 
     std::unique_ptr<BVHNode<T>> root_ = nullptr;
     std::vector<IndexedTriangle<T>> triangles_;
-    std::set<size_t> intersecting_triangles_;
+    std::set<TrIndex> intersecting_triangles_;
 
     size_t GetSplitAxis(const AABB<T>& aabb) const {
         Vector<T> diff = aabb.max - aabb.min;
@@ -33,7 +33,6 @@ private:
 
         auto node = std::make_unique<BVHNode<T>>();
 
-        // AABB<T> aabb{triangles};
         AABB<T> aabb;
         for (auto&& tr : triangles) {
             aabb.Expand(tr.triangle);
@@ -177,7 +176,7 @@ public:
         file.close();
     }
 
-    std::set<size_t> FindIntersectingTriangles() {
+    std::set<TrIndex> FindIntersectingTriangles() {
         RecursiveFindIntersections(root_, root_);
         return intersecting_triangles_;
     }

@@ -185,7 +185,7 @@ public:
             return Segment<T>::Intersect(edges1, edges2) || t1.Contains(t2) || t2.Contains(t1); 
         }
 
-        return SAT(t1, t2);
+        return Sat(t1, t2);
     }
 
     /**
@@ -201,7 +201,7 @@ public:
      * @param t2 Second triangle
      * @return true if the triangles intersect
      */
-    static bool SAT(const Triangle& a, const Triangle& b) {
+    static bool Sat(const Triangle& a, const Triangle& b) {
         auto ProjectionsOverlap = [a, b](const Vector<T>& axis) {
             if (axis.Length() < Constants::kEpsilon) {
                 return true;

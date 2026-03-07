@@ -97,14 +97,14 @@ TEST(RelativePlanesPositionTest, IntersectingPlanes) {
     EXPECT_EQ(position, PlanesPosition::kIntersect);
 }
 
-// SAT ---------------------------------------------------------------------------------------------
+// Sat ---------------------------------------------------------------------------------------------
 
 TEST(TriangleIntersectionTest, NonIntersectingTriangles) {
     Triangle<double> above(Point<double>{0,0,1}, Point<double>{1,0,1}, Point<double>{0,1,1});
     Triangle<double> xy_plane(Point<double>{0,0,0}, Point<double>{1,0,0}, Point<double>{0,1,0});
     
     EXPECT_FALSE(Triangle<double>::Intersect(xy_plane, above));
-    EXPECT_FALSE(Triangle<double>::SAT(xy_plane, above));
+    EXPECT_FALSE(Triangle<double>::Sat(xy_plane, above));
 }
 
 TEST(TriangleIntersectionTest, PerpendicularIntersectingTriangles) {
@@ -112,7 +112,7 @@ TEST(TriangleIntersectionTest, PerpendicularIntersectingTriangles) {
     Triangle<double> xy_plane(Point<double>{0,0,0}, Point<double>{1,0,0}, Point<double>{0,1,0});
     
     EXPECT_TRUE(Triangle<double>::Intersect(xy_plane, perpendicular));
-    EXPECT_TRUE(Triangle<double>::SAT(xy_plane, perpendicular));
+    EXPECT_TRUE(Triangle<double>::Sat(xy_plane, perpendicular));
 }
 
 // ComputeBoundingBox ------------------------------------------------------------------------------

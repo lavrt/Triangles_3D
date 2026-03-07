@@ -32,8 +32,6 @@ template <typename T>
 requires Concepts::Numeric<T>
 class Triangle {
 public:
-    size_t id_;
-
     Point<T> p0_;
     Point<T> p1_;
     Point<T> p2_;
@@ -141,8 +139,8 @@ public:
         return Intersect(t, s);
     }
 
-    Triangle(size_t id, Point<T> p0, Point<T> p1, Point<T> p2) 
-        : id_(id), p0_(p0), p1_(p1), p2_(p2) {}
+    Triangle(Point<T> p0, Point<T> p1, Point<T> p2) 
+        : p0_(p0), p1_(p1), p2_(p2) {}
 
     Shape<T> MakeShape() const {
         switch (DetermineType()) {
@@ -361,10 +359,6 @@ public:
             
             default: throw std::out_of_range("Incorrect access to fields of the class: Triangle");
         }
-    }
-
-    size_t GetId() const noexcept {
-        return id_;
     }
 
     Vector<T> CalculateNormal() const {

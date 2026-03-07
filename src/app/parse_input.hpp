@@ -5,6 +5,7 @@
 #include <stdexcept>
 
 #include "indexed_triangle.hpp"
+#include "point.hpp"
 
 namespace app {
 

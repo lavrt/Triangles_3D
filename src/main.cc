@@ -1,9 +1,5 @@
 #include <iostream>
-#include <vector>
-#include <set>
 
-#include "point.hpp"
-#include "triangle.hpp"
 #include "bvh.hpp"
 #include "parse_input.hpp"
 

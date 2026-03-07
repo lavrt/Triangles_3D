@@ -17,7 +17,7 @@ int main() {
         return 1;
     }
 
-    std::vector<Geometry::Triangle<Type>> triangles;
+    std::vector<Geometry::Acceleration::IndexedTriangle<Type>> triangles;
     triangles.reserve(n);
 
     Geometry::Point<Type> p0, p1, p2;
@@ -31,7 +31,7 @@ int main() {
             return 1;
         }
                 
-        triangles.push_back({i, p0, p1, p2});
+        triangles.emplace_back(i, Geometry::Triangle{p0, p1, p2});
     }
     
     Geometry::Acceleration::BVH tree{std::move(triangles)};

@@ -7,6 +7,7 @@
 #include <stdexcept>
 
 #include "node.hpp"
+#include "indexed_triangle.hpp"
 
 namespace Geometry {
 
@@ -19,7 +20,7 @@ private:
     static constexpr int kMaxTrianglesPerLeaf = 3;
 
     std::unique_ptr<BVHNode<T>> root_ = nullptr;
-    std::vector<Triangle<T>> triangles_;
+    std::vector<IndexedTriangle<T>> triangles_;
     std::set<size_t> intersecting_triangles_;
 
     size_t GetSplitAxis(const AABB<T>& aabb) const {
@@ -28,11 +29,15 @@ private:
     }
 
     std::unique_ptr<BVHNode<T>> RecursiveBuild(size_t start, size_t end) {
-        std::span<Triangle<T>> triangles(triangles_.begin() + start, triangles_.begin() + end);
+        std::span<IndexedTriangle<T>> triangles(triangles_.begin() + start, triangles_.begin() + end);
 
         auto node = std::make_unique<BVHNode<T>>();
 
-        AABB<T> aabb{triangles};
+        // AABB<T> aabb{triangles};
+        AABB<T> aabb;
+        for (auto&& tr : triangles) {
+            aabb.Expand(tr.triangle);
+        }
         node->SetAABB(aabb);
 
         if (end - start <= kMaxTrianglesPerLeaf) {
@@ -45,9 +50,9 @@ private:
         std::sort(
             triangles.begin(),
             triangles.end(),
-            [axis](const Triangle<T>& a, const Triangle<T>& b) {
-                AABB aabb_a{a};
-                AABB aabb_b{b};
+            [axis](const IndexedTriangle<T>& a, const IndexedTriangle<T>& b) {
+                AABB aabb_a{a.triangle};
+                AABB aabb_b{b.triangle};
                 return aabb_a.GetCenter()[axis] < aabb_b.GetCenter()[axis];
             }
         );
@@ -66,14 +71,14 @@ private:
         }
 
         if (a->IsLeaf() && b->IsLeaf()) {
-            std::span<Triangle<T>> a_triangles = a->GetTriangles();
-            std::span<Triangle<T>> b_triangles = b->GetTriangles();
+            std::span<IndexedTriangle<T>> a_triangles = a->GetTriangles();
+            std::span<IndexedTriangle<T>> b_triangles = b->GetTriangles();
 
-            for (const Triangle<T>& a_tr : a_triangles) {
-                for (const Triangle<T>& b_tr : b_triangles) {
-                    if (a_tr.GetId() < b_tr.GetId() && Triangle<T>::Intersect(a_tr, b_tr)) { 
-                        intersecting_triangles_.insert(a_tr.GetId());
-                        intersecting_triangles_.insert(b_tr.GetId());
+            for (const auto& a_tr : a_triangles) {
+                for (const auto& b_tr : b_triangles) {
+                    if (a_tr.id < b_tr.id && Triangle<T>::Intersect(a_tr.triangle, b_tr.triangle)) { 
+                        intersecting_triangles_.insert(a_tr.id);
+                        intersecting_triangles_.insert(b_tr.id);
                     }
                 }
             }
@@ -143,7 +148,7 @@ private:
     }
 
 public:
-    BVH(std::vector<Triangle<T>>&& triangles) : triangles_(std::move(triangles)) {
+    BVH(std::vector<IndexedTriangle<T>>&& triangles) : triangles_(std::move(triangles)) {
         root_ = RecursiveBuild(0, triangles_.size());
     }
 

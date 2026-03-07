@@ -7,6 +7,7 @@
 
 #include "aabb.hpp"
 #include "triangle.hpp"
+#include "indexed_triangle.hpp"
 
 namespace Geometry {
 
@@ -17,7 +18,7 @@ requires Concepts::Numeric<T>
 class BVHNode {
 private:
     AABB<T> aabb_;
-    std::span<Triangle<T>> triangles_;
+    std::span<IndexedTriangle<T>> triangles_;
     bool is_leaf_ = true;
 
     std::unique_ptr<BVHNode> left_ = nullptr;
@@ -28,7 +29,7 @@ public:
         aabb_ = aabb;
     }
 
-    void SetTriangles(const std::span<Triangle<T>>& triangles) {
+    void SetTriangles(const std::span<IndexedTriangle<T>>& triangles) {
         if (left_ != nullptr || right_ != nullptr) {
             throw std::runtime_error(
                 "An attempt to change the node type from a leaf node to an internal node"
@@ -59,7 +60,7 @@ public:
         return aabb_;
     }
 
-    std::span<Triangle<T>> GetTriangles() const noexcept {
+    std::span<IndexedTriangle<T>> GetTriangles() const noexcept {
         return triangles_;
     }
 

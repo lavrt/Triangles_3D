@@ -4,10 +4,11 @@
 
 #include "triangle.hpp"
 #include "bvh.hpp"
+#include "indexed_triangle.hpp"
 
 namespace {
 
-std::vector<Geometry::Triangle<double>> ReadTrianglesFromFile(const std::string& filename) {
+std::vector<Geometry::Acceleration::IndexedTriangle<double>> ReadTrianglesFromFile(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         throw std::runtime_error("File opening error");
@@ -20,7 +21,7 @@ std::vector<Geometry::Triangle<double>> ReadTrianglesFromFile(const std::string&
     size_t number_of_triangles = 0;
     ss >> number_of_triangles;
 
-    std::vector<Geometry::Triangle<double>> triangles;
+    std::vector<Geometry::Acceleration::IndexedTriangle<double>> triangles;
     triangles.reserve(number_of_triangles);
 
     size_t id = 0;
@@ -31,7 +32,7 @@ std::vector<Geometry::Triangle<double>> ReadTrianglesFromFile(const std::string&
 
         std::vector<double> points;
         std::stringstream ss(line);
-        double value;
+        double value = 0;
 
         while (ss >> value) {
             points.push_back(value);
@@ -46,9 +47,11 @@ std::vector<Geometry::Triangle<double>> ReadTrianglesFromFile(const std::string&
 
         triangles.emplace_back(
             id++,
-            Geometry::Point{points[0], points[1], points[2]},
-            Geometry::Point{points[3], points[4], points[5]},
-            Geometry::Point{points[6], points[7], points[8]}
+            Geometry::Triangle{
+                Geometry::Point{points[0], points[1], points[2]},
+                Geometry::Point{points[3], points[4], points[5]},
+                Geometry::Point{points[6], points[7], points[8]}
+            }
         );
     }
 
@@ -70,7 +73,7 @@ int main(int argc, char** argv) {
         }
     }
     
-    std::vector<Geometry::Triangle<double>> triangles = ReadTrianglesFromFile("./tests/e2e/test_data/" + data);
+    auto triangles = ReadTrianglesFromFile("./tests/e2e/test_data/" + data);
 
     size_t triangles_size = triangles.size();
     Geometry::Acceleration::BVH<double> bvh{std::move(triangles)};

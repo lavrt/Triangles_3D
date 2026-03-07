@@ -9,9 +9,9 @@ using namespace Acceleration;
 
 class NodeTest : public ::testing::Test {
 protected: 
-    std::vector<Triangle<double>> triangles {
-        Triangle<double>(1, Point<double>{0,0,0}, Point<double>{1,0,0}, Point<double>{0,1,0}),
-        Triangle<double>(2, Point<double>{2,0,0}, Point<double>{3,0,0}, Point<double>{2,1,0})
+    std::vector<IndexedTriangle<double>> triangles {
+        IndexedTriangle<double>(1, {Point<double>{0,0,0}, Point<double>{1,0,0}, Point<double>{0,1,0}}),
+        IndexedTriangle<double>(2, {Point<double>{2,0,0}, Point<double>{3,0,0}, Point<double>{2,1,0}})
     };
 };
 
@@ -75,8 +75,8 @@ TEST_F(NodeTest, TriangleSpanIntegrity) {
     
     auto span = node.GetTriangles();
     EXPECT_EQ(span.size(), 2);
-    EXPECT_EQ(span[0].GetId(), 1);
-    EXPECT_EQ(span[1].GetId(), 2);
+    EXPECT_EQ(span[0].id, 1);
+    EXPECT_EQ(span[1].id, 2);
 }
 
 TEST_F(NodeTest, StateTransitions) {

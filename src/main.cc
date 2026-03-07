@@ -5,36 +5,12 @@
 #include "point.hpp"
 #include "triangle.hpp"
 #include "bvh.hpp"
+#include "parse_input.hpp"
 
 using Type = double;
 
 int main() {
-    size_t n = 0;
-    std::cin >> n;
-
-    if (!std::cin.good()) {
-        std::cerr << "Input error: expected number of triangles\n";
-        return 1;
-    }
-
-    std::vector<Geometry::Acceleration::IndexedTriangle<Type>> triangles;
-    triangles.reserve(n);
-
-    Geometry::Point<Type> p0, p1, p2;
-    for (size_t i = 0; i != n; ++i) {
-        std::cin >> p0.x >> p0.y >> p0.z
-                 >> p1.x >> p1.y >> p1.z
-                 >> p2.x >> p2.y >> p2.z;
-
-        if (!std::cin.good()) {
-            std::cerr << "Input error on the triangle " << i << "\n";
-            return 1;
-        }
-                
-        triangles.emplace_back(i, Geometry::Triangle{p0, p1, p2});
-    }
-    
-    Geometry::Acceleration::BVH tree{std::move(triangles)};
+    Geometry::Acceleration::BVH tree{app::ParseInput<Type>(std::cin)};
     
     auto answer = tree.FindIntersectingTriangles();
     for (const auto& id : answer) {

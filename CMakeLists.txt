@@ -11,6 +11,7 @@ add_executable(triangles_3d src/main.cc)
 target_include_directories(triangles_3d
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/app
 )
 
 # tests --------------------------------------

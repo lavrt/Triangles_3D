@@ -16,14 +16,6 @@ namespace Acceleration {
 template <typename T>
 requires Concepts::Numeric<T>
 class BVHNode {
-private:
-    AABB<T> aabb_;
-    std::span<IndexedTriangle<T>> triangles_;
-    bool is_leaf_ = true;
-
-    std::unique_ptr<BVHNode> left_ = nullptr;
-    std::unique_ptr<BVHNode> right_ = nullptr;    
-
 public:
     void SetAABB(const AABB<T>& aabb) {
         aabb_ = aabb;
@@ -79,6 +71,14 @@ public:
     bool IsLeaf() const noexcept {
         return is_leaf_;
     }
+
+private:
+    AABB<T> aabb_;
+    std::span<IndexedTriangle<T>> triangles_;
+    bool is_leaf_ = true;
+
+    std::unique_ptr<BVHNode> left_ = nullptr;
+    std::unique_ptr<BVHNode> right_ = nullptr;
 };
 
 } // namespace Acceleration

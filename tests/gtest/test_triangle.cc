@@ -78,7 +78,7 @@ TEST(RelativePlanesPositionTest, ParallelPlanes) {
     Triangle<double> t2(Point<double>{0,0,1}, Point<double>{1,0,1}, Point<double>{0,1,1});
     
     auto position = Triangle<double>::RelativePlanesPosition(t1, t2);
-    EXPECT_EQ(position, PlanesPosition::Parallel);
+    EXPECT_EQ(position, PlanesPosition::kParallel);
 }
 
 TEST(RelativePlanesPositionTest, CoincidentPlanes) {
@@ -86,7 +86,7 @@ TEST(RelativePlanesPositionTest, CoincidentPlanes) {
     Triangle<double> t2(Point<double>{0,0,0}, Point<double>{0,1,0}, Point<double>{1,0,0});
     
     auto position = Triangle<double>::RelativePlanesPosition(t1, t2);
-    EXPECT_EQ(position, PlanesPosition::Coincide);
+    EXPECT_EQ(position, PlanesPosition::kCoincide);
 }
 
 TEST(RelativePlanesPositionTest, IntersectingPlanes) {
@@ -94,7 +94,7 @@ TEST(RelativePlanesPositionTest, IntersectingPlanes) {
     Triangle<double> t2(Point<double>{0,0,0}, Point<double>{0,1,0}, Point<double>{0,0,1});
     
     auto position = Triangle<double>::RelativePlanesPosition(t1, t2);
-    EXPECT_EQ(position, PlanesPosition::Intersect);
+    EXPECT_EQ(position, PlanesPosition::kIntersect);
 }
 
 // SAT ---------------------------------------------------------------------------------------------

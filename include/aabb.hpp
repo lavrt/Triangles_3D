@@ -15,10 +15,19 @@ struct AABB {
     Point<T> min;
     Point<T> max;
 
-    AABB() : min({Limits::MaxValue<T>(), Limits::MaxValue<T>(), Limits::MaxValue<T>()}),
-             max({Limits::LowestValue<T>(), Limits::LowestValue<T>(), Limits::LowestValue<T>()}) {}
+    AABB()
+        : min({Limits::MaxValue<T>(),
+               Limits::MaxValue<T>(),
+               Limits::MaxValue<T>()}),
+          max({Limits::LowestValue<T>(),
+               Limits::LowestValue<T>(),
+               Limits::LowestValue<T>()})
+    {}
 
-    AABB(Point<T> min, Point<T> max) : min(min), max(max) {}
+    AABB(Point<T> min, Point<T> max)
+        : min(min),
+          max(max)
+    {}
 
     AABB(const Triangle<T>& t)
         : min({std::min({t.p0_.x, t.p1_.x, t.p2_.x}),
@@ -67,7 +76,7 @@ struct AABB {
 
     void Expand(const Triangle<T>& t) {
         AABB aabb{t};
-        this->Expand(aabb);
+        Expand(aabb);
     }
 
     Point<T> GetCenter() const {

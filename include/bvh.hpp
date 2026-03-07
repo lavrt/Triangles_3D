@@ -16,6 +16,45 @@ namespace Acceleration {
 template <typename T>
 requires Concepts::Numeric<T>
 class BVH {
+public:
+    BVH(std::vector<IndexedTriangle<T>>&& triangles) : triangles_(std::move(triangles)) {
+        root_ = RecursiveBuild(0, triangles_.size());
+    }
+
+    void Dump(const std::string& file_name) const {
+        if (root_ == nullptr) {
+            throw std::runtime_error("Empty tree dump");
+        }
+
+        std::ofstream file(file_name + ".gv");
+        if (!file) {
+            throw std::runtime_error("Cannot open file: " + file_name + ".gv");
+        }
+
+        file << "digraph\n"
+            << "{\n    "
+            << "rankdir = TB;\n    "
+            << "node [shape=record,style = filled,penwidth = 2.5];\n    "
+            << "bgcolor = \"#FDFBE4\";\n\n";
+
+        DefiningGraphNodes(file, root_);
+        file << "\n";
+        DefiningGraphDependencies(file, root_);
+
+        file << "}\n";
+
+        file.close();
+    }
+
+    std::set<TrIndex> FindIntersectingTriangles() {
+        RecursiveFindIntersections(root_, root_);
+        return intersecting_triangles_;
+    }
+
+    const std::unique_ptr<BVHNode<T>>& GetRoot() const noexcept {
+        return root_;
+    }
+
 private:
     static constexpr int kMaxTrianglesPerLeaf = 3;
 
@@ -144,45 +183,6 @@ private:
             file << ";\n";
         }
         flag = 0;
-    }
-
-public:
-    BVH(std::vector<IndexedTriangle<T>>&& triangles) : triangles_(std::move(triangles)) {
-        root_ = RecursiveBuild(0, triangles_.size());
-    }
-
-    void Dump(const std::string& file_name) const {
-        if (root_ == nullptr) {
-            throw std::runtime_error("Empty tree dump");
-        }
-
-        std::ofstream file(file_name + ".gv");
-        if (!file) {
-            throw std::runtime_error("Cannot open file: " + file_name + ".gv");
-        }
-
-        file << "digraph\n"
-            << "{\n    "
-            << "rankdir = TB;\n    "
-            << "node [shape=record,style = filled,penwidth = 2.5];\n    "
-            << "bgcolor = \"#FDFBE4\";\n\n";
-
-        DefiningGraphNodes(file, root_);
-        file << "\n";
-        DefiningGraphDependencies(file, root_);
-
-        file << "}\n";
-
-        file.close();
-    }
-
-    std::set<TrIndex> FindIntersectingTriangles() {
-        RecursiveFindIntersections(root_, root_);
-        return intersecting_triangles_;
-    }
-
-    const std::unique_ptr<BVHNode<T>>& GetRoot() const noexcept {
-        return root_;
     }
 };
 

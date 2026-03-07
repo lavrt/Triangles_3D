@@ -13,11 +13,15 @@
 namespace Geometry {
 
 enum class PlanesPosition {
-    Parallel, Coincide, Intersect
+    kParallel,
+    kCoincide,
+    kIntersect,
 };
 
 enum class TriangleType {
-    Normal, Point, Segment
+    kNormal,
+    kPoint,
+    kSegment,
 };
 
 template <typename T>
@@ -35,7 +39,11 @@ public:
     Point<T> p0_;
     Point<T> p1_;
     Point<T> p2_;
-    
+
+    Triangle(Point<T> p0, Point<T> p1, Point<T> p2) 
+        : p0_(p0), p1_(p1), p2_(p2)
+    {}
+
     static bool Intersect(const Point<T>& p1, const Point<T>& p2) {
         return Vector<T>::Dot(p1 - p2, p1 - p2) < Constants::kEpsilon * Constants::kEpsilon;
     }
@@ -139,14 +147,11 @@ public:
         return Intersect(t, s);
     }
 
-    Triangle(Point<T> p0, Point<T> p1, Point<T> p2) 
-        : p0_(p0), p1_(p1), p2_(p2) {}
-
     Shape<T> MakeShape() const {
         switch (DetermineType()) {
-            case TriangleType::Normal:  return *this;
-            case TriangleType::Point:   return this->ToPoint();
-            case TriangleType::Segment: return this->ToSegment();
+            case TriangleType::kNormal:  return *this;
+            case TriangleType::kPoint:   return this->ToPoint();
+            case TriangleType::kSegment: return this->ToSegment();
             default: throw std::runtime_error("Unknown triangle type");
         }
     }
@@ -161,7 +166,7 @@ public:
      * @return true if the triangles intersect
      */
     static bool Intersect(const Triangle& t1, const Triangle& t2) {
-        if (t1.DetermineType() != TriangleType::Normal || t2.DetermineType() != TriangleType::Normal) {
+        if (t1.DetermineType() != TriangleType::kNormal || t2.DetermineType() != TriangleType::kNormal) {
             return std::visit([](const auto& s1, const auto& s2) {
                 return Intersect(s1, s2);
             }, t1.MakeShape(), t2.MakeShape());
@@ -169,11 +174,11 @@ public:
 
         auto relative_planes_position = RelativePlanesPosition(t1, t2);
 
-        if (relative_planes_position == PlanesPosition::Parallel) {
+        if (relative_planes_position == PlanesPosition::kParallel) {
             return false;
         }
 
-        if (relative_planes_position == PlanesPosition::Coincide) { 
+        if (relative_planes_position == PlanesPosition::kCoincide) { 
             Segment<T> edges1[] {{t1.p0_, t1.p1_}, {t1.p0_, t1.p2_}, {t1.p1_, t1.p2_}};
             Segment<T> edges2[] {{t2.p0_, t2.p1_}, {t2.p0_, t2.p2_}, {t2.p1_, t2.p2_}};
 
@@ -282,7 +287,7 @@ public:
         Vector<T> normal2 = t2.CalculateNormal();
         
         if (!normal1.Collinear(normal2)) {
-            return PlanesPosition::Intersect;
+            return PlanesPosition::kIntersect;
         }
 
         T d1 = -Vector<T>::Dot(normal1, t1.p0_.AsVector());
@@ -293,8 +298,8 @@ public:
             : std::abs(d1 + d2);
 
         return distance_between_planes < Constants::kEpsilon
-            ? PlanesPosition::Coincide
-            : PlanesPosition::Parallel;
+            ? PlanesPosition::kCoincide
+            : PlanesPosition::kParallel;
     }
 
     std::pair<T, T> Project(const Vector<T>& axis) const {
@@ -321,7 +326,7 @@ public:
     }
 
     Segment<T> ToSegment() const {
-        if (this->DetermineType() != TriangleType::Segment) {
+        if (this->DetermineType() != TriangleType::kSegment) {
             throw std::runtime_error("The triangle is not degenerate into a line segment");
         }
 
@@ -345,10 +350,10 @@ public:
 
     TriangleType DetermineType() const {
         return !this->CalculateNormal().IsNullVector()
-            ? TriangleType::Normal
+            ? TriangleType::kNormal
             : p0_ == p1_ && p1_ == p2_
-                ? TriangleType::Point
-                : TriangleType::Segment;
+                ? TriangleType::kPoint
+                : TriangleType::kSegment;
     }
 
     Point<T> operator[](size_t i) const {

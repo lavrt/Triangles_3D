@@ -16,34 +16,11 @@ namespace Acceleration {
 template <typename T>
 requires Concepts::Numeric<T>
 class BVH {
+    template <typename U> requires Concepts::Numeric<U> friend class BvhVisualizer;
+
 public:
     BVH(std::vector<IndexedTriangle<T>>&& triangles) : triangles_(std::move(triangles)) {
         root_ = RecursiveBuild(0, triangles_.size());
-    }
-
-    void Dump(const std::string& file_name) const {
-        if (root_ == nullptr) {
-            throw std::runtime_error("Empty tree dump");
-        }
-
-        std::ofstream file(file_name + ".gv");
-        if (!file) {
-            throw std::runtime_error("Cannot open file: " + file_name + ".gv");
-        }
-
-        file << "digraph\n"
-            << "{\n    "
-            << "rankdir = TB;\n    "
-            << "node [shape=record,style = filled,penwidth = 2.5];\n    "
-            << "bgcolor = \"#FDFBE4\";\n\n";
-
-        DefiningGraphNodes(file, root_);
-        file << "\n";
-        DefiningGraphDependencies(file, root_);
-
-        file << "}\n";
-
-        file.close();
     }
 
     std::set<TrIndex> FindIntersectingTriangles() {
@@ -51,14 +28,15 @@ public:
         return intersecting_triangles_;
     }
 
-    const std::unique_ptr<BVHNode<T>>& GetRoot() const noexcept {
-        return root_;
+    const BVHNode<T>* GetRoot() const noexcept {
+        return &nodes_[root_];
     }
 
 private:
     static constexpr int kMaxTrianglesPerLeaf = 3;
 
-    std::unique_ptr<BVHNode<T>> root_ = nullptr;
+    NodeIdx root_ = invalid_idx;
+    std::vector<BVHNode<T>> nodes_;
     std::vector<IndexedTriangle<T>> triangles_;
     std::set<TrIndex> intersecting_triangles_;
 
@@ -67,20 +45,21 @@ private:
         return (diff.x >= diff.y && diff.x >= diff.z) ? 0 : (diff.y >= diff.z) ? 1 : 2;
     }
 
-    std::unique_ptr<BVHNode<T>> RecursiveBuild(size_t start, size_t end) {
+    NodeIdx RecursiveBuild(size_t start, size_t end) {
         std::span<IndexedTriangle<T>> triangles(triangles_.begin() + start, triangles_.begin() + end);
 
-        auto node = std::make_unique<BVHNode<T>>();
+        // auto node = std::make_unique<BVHNode<T>>();
 
         AABB<T> aabb;
         for (auto&& tr : triangles) {
             aabb.Expand(tr.triangle);
         }
-        node->SetAABB(aabb);
+        // node->SetAABB(aabb);
 
         if (end - start <= kMaxTrianglesPerLeaf) {
-            node->SetTriangles(triangles);
-            return node;
+            // node->SetTriangles(triangles);
+            nodes_.emplace_back(aabb, triangles);
+            return nodes_.size() - 1;
         }
 
         size_t axis = GetSplitAxis(aabb);
@@ -97,20 +76,25 @@ private:
 
         size_t mid = start + (end - start) / 2;
 
-        node->SetLeft(RecursiveBuild(start, mid));
-        node->SetRight(RecursiveBuild(mid, end));
+        // node->SetLeft(RecursiveBuild(start, mid));
+        // node->SetRight(RecursiveBuild(mid, end));
 
-        return node;
+        nodes_.emplace_back(aabb, RecursiveBuild(start, mid), RecursiveBuild(mid, end));
+
+        return nodes_.size() - 1;
     }
 
-    void RecursiveFindIntersections(const std::unique_ptr<BVHNode<T>>& a, const std::unique_ptr<BVHNode<T>>& b) {
-        if (!AABB<T>::Intersects(a->GetAABB(), b->GetAABB())) {
+    void RecursiveFindIntersections(NodeIdx a_idx, NodeIdx b_idx) {
+        const auto& a = nodes_[a_idx];
+        const auto& b = nodes_[b_idx];
+
+        if (!AABB<T>::Intersects(a.GetAABB(), b.GetAABB())) {
             return;
         }
 
-        if (a->IsLeaf() && b->IsLeaf()) {
-            std::span<IndexedTriangle<T>> a_triangles = a->GetTriangles();
-            std::span<IndexedTriangle<T>> b_triangles = b->GetTriangles();
+        if (a.IsLeaf() && b.IsLeaf()) {
+            auto a_triangles = a.GetTriangles();
+            auto b_triangles = b.GetTriangles();
 
             for (const auto& a_tr : a_triangles) {
                 for (const auto& b_tr : b_triangles) {
@@ -124,65 +108,22 @@ private:
             return;
         }
 
-        if (!a->IsLeaf() && !b->IsLeaf()) { 
-            RecursiveFindIntersections(a->GetLeft(), b->GetLeft());
-            RecursiveFindIntersections(a->GetLeft(), b->GetRight());
-            RecursiveFindIntersections(a->GetRight(), b->GetLeft());
-            RecursiveFindIntersections(a->GetRight(), b->GetRight());
-        } else if (!a->IsLeaf()) {
-            RecursiveFindIntersections(a->GetLeft(), b);
-            RecursiveFindIntersections(a->GetRight(), b);
+        if (!a.IsLeaf() && !b.IsLeaf()) { 
+            RecursiveFindIntersections(a.GetLeftIdx(), b.GetLeftIdx());
+            RecursiveFindIntersections(a.GetLeftIdx(), b.GetRightIdx());
+            RecursiveFindIntersections(a.GetRightIdx(), b.GetLeftIdx());
+            RecursiveFindIntersections(a.GetRightIdx(), b.GetRightIdx());
+        } else if (!a.IsLeaf()) {
+            RecursiveFindIntersections(a.GetLeftIdx(), b_idx);
+            RecursiveFindIntersections(a.GetRightIdx(), b_idx);
         } else {
-            RecursiveFindIntersections(a, b->GetLeft());
-            RecursiveFindIntersections(a, b->GetRight());
+            RecursiveFindIntersections(a_idx, b.GetLeftIdx());
+            RecursiveFindIntersections(a_idx, b.GetRightIdx());
         }
     }
 
-    void DefiningGraphNodes(std::ofstream& file, const std::unique_ptr<BVHNode<T>>& node) const {
-        static size_t rank = 0;
-        file << "    node_" << node.get() << " [rank=" << rank << ",label=\" { node: " << node.get()
-            << " | aabb: \\{" << node->GetAABB().min << ", " << node->GetAABB().max << "\\} | ";
-
-        if (!node->IsLeaf()) {
-            file << "{ left: " << node->GetLeft().get() << " | right: " << node->GetRight().get() << " }";
-        } else {
-            file << "triangles_.size() = " << node->GetNumberOfTriangles();
-        }
-        file << "} \", color = \"#EBAEE6\"];\n";
-
-        if (node->GetLeft()) {
-            rank++;
-            DefiningGraphNodes(file, node->GetLeft());
-        }
-        if (node->GetRight()) {
-            rank++;
-            DefiningGraphNodes(file, node->GetRight());
-        }
-        rank--;
-    }
-
-    void DefiningGraphDependencies(std::ofstream& file, const std::unique_ptr<BVHNode<T>>& node) const {
-        static int flag = 0;
-        if (node->GetLeft()) {
-            if (flag++) {
-                file << "-> node_" << node->GetLeft().get() << " ";
-            } else {
-                file << "    node_" << node.get() << " -> node_" << node->GetLeft().get() << " ";
-            }
-            DefiningGraphDependencies(file, node->GetLeft());
-        }
-        if (node->GetRight()) {
-            if (flag++) {
-                file << "-> node_" << node->GetRight().get() << " ";
-            } else {
-                file << "    node_" << node.get() << " -> node_" << node->GetRight().get() << " ";
-            }
-            DefiningGraphDependencies(file, node->GetRight());
-        }
-        if (flag) {
-            file << ";\n";
-        }
-        flag = 0;
+    const BVHNode<T>* GetNode(NodeIdx idx) const {
+        return &nodes_[idx];
     }
 };
 

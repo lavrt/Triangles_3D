@@ -16,8 +16,6 @@ namespace Acceleration {
 template <typename T>
 requires Concepts::Numeric<T>
 class BVH {
-    template <typename U> requires Concepts::Numeric<U> friend class BvhVisualizer;
-
 public:
     BVH(std::vector<IndexedTriangle<T>>&& triangles) : triangles_(std::move(triangles)) {
         root_ = RecursiveBuild(0, triangles_.size());
@@ -28,8 +26,12 @@ public:
         return intersecting_triangles_;
     }
 
-    const BVHNode<T>* GetRoot() const noexcept {
+    const BVHNode<T>* GetRoot() const {
         return &nodes_[root_];
+    }
+
+    const BVHNode<T>* GetNode(NodeIdx idx) const {
+        return &nodes_[idx];
     }
 
 private:
@@ -112,10 +114,6 @@ private:
             RecursiveFindIntersections(a_idx, b.GetLeftIdx());
             RecursiveFindIntersections(a_idx, b.GetRightIdx());
         }
-    }
-
-    const BVHNode<T>* GetNode(NodeIdx idx) const {
-        return &nodes_[idx];
     }
 };
 

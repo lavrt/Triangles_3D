@@ -7,21 +7,21 @@
 #include "details.hpp"
 #include "triangle.hpp"
 
-namespace Geometry {
+namespace geometry {
 
 template <typename T>
-requires Concepts::Numeric<T>
+requires concepts::Numeric<T>
 struct AABB {
     Point<T> min;
     Point<T> max;
 
     AABB()
-        : min({Limits::MaxValue<T>(),
-               Limits::MaxValue<T>(),
-               Limits::MaxValue<T>()}),
-          max({Limits::LowestValue<T>(),
-               Limits::LowestValue<T>(),
-               Limits::LowestValue<T>()})
+        : min({limits::MaxValue<T>(),
+               limits::MaxValue<T>(),
+               limits::MaxValue<T>()}),
+          max({limits::LowestValue<T>(),
+               limits::LowestValue<T>(),
+               limits::LowestValue<T>()})
     {}
 
     AABB(Point<T> min, Point<T> max)
@@ -55,9 +55,9 @@ struct AABB {
     }
     
     static bool Intersects(const AABB& a, const AABB& b) noexcept {
-        return (a.min.x <= b.max.x + Constants::kEpsilon && a.max.x + Constants::kEpsilon >= b.min.x)
-            && (a.min.y <= b.max.y + Constants::kEpsilon && a.max.y + Constants::kEpsilon >= b.min.y)
-            && (a.min.z <= b.max.z + Constants::kEpsilon && a.max.z + Constants::kEpsilon >= b.min.z);
+        return (a.min.x <= b.max.x + constants::kEpsilon && a.max.x + constants::kEpsilon >= b.min.x)
+            && (a.min.y <= b.max.y + constants::kEpsilon && a.max.y + constants::kEpsilon >= b.min.y)
+            && (a.min.z <= b.max.z + constants::kEpsilon && a.max.z + constants::kEpsilon >= b.min.z);
     }
 
     void Expand(const AABB& other) {
@@ -84,4 +84,4 @@ struct AABB {
     }
 };
 
-} // namespace Geometry
+} // namespace geometry

@@ -4,9 +4,9 @@
 
 #include "triangle.hpp"
 
-namespace Geometry {
+namespace geometry {
 
-namespace Acceleration {
+namespace acceleration {
 
 using TrIndex = size_t;
 
@@ -16,6 +16,6 @@ struct IndexedTriangle {
     Triangle<T> triangle;
 };
 
-} // namespace Acceleration
+} // namespace acceleration
 
-} // namespace Geometry
+} // namespace geometry

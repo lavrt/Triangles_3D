@@ -8,7 +8,7 @@ using Type = double;
 
 int main() {
     try {
-        Geometry::Acceleration::BVH tree{app::ParseInput<Type>(std::cin)};
+        geometry::acceleration::BVH tree{app::ParseInput<Type>(std::cin)};
     
         auto answer = tree.FindIntersectingTriangles();
         for (const auto& id : answer) {

@@ -6,7 +6,7 @@
 #include "segment.hpp"
 #include "details.hpp"
 
-using namespace Geometry;
+using namespace geometry;
 
 class SegmentTest : public ::testing::Test {
 protected:

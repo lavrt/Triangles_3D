@@ -19,6 +19,8 @@ add_executable(run_gtest ${SOURCES_GTEST})
 target_include_directories(run_gtest
     PUBLIC
         ${CMAKE_SOURCE_DIR}/include
+        ${CMAKE_SOURCE_DIR}/src/geometry
+        ${CMAKE_SOURCE_DIR}/src/geometry/acceleration
 )
 
 target_link_libraries(run_gtest GTest::gtest GTest::gtest_main)
@@ -39,6 +41,8 @@ add_executable(run_e2e_test_execution e2e/test_execution/main.cc)
 target_include_directories(run_e2e_test_execution
     PUBLIC
         ${CMAKE_SOURCE_DIR}/include
+        ${CMAKE_SOURCE_DIR}/src/geometry
+        ${CMAKE_SOURCE_DIR}/src/geometry/acceleration
 )
 
 ## reference program ----------------

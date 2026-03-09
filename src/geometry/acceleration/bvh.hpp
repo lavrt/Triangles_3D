@@ -9,12 +9,12 @@
 #include "node.hpp"
 #include "indexed_triangle.hpp"
 
-namespace Geometry {
+namespace geometry {
 
-namespace Acceleration {
+namespace acceleration {
 
 template <typename T>
-requires Concepts::Numeric<T>
+requires concepts::Numeric<T>
 class BVH {
 public:
     BVH(std::vector<IndexedTriangle<T>>&& triangles) : triangles_(std::move(triangles)) {
@@ -117,6 +117,6 @@ private:
     }
 };
 
-} // namespace Acceleration
+} // namespace acceleration
 
-} // namespace Geometry
+} // namespace geometry

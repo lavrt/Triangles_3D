@@ -4,7 +4,7 @@
 #include "point.hpp"
 #include "details.hpp"
 
-using namespace Geometry;
+using namespace geometry;
 
 class AABBTest : public ::testing::Test {
 protected:
@@ -21,13 +21,13 @@ protected:
 TEST_F(AABBTest, DefaultConstructorInitializesToExtremes) {
     AABB<double> aabb;
     
-    EXPECT_DOUBLE_EQ(aabb.min.x, Limits::MaxValue<double>());
-    EXPECT_DOUBLE_EQ(aabb.min.y, Limits::MaxValue<double>());
-    EXPECT_DOUBLE_EQ(aabb.min.z, Limits::MaxValue<double>());
+    EXPECT_DOUBLE_EQ(aabb.min.x, limits::MaxValue<double>());
+    EXPECT_DOUBLE_EQ(aabb.min.y, limits::MaxValue<double>());
+    EXPECT_DOUBLE_EQ(aabb.min.z, limits::MaxValue<double>());
     
-    EXPECT_DOUBLE_EQ(aabb.max.x, Limits::LowestValue<double>());
-    EXPECT_DOUBLE_EQ(aabb.max.y, Limits::LowestValue<double>());
-    EXPECT_DOUBLE_EQ(aabb.max.z, Limits::LowestValue<double>());
+    EXPECT_DOUBLE_EQ(aabb.max.x, limits::LowestValue<double>());
+    EXPECT_DOUBLE_EQ(aabb.max.y, limits::LowestValue<double>());
+    EXPECT_DOUBLE_EQ(aabb.max.z, limits::LowestValue<double>());
 }
 
 TEST_F(AABBTest, ParameterizedConstructorStoresMinMax) {

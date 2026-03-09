@@ -5,8 +5,8 @@
 #include "bvh.hpp"
 #include "indexed_triangle.hpp"
 
-using namespace Geometry;
-using namespace Acceleration;
+using namespace geometry;
+using namespace acceleration;
 
 class BVHTest : public ::testing::Test {
 protected:    
@@ -89,7 +89,7 @@ TEST_F(BVHTest, LargeNumberOfTriangles) {
     for (int i = 0; i < num_triangles; ++i) {
         double x = static_cast<double>(i);
         large_set.emplace_back(
-            i, Geometry::Triangle{Point<double>{x,0,0}, Point<double>{x+1,0,0}, Point<double>{x,1,0}}
+            i, geometry::Triangle{Point<double>{x,0,0}, Point<double>{x+1,0,0}, Point<double>{x,1,0}}
         );
     }
     

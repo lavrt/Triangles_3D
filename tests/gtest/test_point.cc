@@ -2,7 +2,7 @@
 
 #include "point.hpp"
 
-using namespace Geometry;
+using namespace geometry;
 
 class PointTest : public ::testing::Test {
 protected:

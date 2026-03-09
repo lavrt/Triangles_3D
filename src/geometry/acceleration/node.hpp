@@ -6,15 +6,15 @@
 #include "triangle.hpp"
 #include "indexed_triangle.hpp"
 
-namespace Geometry {
+namespace geometry {
 
-namespace Acceleration {
+namespace acceleration {
 
 using NodeIdx = int;
 inline constexpr NodeIdx invalid_idx = -1;
 
 template <typename T>
-requires Concepts::Numeric<T>
+requires concepts::Numeric<T>
 class BVHNode final {
 public:
     BVHNode(const AABB<T>& aabb, std::span<const IndexedTriangle<T>> triangles)
@@ -55,6 +55,6 @@ private:
     bool is_leaf_{true};
 };
 
-} // namespace Acceleration
+} // namespace acceleration
 
-} // namespace Geometry
+} // namespace geometry

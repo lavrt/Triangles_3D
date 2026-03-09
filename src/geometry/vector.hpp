@@ -5,10 +5,10 @@
 
 #include "details.hpp"
 
-namespace Geometry {
+namespace geometry {
 
 template <typename T>
-requires Concepts::Numeric<T>
+requires concepts::Numeric<T>
 struct Vector {
     T x;
     T y;
@@ -52,7 +52,7 @@ struct Vector {
 
     Vector Normalized() const {
         T len = Length();
-        return (len < Constants::kEpsilon) ? Vector<T>{0, 0, 0} : Vector{x / len, y / len, z / len};
+        return (len < constants::kEpsilon) ? Vector<T>{0, 0, 0} : Vector{x / len, y / len, z / len};
     }
 
     T Length() const {
@@ -60,13 +60,13 @@ struct Vector {
     }
 
     bool Collinear(const Vector& other) const {
-        return Vector::Cross(*this, other).Length() < Constants::kEpsilon;
+        return Vector::Cross(*this, other).Length() < constants::kEpsilon;
     }
 
     bool IsNullVector() const {
-        return std::abs(x) < Constants::kEpsilon
-            && std::abs(y) < Constants::kEpsilon
-            && std::abs(z) < Constants::kEpsilon;
+        return std::abs(x) < constants::kEpsilon
+            && std::abs(y) < constants::kEpsilon
+            && std::abs(z) < constants::kEpsilon;
     }
 
     Vector operator*(T k) const {
@@ -81,7 +81,7 @@ struct Vector {
     }
 
     Vector operator/(T k) const {
-        if (std::abs(k) < Constants::kEpsilon) {
+        if (std::abs(k) < constants::kEpsilon) {
             throw std::runtime_error("Division by zero");
         }
 
@@ -89,7 +89,7 @@ struct Vector {
     }
 
     Vector& operator/=(T k) {
-        if (std::abs(k) < Constants::kEpsilon) {
+        if (std::abs(k) < constants::kEpsilon) {
             throw std::runtime_error("Division by zero");
         }
 
@@ -126,9 +126,9 @@ struct Vector {
     }
 
     bool operator==(const Vector& other) const {
-        return std::abs(x - other.x) < Constants::kEpsilon
-            && std::abs(y - other.y) < Constants::kEpsilon
-            && std::abs(z - other.z) < Constants::kEpsilon;
+        return std::abs(x - other.x) < constants::kEpsilon
+            && std::abs(y - other.y) < constants::kEpsilon
+            && std::abs(z - other.z) < constants::kEpsilon;
     }
 
     bool operator!=(const Vector& other) const {
@@ -136,17 +136,17 @@ struct Vector {
     }
 };
 
-} // namespace Geometry
+} // namespace geometry
 
 template <typename T>
-requires Concepts::Numeric<T>
-Geometry::Vector<T> operator*(T k, const Geometry::Vector<T>& v) {
+requires concepts::Numeric<T>
+geometry::Vector<T> operator*(T k, const geometry::Vector<T>& v) {
     return v * k;
 }
 
 template <typename T>
-requires Concepts::Numeric<T>
-inline std::ostream& operator<<(std::ostream& os, const Geometry::Vector<T>& vector) {
+requires concepts::Numeric<T>
+inline std::ostream& operator<<(std::ostream& os, const geometry::Vector<T>& vector) {
     os << "(" << vector.x << ", " << vector.y << ", " << vector.z << ")";
     return os;
 }

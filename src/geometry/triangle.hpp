@@ -10,7 +10,7 @@
 #include "segment.hpp"
 #include "point.hpp"
 
-namespace Geometry {
+namespace geometry {
 
 enum class PlanesPosition {
     kParallel,
@@ -25,15 +25,15 @@ enum class TriangleType {
 };
 
 template <typename T>
-requires Concepts::Numeric<T>
+requires concepts::Numeric<T>
 class Triangle;
 
 template <typename T>
-requires Concepts::Numeric<T>
+requires concepts::Numeric<T>
 using Shape = std::variant<Triangle<T>, Segment<T>, Point<T>>;
 
 template <typename T>
-requires Concepts::Numeric<T>
+requires concepts::Numeric<T>
 class Triangle {
 public:
     Point<T> p0_;
@@ -45,11 +45,11 @@ public:
     {}
 
     static bool Intersect(const Point<T>& p1, const Point<T>& p2) {
-        return Vector<T>::Dot(p1 - p2, p1 - p2) < Constants::kEpsilon * Constants::kEpsilon;
+        return Vector<T>::Dot(p1 - p2, p1 - p2) < constants::kEpsilon * constants::kEpsilon;
     }
 
     static bool Intersect(const Point<T>& p, const Segment<T>& s) {
-        return std::abs((p - s.p0).Length() + (p - s.p1).Length() - s.Length()) < Constants::kEpsilon;
+        return std::abs((p - s.p0).Length() + (p - s.p1).Length() - s.Length()) < constants::kEpsilon;
     }
 
     static bool Intersect(const Segment<T>& s, const Point<T>& p) {
@@ -77,23 +77,23 @@ public:
             T proj_min = std::min(t0, t1);
             T proj_max = std::max(t0, t1);
 
-            return std::max(proj_min, 0.0) <= std::min(proj_max, 1.0) + Constants::kEpsilon;
+            return std::max(proj_min, 0.0) <= std::min(proj_max, 1.0) + constants::kEpsilon;
         }
 
         T dist = std::abs(Vector<T>::Dot(diff, N));
-        if (dist > Constants::kEpsilon) {
+        if (dist > constants::kEpsilon) {
             return false;
         }
         T denom = Vector<T>::Dot(N, N);
         T t = Vector<T>::Dot(Vector<T>::Cross(diff, v2), N) / denom;
         T s = Vector<T>::Dot(Vector<T>::Cross(diff, v1), N) / denom;
 
-        return t >= 0 - Constants::kEpsilon && t <= 1 + Constants::kEpsilon
-            && s >= 0 - Constants::kEpsilon && s <= 1 + Constants::kEpsilon;
+        return t >= 0 - constants::kEpsilon && t <= 1 + constants::kEpsilon
+            && s >= 0 - constants::kEpsilon && s <= 1 + constants::kEpsilon;
     }
 
     static bool Intersect(const Triangle& t, const Point<T>& p) {
-        if (std::abs(Vector<T>::Dot(t.p0_ - p, t.CalculateNormal())) >= Constants::kEpsilon) {
+        if (std::abs(Vector<T>::Dot(t.p0_ - p, t.CalculateNormal())) >= constants::kEpsilon) {
             return false;
         }
 
@@ -108,7 +108,7 @@ public:
         Point<T> p = s.p0;
         Vector<T> vec = s.p0 - s.p1;
 
-        if (std::abs(Vector<T>::Dot(t.CalculateNormal(), vec)) <= Constants::kEpsilon) { 
+        if (std::abs(Vector<T>::Dot(t.CalculateNormal(), vec)) <= constants::kEpsilon) { 
             if (Vector<T>::Dot(p - t.p0_, t.CalculateNormal())) { 
                 return false;
             }
@@ -203,14 +203,14 @@ public:
      */
     static bool Sat(const Triangle& a, const Triangle& b) {
         auto ProjectionsOverlap = [a, b](const Vector<T>& axis) {
-            if (axis.Length() < Constants::kEpsilon) {
+            if (axis.Length() < constants::kEpsilon) {
                 return true;
             }
 
             auto [a_min, a_max] = a.Project(axis);
             auto [b_min, b_max] = b.Project(axis);
 
-            return !(a_max < b_min - Constants::kEpsilon || b_max < a_min - Constants::kEpsilon);
+            return !(a_max < b_min - constants::kEpsilon || b_max < a_min - constants::kEpsilon);
         };
 
         Vector<T> a_vectors[] {a.p1_ - a.p0_, a.p2_ - a.p1_, a.p0_ - a.p2_};
@@ -278,8 +278,8 @@ public:
         T gamma = (UV * WU - UU * WV) / denom;
         T alpha = 1 - beta - gamma;
 
-        return alpha >= -Constants::kEpsilon && beta >= -Constants::kEpsilon
-            && gamma >= -Constants::kEpsilon;
+        return alpha >= -constants::kEpsilon && beta >= -constants::kEpsilon
+            && gamma >= -constants::kEpsilon;
     }
 
     static PlanesPosition RelativePlanesPosition(const Triangle& t1, const Triangle& t2) {
@@ -297,7 +297,7 @@ public:
             ? std::abs(d1 - d2)
             : std::abs(d1 + d2);
 
-        return distance_between_planes < Constants::kEpsilon
+        return distance_between_planes < constants::kEpsilon
             ? PlanesPosition::kCoincide
             : PlanesPosition::kParallel;
     }
@@ -332,11 +332,11 @@ public:
 
         T vector_lengths[] {(p1_ - p0_).Length(), (p2_ - p1_).Length(), (p2_ - p0_).Length()};
 
-        if (std::abs(vector_lengths[0] + vector_lengths[1] - vector_lengths[2]) < Constants::kEpsilon) {
+        if (std::abs(vector_lengths[0] + vector_lengths[1] - vector_lengths[2]) < constants::kEpsilon) {
             return {p0_, p2_};
         }
 
-        if (std::abs(vector_lengths[0] + vector_lengths[2] - vector_lengths[1]) < Constants::kEpsilon) {
+        if (std::abs(vector_lengths[0] + vector_lengths[2] - vector_lengths[1]) < constants::kEpsilon) {
             return {p1_, p2_};
         }
 
@@ -371,4 +371,4 @@ public:
     }
 };
 
-} // namespace Geometry
+} // namespace geometry

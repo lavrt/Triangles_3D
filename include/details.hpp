@@ -3,31 +3,31 @@
 #include <limits>
 #include <concepts>
 
-namespace Concepts {
+namespace concepts {
 
 template <typename T>
 concept Numeric = std::integral<T> || std::floating_point<T>;
 
-} // namespace Concepts
+} // namespace concepts
 
-namespace Constants {
+namespace constants {
 
 inline constexpr double kEpsilon = 1e-12;
 
-} // namespace Constants
+} // namespace constants
 
-namespace Limits {
+namespace limits {
 
 template <typename T>
-requires Concepts::Numeric<T>
+requires concepts::Numeric<T>
 constexpr T MaxValue() {
     return std::numeric_limits<T>::max();
 }
 
 template <typename T>
-requires Concepts::Numeric<T>
+requires concepts::Numeric<T>
 constexpr T LowestValue() {
     return std::numeric_limits<T>::lowest();
 }
 
-} // namespace Limits
+} // namespace limits

@@ -5,7 +5,7 @@
 #include "triangle.hpp"
 #include "aabb.hpp"
 
-using namespace Geometry;
+using namespace geometry;
 
 class TriangleTest : public ::testing::Test {
 protected:

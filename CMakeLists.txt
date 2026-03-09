@@ -12,6 +12,9 @@ target_include_directories(triangles_3d
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/src/app
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/dump
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/geometry
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/geometry/acceleration
 )
 
 # tests --------------------------------------

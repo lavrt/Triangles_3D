@@ -6,10 +6,10 @@
 #include "point.hpp"
 #include "details.hpp"
 
-namespace Geometry {
+namespace geometry {
 
 template <typename T>
-requires Concepts::Numeric<T>
+requires concepts::Numeric<T>
 struct Segment {
     Point<T> p0;
     Point<T> p1;
@@ -46,10 +46,10 @@ struct Segment {
             T proj_min = std::min(t0, t1);
             T proj_max = std::max(t0, t1);
 
-            return std::max(proj_min, 0.0) <= std::min(proj_max, 1.0) + Constants::kEpsilon;
+            return std::max(proj_min, 0.0) <= std::min(proj_max, 1.0) + constants::kEpsilon;
         }
 
-        if (std::abs(Vector<T>::Dot(diff, N)) >= Constants::kEpsilon) {
+        if (std::abs(Vector<T>::Dot(diff, N)) >= constants::kEpsilon) {
             return false;
         }
 
@@ -57,8 +57,8 @@ struct Segment {
         T t = Vector<T>::Dot(Vector<T>::Cross(diff, v2), N) / denom;
         T s = Vector<T>::Dot(Vector<T>::Cross(diff, v1), N) / denom;
 
-        return t >= -Constants::kEpsilon && t <= 1 + Constants::kEpsilon
-            && s >= -Constants::kEpsilon && s <= 1 + Constants::kEpsilon;
+        return t >= -constants::kEpsilon && t <= 1 + constants::kEpsilon
+            && s >= -constants::kEpsilon && s <= 1 + constants::kEpsilon;
     }
 
     /**
@@ -83,4 +83,4 @@ struct Segment {
     }
 };
 
-} // namespace Geometry
+} // namespace geometry

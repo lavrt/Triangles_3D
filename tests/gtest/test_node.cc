@@ -4,8 +4,8 @@
 
 #include "node.hpp"
 
-using namespace Geometry;
-using namespace Geometry::Acceleration;
+using namespace geometry;
+using namespace geometry::acceleration;
 
 class NodeTest : public ::testing::Test {
 protected:

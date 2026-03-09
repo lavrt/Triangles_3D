@@ -6,10 +6,10 @@
 
 #include "vector.hpp"
 
-namespace Geometry {
+namespace geometry {
 
 template <typename T>
-requires Concepts::Numeric<T>
+requires concepts::Numeric<T>
 struct Point {
     T x;
     T y;
@@ -40,9 +40,9 @@ struct Point {
     }
 
     bool operator==(const Point& other) const {
-        return std::abs(x - other.x) < Constants::kEpsilon
-            && std::abs(y - other.y) < Constants::kEpsilon
-            && std::abs(z - other.z) < Constants::kEpsilon;
+        return std::abs(x - other.x) < constants::kEpsilon
+            && std::abs(y - other.y) < constants::kEpsilon
+            && std::abs(z - other.z) < constants::kEpsilon;
     }
 
     bool operator!=(const Point& other) const {
@@ -58,11 +58,11 @@ struct Point {
     }
 };
 
-} // namespace Geometry
+} // namespace geometry
 
 template <typename T>
-requires Concepts::Numeric<T>
-inline std::ostream& operator<<(std::ostream& os, const Geometry::Point<T>& point) {
+requires concepts::Numeric<T>
+inline std::ostream& operator<<(std::ostream& os, const geometry::Point<T>& point) {
     os << "(" << point.x << ", " << point.y << ", " << point.z << ")";
     return os; 
 }

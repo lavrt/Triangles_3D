@@ -5,13 +5,13 @@
 
 #include "bvh.hpp"
 
-namespace Geometry::Acceleration {
+namespace dump {
 
 template <typename T>
-requires Concepts::Numeric<T>
+requires concepts::Numeric<T>
 class BvhVisualizer {
 public:
-    static void Dump(const BVH<T>& t, const std::string& filename) {
+    static void Dump(const geometry::acceleration::BVH<T>& t, const std::string& filename) {
         std::ofstream file(filename + ".gv");
         if (!file) {
             throw std::runtime_error("Cannot open file: " + filename + ".gv");
@@ -33,7 +33,9 @@ public:
     }
 
 private:
-    static void DefiningGraphNodes(std::ofstream& file, const BVH<T>& t, const BVHNode<T>* node) {
+    static void DefiningGraphNodes( std::ofstream& file,
+        const geometry::acceleration::BVH<T>& t, const geometry::acceleration::BVHNode<T>* node)
+    {
         static size_t rank = 0;
         file << "    node_" << node << " [rank=" << rank << ",label=\" { node: " << node
             << " | aabb: \\{" << node->GetAABB().min << ", " << node->GetAABB().max << "\\} | ";
@@ -46,20 +48,22 @@ private:
         }
         file << "} \", color = \"#EBAEE6\"];\n";
 
-        if (node->GetLeftIdx() != invalid_idx) {
+        if (node->GetLeftIdx() != geometry::acceleration::invalid_idx) {
             rank++;
             DefiningGraphNodes(file, t, t.GetNode(node->GetLeftIdx()));
         }
-        if (node->GetRightIdx() != invalid_idx) {
+        if (node->GetRightIdx() != geometry::acceleration::invalid_idx) {
             rank++;
             DefiningGraphNodes(file, t, t.GetNode(node->GetRightIdx()));
         }
         rank--;
     }
 
-    static void DefiningGraphDependencies(std::ofstream& file, const BVH<T>& t, const BVHNode<T>* node) {
+    static void DefiningGraphDependencies(std::ofstream& file,
+        const geometry::acceleration::BVH<T>& t, const geometry::acceleration::BVHNode<T>* node)
+    {
         static int flag = 0;
-        if (node->GetLeftIdx() != invalid_idx) {
+        if (node->GetLeftIdx() != geometry::acceleration::invalid_idx) {
             if (flag++) {
                 file << "-> node_" << t.GetNode(node->GetLeftIdx()) << " ";
             } else {
@@ -67,7 +71,7 @@ private:
             }
             DefiningGraphDependencies(file, t, t.GetNode(node->GetLeftIdx()));
         }
-        if (node->GetRightIdx() != invalid_idx) {
+        if (node->GetRightIdx() != geometry::acceleration::invalid_idx) {
             if (flag++) {
                 file << "-> node_" << t.GetNode(node->GetRightIdx()) << " ";
             } else {
@@ -82,4 +86,4 @@ private:
     }
 };
 
-} // namespace Geometry::Acceleration
+} // namespace dump

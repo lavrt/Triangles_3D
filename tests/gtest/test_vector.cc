@@ -4,7 +4,7 @@
 
 #include "vector.hpp"
 
-using namespace Geometry;
+using namespace geometry;
 
 class VectorTest : public ::testing::Test {
 protected:

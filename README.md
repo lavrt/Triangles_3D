@@ -99,7 +99,7 @@ The BVH implementation includes a graph visualization feature that generates DOT
 
 To convert the generated DOT files to PNG images:
 1. Install Graphviz (if not already installed)
-2. Run your program (the .gv files are generated automatically when you call Dump())
+2. Run your program (the .gv files are generated automatically when you call Dump() from "bvh_visualizer.hpp")
 3. Convert to PNG using the dot command:
 ```bash
 dot filename.gv -Tpng -o filename.png

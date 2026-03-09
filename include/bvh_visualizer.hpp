@@ -59,7 +59,7 @@ private:
 
     static void DefiningGraphDependencies(std::ofstream& file, const BVH<T>& t, const BVHNode<T>* node) {
         static int flag = 0;
-        if (node->GetLeftIdx() != -1) {
+        if (node->GetLeftIdx() != invalid_idx) {
             if (flag++) {
                 file << "-> node_" << t.GetNode(node->GetLeftIdx()) << " ";
             } else {
@@ -67,7 +67,7 @@ private:
             }
             DefiningGraphDependencies(file, t, t.GetNode(node->GetLeftIdx()));
         }
-        if (node->GetRightIdx() != -1) {
+        if (node->GetRightIdx() != invalid_idx) {
             if (flag++) {
                 file << "-> node_" << t.GetNode(node->GetRightIdx()) << " ";
             } else {

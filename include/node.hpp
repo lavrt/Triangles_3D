@@ -1,9 +1,6 @@
 #pragma once
 
 #include <span>
-#include <vector>
-#include <memory>
-#include <stdexcept>
 
 #include "aabb.hpp"
 #include "triangle.hpp"
@@ -13,46 +10,24 @@ namespace Geometry {
 
 namespace Acceleration {
 
+using NodeIdx = int;
+inline constexpr NodeIdx invalid_idx = -1;
+
 template <typename T>
 requires Concepts::Numeric<T>
-class BVHNode {
+class BVHNode final {
 public:
-    void SetAABB(const AABB<T>& aabb) {
-        aabb_ = aabb;
-    }
+    BVHNode(const AABB<T>& aabb, std::span<const IndexedTriangle<T>> triangles)
+        : aabb_(aabb), triangles_(triangles), is_leaf_(true) {}
 
-    void SetTriangles(const std::span<IndexedTriangle<T>>& triangles) {
-        if (left_ != nullptr || right_ != nullptr) {
-            throw std::runtime_error(
-                "An attempt to change the node type from a leaf node to an internal node"
-            );
-        }
+    BVHNode(const AABB<T>& aabb, NodeIdx left, NodeIdx right)
+        : aabb_(aabb), left_(left), right_(right), is_leaf_(false) {}
 
-        is_leaf_ = true;
-        triangles_ = triangles;
-    }
-
-    void SetLeft(std::unique_ptr<BVHNode> left) {
-        if (triangles_.size() != 0) {
-            throw std::runtime_error(
-                "An attempt to change the node type from an internal node to a leaf node"
-            );
-        }
-
-        is_leaf_ = false;
-        left_ = std::move(left);
-    }
-
-    void SetRight(std::unique_ptr<BVHNode> right) {
-        is_leaf_ = false;
-        right_ = std::move(right);
-    }
-
-    AABB<T> GetAABB() const noexcept {
+    const AABB<T>& GetAABB() const noexcept {
         return aabb_;
     }
 
-    std::span<IndexedTriangle<T>> GetTriangles() const noexcept {
+    std::span<const IndexedTriangle<T>> GetTriangles() const noexcept {
         return triangles_;
     }
 
@@ -60,11 +35,11 @@ public:
         return triangles_.size();
     }
 
-    const std::unique_ptr<BVHNode>& GetLeft() const noexcept {
+    NodeIdx GetLeftIdx() const noexcept {
         return left_;
     }
 
-    const std::unique_ptr<BVHNode>& GetRight() const noexcept {
+    NodeIdx GetRightIdx() const noexcept {
         return right_;
     }
 
@@ -74,11 +49,10 @@ public:
 
 private:
     AABB<T> aabb_;
-    std::span<IndexedTriangle<T>> triangles_;
-    bool is_leaf_ = true;
-
-    std::unique_ptr<BVHNode> left_ = nullptr;
-    std::unique_ptr<BVHNode> right_ = nullptr;
+    std::span<const IndexedTriangle<T>> triangles_;
+    NodeIdx left_ = invalid_idx;
+    NodeIdx right_ = invalid_idx;
+    bool is_leaf_{true};
 };
 
 } // namespace Acceleration

@@ -48,16 +48,12 @@ private:
     NodeIdx RecursiveBuild(size_t start, size_t end) {
         std::span<IndexedTriangle<T>> triangles(triangles_.begin() + start, triangles_.begin() + end);
 
-        // auto node = std::make_unique<BVHNode<T>>();
-
         AABB<T> aabb;
         for (auto&& tr : triangles) {
             aabb.Expand(tr.triangle);
         }
-        // node->SetAABB(aabb);
 
         if (end - start <= kMaxTrianglesPerLeaf) {
-            // node->SetTriangles(triangles);
             nodes_.emplace_back(aabb, triangles);
             return nodes_.size() - 1;
         }
@@ -76,11 +72,7 @@ private:
 
         size_t mid = start + (end - start) / 2;
 
-        // node->SetLeft(RecursiveBuild(start, mid));
-        // node->SetRight(RecursiveBuild(mid, end));
-
         nodes_.emplace_back(aabb, RecursiveBuild(start, mid), RecursiveBuild(mid, end));
-
         return nodes_.size() - 1;
     }
 

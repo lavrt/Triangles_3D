@@ -5,62 +5,49 @@
 #include "node.hpp"
 
 using namespace Geometry;
-using namespace Acceleration;
+using namespace Geometry::Acceleration;
 
 class NodeTest : public ::testing::Test {
-protected: 
+protected:
     std::vector<IndexedTriangle<double>> triangles {
         IndexedTriangle<double>(1, {Point<double>{0,0,0}, Point<double>{1,0,0}, Point<double>{0,1,0}}),
         IndexedTriangle<double>(2, {Point<double>{2,0,0}, Point<double>{3,0,0}, Point<double>{2,1,0}})
     };
+
+    AABB<double> bbox{Point<double>{0,0,0}, Point<double>{1,1,1}};
 };
 
-// Constructor -------------------------------------------------------------------------------------
+// Constructors -------------------------------------------------------------------------------------
 
-TEST_F(NodeTest, DefaultConstruction) {
-    BVHNode<double> node;
-    
+TEST_F(NodeTest, LeafConstruction) {
+    BVHNode<double> node(bbox, std::span<const IndexedTriangle<double>>(triangles));
+
     EXPECT_TRUE(node.IsLeaf());
-    EXPECT_EQ(node.GetNumberOfTriangles(), 0);
-    EXPECT_EQ(node.GetLeft(), nullptr);
-    EXPECT_EQ(node.GetRight(), nullptr);
+    EXPECT_EQ(node.GetNumberOfTriangles(), 2u);
+    EXPECT_EQ(node.GetTriangles().size(), 2u);
+    EXPECT_EQ(node.GetLeftIdx(), invalid_idx);
+    EXPECT_EQ(node.GetRightIdx(), invalid_idx);
 }
 
-// Other functions ---------------------------------------------------------------------------------
+TEST_F(NodeTest, InternalConstruction) {
+    constexpr NodeIdx L = 10;
+    constexpr NodeIdx R = 11;
 
-TEST_F(NodeTest, SetTrianglesMakesLeaf) {
-    BVHNode<double> node;
-    node.SetTriangles(triangles);
-    
-    EXPECT_TRUE(node.IsLeaf());
-    EXPECT_EQ(node.GetNumberOfTriangles(), 2);
-    EXPECT_EQ(node.GetTriangles().size(), 2);
-    EXPECT_EQ(node.GetLeft(), nullptr);
-    EXPECT_EQ(node.GetRight(), nullptr);
-}
+    BVHNode<double> node(bbox, L, R);
 
-TEST_F(NodeTest, SetChildrenMakesInternalNode) {
-    BVHNode<double> node;
-    
-    auto left = std::make_unique<BVHNode<double>>();
-    auto right = std::make_unique<BVHNode<double>>();
-    
-    node.SetLeft(std::move(left));
-    node.SetRight(std::move(right));
-    
     EXPECT_FALSE(node.IsLeaf());
-    EXPECT_EQ(node.GetNumberOfTriangles(), 0);
-    EXPECT_NE(node.GetLeft(), nullptr);
-    EXPECT_NE(node.GetRight(), nullptr);
+    EXPECT_EQ(node.GetNumberOfTriangles(), 0u);
+    EXPECT_EQ(node.GetTriangles().size(), 0u);
+    EXPECT_EQ(node.GetLeftIdx(), L);
+    EXPECT_EQ(node.GetRightIdx(), R);
 }
 
-TEST_F(NodeTest, AABBManagement) {
-    BVHNode<double> node;
-    AABB<double> bbox{Point<double>{0,0,0}, Point<double>{1,1,1}};
-    
-    node.SetAABB(bbox);
-    
-    AABB<double> result = node.GetAABB();
+// AABB ---------------------------------------------------------------------------------------------
+
+TEST_F(NodeTest, AABBIntegrityLeaf) {
+    BVHNode<double> node(bbox, std::span<const IndexedTriangle<double>>(triangles));
+
+    const auto& result = node.GetAABB();
     EXPECT_EQ(result.min.x, 0);
     EXPECT_EQ(result.min.y, 0);
     EXPECT_EQ(result.min.z, 0);
@@ -69,19 +56,28 @@ TEST_F(NodeTest, AABBManagement) {
     EXPECT_EQ(result.max.z, 1);
 }
 
-TEST_F(NodeTest, TriangleSpanIntegrity) {
-    BVHNode<double> node;
-    node.SetTriangles(triangles);
-    
-    auto span = node.GetTriangles();
-    EXPECT_EQ(span.size(), 2);
-    EXPECT_EQ(span[0].id, 1);
-    EXPECT_EQ(span[1].id, 2);
+TEST_F(NodeTest, AABBIntegrityInternal) {
+    constexpr NodeIdx L = 0;
+    constexpr NodeIdx R = 1;
+
+    BVHNode<double> node(bbox, L, R);
+
+    const auto& result = node.GetAABB();
+    EXPECT_EQ(result.min.x, 0);
+    EXPECT_EQ(result.min.y, 0);
+    EXPECT_EQ(result.min.z, 0);
+    EXPECT_EQ(result.max.x, 1);
+    EXPECT_EQ(result.max.y, 1);
+    EXPECT_EQ(result.max.z, 1);
 }
 
-TEST_F(NodeTest, StateTransitions) {
-    BVHNode<double> node;
-    
-    node.SetLeft(std::make_unique<BVHNode<double>>());
-    EXPECT_FALSE(node.IsLeaf());
+// Triangle span ------------------------------------------------------------------------------------
+
+TEST_F(NodeTest, TriangleSpanIntegrity) {
+    BVHNode<double> node(bbox, std::span<const IndexedTriangle<double>>(triangles));
+
+    auto span = node.GetTriangles();
+    ASSERT_EQ(span.size(), 2u);
+    EXPECT_EQ(span[0].id, 1u);
+    EXPECT_EQ(span[1].id, 2u);
 }
